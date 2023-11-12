@@ -36,6 +36,7 @@ const Courses = [
 ];
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
+   
   <TouchableOpacity
     onPress={onPress}
     style={[styles.item, { backgroundColor }]}
@@ -65,9 +66,10 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
       </View>
     </View>
   </TouchableOpacity>
+ 
 );
 
-const Careers = () => {
+export default function MyCourses ({ path }: { path: string }) {
   const [selectedId, setSelectedId] = useState();
 
   const renderItem = ({ item }) => {
@@ -85,7 +87,7 @@ const Careers = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} >
       <FlatList
         data={Courses}
         renderItem={renderItem}
@@ -97,34 +99,37 @@ const Careers = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // height: 270,
-  },
-  item: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    borderRadius: 15,
-  },
-  title: {
-    fontSize: 15,
-    fontWeight: "bold",
-  },
-  provider: {
-    color: "#DCDCDE",
-  },
-  little: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  tinyLogo: {
-    width: 60,
-    height: 70,
-  },
+    container: {
+        flex: 1,
+        // height: 270,
+       width:'100%',
+    
+      },
+      item: {
+        paddingTop: 15,
+        paddingBottom: 15,
+        paddingLeft: 7,
+        paddingRight: 7,
+        marginVertical: 8,
+        marginHorizontal: 16,
+        borderRadius: 15,
+      },
+      title: {
+        fontSize: 18,
+        fontWeight: "bold",
+      },
+      provider: {
+        color: "#DCDCDE",
+      },
+      little: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+      },
+      tinyLogo: {
+        width: 65,
+        height: 75,
+        borderRadius:15
+      },
 });
 
-export default Careers;
+
