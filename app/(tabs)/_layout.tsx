@@ -54,6 +54,13 @@ export default function TabLayout() {
          name="four"
          options={{
            title: 'My Child',
+           tabBarIcon: ({ color }) => <TabBarIcon name="child" color={color} />,
+         }}
+       />
+       <Tabs.Screen
+         name="five"
+         options={{
+           title: 'Cart',
            tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />,
          }}
        />
