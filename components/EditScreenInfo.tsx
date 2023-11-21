@@ -20,8 +20,6 @@ import CateTop from './CateTop';
 import TopCourses from './TopCourses';
 import TopSale from './TopSale';
 
-
-
 export default function EditScreenInfo({ path }: { path: string }) {
   const handlePress = () => {
     // Xử lý logic khi nút được nhấn

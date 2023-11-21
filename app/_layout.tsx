@@ -4,6 +4,8 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
+import Login from '../components/Login';
+
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -14,7 +16,6 @@ export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
   initialRouteName: '(tabs)',
 };
-
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
@@ -38,18 +39,21 @@ export default function RootLayout() {
   if (!loaded) {
     return null;
   }
+  // const isAuthenticated = false; 
+  // const initialRouteName = isAuthenticated ? '(tabs)' : 'login'; 
 
-  return <RootLayoutNav />;
+  // return <RootLayoutNav initialRouteName={initialRouteName} />;
+  return <RootLayoutNav />
 }
-
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-
+  
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+        {/* <Stack.Screen name="login" component={Login} /> */}
       </Stack>
     </ThemeProvider>
   );
