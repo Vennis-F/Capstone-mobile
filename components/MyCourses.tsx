@@ -95,9 +95,7 @@ export default function MyCourses ({ path }: { path: string }) {
         keyExtractor={(item) => item.id}
         extraData={selectedId}
       />
-     <View style={styles.container}>
-      <ProgressBar percent={50} />
-    </View>
+    
     </SafeAreaView>
   );
 };
