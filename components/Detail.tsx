@@ -9,33 +9,141 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
+import { useRoute } from '@react-navigation/native';
 import Icon from "react-native-vector-icons/MaterialIcons";
-import { Course, GetCoursesBySearchRequest, OrderType, SortFieldCourse } from "../apis/courses/types";
-import { getCoursesBySearch } from "../apis/courses/api";
+import { Course, GetCourseDetailResponse, GetCoursesBySearchRequest, OrderType, SortFieldCourse } from "../apis/courses/types";
+import { getCourseById, getCoursesBySearch, getCoursesDetailById } from "../apis/courses/api";
+import { getAccessToken } from "../libs/core/handle-token";
+import { addCartItem } from "../apis/cart/apis";
 
 const Detail =({}) =>{
- return (
-    <SafeAreaView style={{flex:1, backgroundColor:"#fff", width:"100%"}}>
-        <ScrollView>
-        <View style={styles.header}>
-            <Icon name="arrow-back" size={28}  />
-            <Icon name="shopping-cart" size={28}  />
-        </View>
-        <View style={styles.image}> 
-          <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: "https://reactnative.dev/img/tiny_logo.png",
-            }}
-          />
-        </View>
-        <View style={styles.details}>
+    const [course, setCourse] = useState<GetCourseDetailResponse>()
+    const route = useRoute();
+    const id = route.params?.id as string;
+    console.log("[Detail id]",id)
+
+    const getCourse = async () => {
+        const bodyRequest: GetCoursesBySearchRequest = {
+          categories:[],
+          levels: [],
+          search: "",
+          sortField:SortFieldCourse.PUBLISHED_DATE,
+          pageOptions: {
+            order: OrderType.DESC,
+            page: 1,
+            take: 4,
+          },
+        }
+        const dataResponse = await getCoursesDetailById(id)
+        setCourse(dataResponse)
+    }
+
+    const handleAddCartItem = async () => {
+        const token = await getAccessToken()
+        if (token) {
             
-        </View>
-        </ScrollView>
-    </SafeAreaView>
- );
-};
+          await addCartItem({
+            promotionCourseId: null,
+            courseId: id,
+          })
+        } else {
+        //   toastWarn({ message: 'Hãy đăng nhập trước khi thêm vào giỏ hàng' })
+        }
+      }
+    
+    useEffect(()=>{
+     getCourse()
+    },[])
+
+    console.log("[coruseDetail]", course)
+
+    return (
+        <SafeAreaView style={{flex:1, backgroundColor:"#fff", width:"100%"}}>
+            {course && <ScrollView>
+            <View style={styles.header}>
+                <Icon name="arrow-back" size={28}  />
+                <Icon name="shopping-cart" size={28}  />
+            </View>
+            <View style={styles.image}> 
+            <Image
+                style={styles.tinyLogo}
+                source={{
+                uri: "https://reactnative.dev/img/tiny_logo.png",
+                }}
+            />
+            </View>
+            <View style={styles.details}>
+            <View style={{marginLeft:20,flexDirection:"row",justifyContent:'space-between', alignItems:"center",marginBottom:10}}>
+                <Text style={{fontSize:22,fontWeight:'bold'}}>{course.title}</Text>
+                <View style={styles.priceTag}>
+                    <Text style={{marginLeft:15, color:"#fff", fontWeight:'bold', fontSize:16}}>{course.price}</Text>
+                </View>
+            </View>
+            <View style={{paddingHorizontal:20, marginTop:10}}>
+                <Text style={{fontSize:20, fontWeight:"bold",marginBottom:15}}>Nội dung khóa học</Text>
+                <View style={styles.container}>
+                    <Icon name="live-tv" size={30}/>
+                    <Text style={styles.text}>Db aaaa</Text>
+                    <Text style={styles.time}>20:10</Text>
+                </View>
+                <View style={styles.container}>
+                    <Icon name="live-tv" size={30}/>
+                    <Text style={styles.text}>DB aafdsfdsfdsffdfsf</Text>
+                    <Text style={styles.time}>30:29</Text>
+                </View>
+                <View style={styles.container}>
+                    <Icon name="live-tv" size={30}/>
+                    <Text style={styles.text}>DB aafdsfdsfdsffdfsf</Text>
+                    <Text style={styles.time}>30:29</Text>
+                </View>
+            </View>
+            <View style={{paddingHorizontal:20, marginTop:10}}>
+                <Text style={{fontSize:20, fontWeight:"bold",marginBottom:15}}>Khóa học này bao gồm</Text>
+                <View style={styles.containerSub}> 
+                    <Icon name="access-time" size={25}/>
+                    <Text style={styles.containerText}>{course.totalLength / 60} giờ video theo yêu cầu</Text>
+                </View>
+                <View style={styles.containerSub}> 
+                    <Icon name="tv" size={25}/>
+                    <Text style={styles.containerText}>{course.totalChapter} video bài giảng</Text>
+                </View>
+                <View style={styles.containerSub}> 
+                    <Icon name="phone-iphone" size={25}/>
+                    <Text style={styles.containerText}>Truy cập trên thiết bị di động và máy tính</Text>
+                </View>
+                <View style={styles.containerSub}> 
+                    <Icon name="speed" size={25}/>
+                    <Text style={styles.containerText}>Quyền truy cập suốt đời</Text>
+                </View>
+            </View>
+            <View style={{paddingHorizontal:20, marginTop:10}}>
+                <Text style={{fontSize:20, fontWeight:"bold",marginBottom:10}}>Yêu cầu</Text>
+                <Text style={{marginHorizontal:15, fontSize:18}}>{course.prepareMaterial}</Text>
+            </View>
+            <View style={{paddingHorizontal:20, marginTop:10}}>
+                <Text style={{fontSize:20, fontWeight:"bold",marginBottom:10}}>Description</Text>
+                <Text style={{marginHorizontal:15, fontSize:18}}>{course.description}</Text>
+            </View>
+            {/* <View style={{flexDirection:"row", alignItems:"center",paddingHorizontal:20, marginTop:20}}>
+                <View style={styles.borderBtn}>
+                    <Text style={styles.borderBtnText}>-</Text>
+                </View>
+                <Text style={{fontSize:20,marginHorizontal:10,fontWeight:"bold",marginBottom:20}}>1</Text>
+                <View style={styles.borderBtn}>
+                    <Text style={styles.borderBtnText}>+</Text>
+                </View>
+            </View> */}
+            <View style={{alignItems:"center",marginTop:10}}>
+                <View style={styles.buyBtn}>
+                    <Text style={{color:"#fff",fontSize:18, fontWeight:"bold"}} onPress={handleAddCartItem}>Thêm vào giỏ hàng</Text>
+                </View>
+            </View>
+            </View>
+            </ScrollView>}
+        </SafeAreaView>
+    );
+};  
+
 const styles = StyleSheet.create({
     header:{
         paddingHorizontal:20,
@@ -62,8 +170,65 @@ const styles = StyleSheet.create({
         marginHorizontal:7,
         marginBottom:7,
         borderRadius:20,
-        marginTop:30,
+        marginTop:20,
         paddingTop:30,
+    },
+    priceTag:{
+        backgroundColor:"#FB641B",
+        width:80,
+        height:40,
+        borderTopLeftRadius:25,
+        borderBottomLeftRadius:25,
+        justifyContent: "center",
+    },
+    container:{
+      flexDirection:"row",
+      justifyContent:'space-between',
+      marginBottom:10,
+      marginHorizontal:15,
+    },
+    text:{
+        fontSize:20,
+        textDecorationLine:"underline"
+    },
+    time:{
+        fontSize:20
+    },
+    containerSub:{
+        flexDirection:"row",
+        justifyContent:'flex-start',
+        marginHorizontal:15,
+        marginBottom:10,
+    },
+    containerText:{
+        fontSize:18,
+        color:'#808080',
+        marginLeft:20,  
+    },
+    borderBtn:{
+        borderColor:"grey",
+        borderWidth:1,
+        borderRadius:5,
+        height:40,
+        width:60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom:20
+    },
+    borderBtnText:{
+        fontWeight:"bold",
+        fontSize:28
+    },
+    buyBtn:{
+        width:200,
+        height:50,
+        backgroundColor:'#FB641B',
+        flexDirection:"column",
+        justifyContent:'center',
+        alignItems:'center',
+        borderRadius:30,
+        marginBottom:20,
     }
+  
 })
 export default Detail

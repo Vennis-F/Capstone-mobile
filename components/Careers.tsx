@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Course, GetCoursesBySearchRequest, OrderType, SortCourseBy, SortFieldCourse } from "../apis/courses/types";
 import { getCoursesBySearch } from "../apis/courses/api";
@@ -48,7 +50,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 const Careers = () => {
   const [selectedId, setSelectedId] = useState();
   const [listCourses, setListCourses] = useState<Course[]>([])
-
+  const navigation = useNavigation();
   const getCourse = async () => {
     const bodyRequest: GetCoursesBySearchRequest = {
       categories:[],
@@ -62,7 +64,6 @@ const Careers = () => {
       },
     }
     const dataResponse = await getCoursesBySearch(bodyRequest)
-    console.log("[screen=EditScreenInfor] ", dataResponse)
     setListCourses([...dataResponse.data])
   }
 
@@ -77,7 +78,10 @@ const Careers = () => {
     return (
       <Item
         item={item}
-        onPress={() => setSelectedId(item.id)}
+        onPress={() => {
+          setSelectedId(item.id)
+          navigation.navigate('eight',{id:item.id});
+        }}
         backgroundColor={backgroundColor}
         textColor={color}
       />

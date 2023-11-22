@@ -5,7 +5,7 @@ import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 import Profile from '../components/Profile';
 import MyCourses from '../components/MyCourses';
-import Cart from '../components/Cart';
+import Cart from '../components/CartScreen';
 
 export default function ModalScreen() {
   return (

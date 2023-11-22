@@ -8,33 +8,13 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 import Icon from "react-native-vector-icons/FontAwesome";
 import { Course, GetCoursesBySearchRequest, OrderType, SortFieldCourse } from "../apis/courses/types";
 import { getCoursesBySearch } from "../apis/courses/api";
 
-const Courses = [
-  {
-    id: "1",
-    title: "Google Data Science",
-    provider: "Google",
-    level: "Beginner",
-    rating: "4.1(21k)",
-  },
-  {
-    id: "2",
-    title: "Google Data Analytics",
-    provider: "Google",
-    level: "Beginner",
-    rating: "4.1(21k)",
-  },
-  {
-    id: "3",
-    title: "Introduction To UI Design",
-    provider: "Google",
-    level: "Beginner",
-    rating: "4.1(21k)",
-  },
-];
+
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
     onPress={onPress}
@@ -70,7 +50,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 const MostPopular = () => {
   const [selectedId, setSelectedId] = useState();
   const [listCourses, setListCourses] = useState<Course[]>([])
-
+  const navigation = useNavigation();
   const getCourse = async () => {
     const bodyRequest: GetCoursesBySearchRequest = {
       categories:[],
@@ -84,7 +64,6 @@ const MostPopular = () => {
       },
     }
     const dataResponse = await getCoursesBySearch(bodyRequest)
-    console.log("[screen=EditScreenInfor] ", dataResponse)
     setListCourses([...dataResponse.data])
   }
 
@@ -99,7 +78,9 @@ const MostPopular = () => {
     return (
       <Item
         item={item}
-        onPress={() => setSelectedId(item.id)}
+        onPress={() => {setSelectedId(item.id)
+          navigation.navigate('eight',{id:item.id});
+        }}
         backgroundColor={backgroundColor}
         textColor={color}
       />

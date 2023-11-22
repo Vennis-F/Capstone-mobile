@@ -36,28 +36,6 @@ export enum CourseStatus {
   BANNED = 'Banned',
 }
 
-export type Course = {
-  id: string
-  title: string
-  description: string | null
-  price: number
-  discount: number
-  discountPrice: number
-  promotionCourseByStaffId: string | null
-  ratedStar: number
-  author: string
-  totalLength: number
-  shortDescription: string | null
-  prepareMaterial: string | null
-  status: CourseStatus
-  totalChapter: number
-  publishedDate: string
-  totalBought: number
-  thumbnailUrl: string
-  active: boolean
-  level: string
-}
-
 export type CourseFullInfor = {
   id: string
   title: string
@@ -115,6 +93,28 @@ export type GetCoursesBySearchRequest = {
 export type GetCoursesBySearchResponse = {
   data: Course[]
   meta: PageMetaResponse
+}
+
+export type Course = {
+  id: string
+  title: string
+  description: string | null
+  price: number
+  discount: number
+  discountPrice: number
+  promotionCourseByStaffId: string | null
+  ratedStar: number
+  author: string
+  totalLength: number
+  shortDescription: string | null
+  prepareMaterial: string | null
+  status: CourseStatus
+  totalChapter: number
+  publishedDate: string
+  totalBought: number
+  thumbnailUrl: string
+  active: boolean
+  level: string
 }
 
 export type GetCourseDetailResponse = {

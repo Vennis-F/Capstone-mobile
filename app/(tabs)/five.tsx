@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 
 import { Text, View } from '../../components/Themed';
 import MyChild from '../../components/Mychild';
-import Cart from '../../components/Cart';
+import Cart from '../../components/CartScreen';
+import CartScreen from '../../components/CartScreen';
 
 
 export default function TabThreeScreen() {
@@ -11,7 +12,7 @@ export default function TabThreeScreen() {
     <View style={styles.container}>
       {/* <Text style={styles.title}>Tab Two</Text>
       <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" /> */}
-      <Cart path="app/(tabs)/five.tsx" />
+      <CartScreen path="app/(tabs)/five.tsx" />
     </View>
   );
 }
