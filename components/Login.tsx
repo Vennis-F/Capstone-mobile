@@ -9,14 +9,15 @@ import {
   import { Input, NativeBaseProvider, Button, Icon } from "native-base";
   import { FontAwesome5 } from "@expo/vector-icons";
   import { useNavigation } from "@react-navigation/native";
+import { guestSignIn } from "../apis/auth/api";
   
-  function Login() {
+   function  Login () {
     const navigation = useNavigation();
     const [inputValue1, setInputValue1] = useState("");
     const [inputValue2, setInputValue2] = useState("");
     const [errorText1, setErrorText1] = useState("");
     const [errorText2, setErrorText2] = useState("");
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
       if (inputValue1.trim() === "") {
         // Nếu Input trống, hiển thị thông báo
         setErrorText1("Vui lòng nhập dữ liệu");
@@ -31,10 +32,18 @@ import {
         setErrorText2("");
       }
       if (inputValue1.trim() !== "" && inputValue2.trim() !== "") {
-        // Xử lý khi cả hai trường đều có giá trị
-        // ... Thực hiện các xử lý khác ở đây
+        try {
+          console.log(guestSignIn)
+          const token = await guestSignIn({
+            emailOrUsername: inputValue1,
+            password: inputValue2
+          })
+          console.log(token)
+        } catch (error) {
+          console.log(error)
+        }
       }
-      navigation.navigate("Home");
+    
     };
     return (
       <SafeAreaView
@@ -104,7 +113,7 @@ import {
             </Button>
           </View>
   
-          <View style={styles.lineStyle}>
+          {/* <View style={styles.lineStyle}>
             <View style={{ flex: 1, height: 1, backgroundColor: "black" }}></View>
             <Text style={{ width: 60, textAlign: "center" }}> Hoặc</Text>
             <View style={{ flex: 1, height: 1, backgroundColor: "black" }}></View>
@@ -130,7 +139,7 @@ import {
                 <Text style={styles.text3}> Đăng nhập với google</Text>
               </View>
             </Button>
-          </View>
+          </View> */}
           <View style={styles.text4}>
             <Text style={styles.singupText}>Bạn chưa có tài khoản? </Text>
             <TouchableOpacity onPress={() => navigation.navigate("Signup")}>

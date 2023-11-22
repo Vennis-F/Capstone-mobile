@@ -6,40 +6,23 @@ import {
   Text,
   TouchableOpacity,
 } from "react-native";
+import { Category } from "../apis/category/types";
 
-const DATA = [
-  {
-    id: "1",
-    title: "First Item",
-  },
-  {
-    id: "2",
-    title: "Second Item",
-  },
-  {
-    id: "3",
-    title: "Third Item",
-  },
-  {
-    id: "4",
-    title: "Four Item",
-  },
-  {
-    id: "5",
-    title: "Five Item",
-  },
-];
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
     onPress={onPress}
     style={[styles.item, { backgroundColor }]}
   >
-    <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
+    <Text style={[styles.title, { color: textColor }]}>{item.name}</Text>
   </TouchableOpacity>
 );
 
-const Categories = () => {
+type Props = {
+  categories: Category[]
+}
+
+const Categories = (props:Props) => {
   const [selectedId, setSelectedId] = useState();
 
   const renderItem = ({ item }) => {
@@ -60,7 +43,7 @@ const Categories = () => {
     <SafeAreaView style={styles.container}>
       <FlatList
         horizontal
-        data={DATA}
+        data={props.categories}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         extraData={selectedId}

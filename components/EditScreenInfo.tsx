@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import {
   View,
@@ -19,8 +19,27 @@ import MostPopular from './MostPopular';
 import CateTop from './CateTop';
 import TopCourses from './TopCourses';
 import TopSale from './TopSale';
+import { Category } from '../apis/category/types';
+import { getCategories } from '../apis/category/api';
+import axios from 'axios';
 
 export default function EditScreenInfo({ path }: { path: string }) {
+  const [categories, setCategories] = useState<Category[]>([])
+
+  const handleGetCategories = async ()=>{
+    console.log(process.env.EXPO_PUBLIC_API_URL)
+    const catesRes = await getCategories("true")
+    console.log(catesRes)
+    setCategories(catesRes)
+    // axios.get(`https://capstone-be-7fef96e86ef9.herokuapp.com/category?active=true`).then(data=>console.log(data)).catch(err=>console.log(err))
+  };
+  
+
+  useEffect(()=>{
+    handleGetCategories()
+  },[])
+
+
   const handlePress = () => {
     // Xử lý logic khi nút được nhấn
     console.log("Nút See All được nhấn");
@@ -64,7 +83,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <Categories />
+      <Categories categories={categories}/>
       <View style={styles.career}>
         <Text style={{ fontSize: 25, fontWeight: "bold" }}>
           Start Your Career
