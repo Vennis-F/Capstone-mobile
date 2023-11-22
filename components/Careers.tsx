@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
@@ -10,30 +10,8 @@ import {
   View,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
-
-const Courses = [
-  {
-    id: "1",
-    title: "Google UX Design ",
-    provider: "Google",
-    level: "Beginner",
-    rating: "4.1(21k)",
-  },
-  {
-    id: "2",
-    title: "Font-end Development ",
-    provider: "Google",
-    level: "Beginner",
-    rating: "4.1(21k)",
-  },
-  {
-    id: "3",
-    title: "Introduction To UI Design",
-    provider: "Google",
-    level: "Beginner",
-    rating: "4.1(21k)",
-  },
-];
+import { Course, GetCoursesBySearchRequest, OrderType, SortCourseBy, SortFieldCourse } from "../apis/courses/types";
+import { getCoursesBySearch } from "../apis/courses/api";
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
@@ -44,7 +22,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
       <View>
         <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
         <Text style={[styles.provider, { color: textColor }]}>
-          {item.provider}
+          {item.author}
         </Text>
         <Text style={[styles.provider, { color: textColor }]}>
           {item.level}
@@ -52,7 +30,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
         <Text style={[styles.provider, { color: textColor }]}>
           <Icon name="star" size={15} />
           &nbsp;
-          {item.rating}
+          {item.ratedStar}
         </Text>
       </View>
       <View>
@@ -69,6 +47,28 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const Careers = () => {
   const [selectedId, setSelectedId] = useState();
+  const [listCourses, setListCourses] = useState<Course[]>([])
+
+  const getCourse = async () => {
+    const bodyRequest: GetCoursesBySearchRequest = {
+      categories:[],
+      levels: [],
+      search: "",
+      sortField:SortFieldCourse.PUBLISHED_DATE,
+      pageOptions: {
+        order: OrderType.DESC,
+        page: 1,
+        take: 4,
+      },
+    }
+    const dataResponse = await getCoursesBySearch(bodyRequest)
+    console.log("[screen=EditScreenInfor] ", dataResponse)
+    setListCourses([...dataResponse.data])
+  }
+
+  useEffect(()=>{
+    getCourse()
+  },[])
 
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#050514" : "#CECADA";
@@ -87,7 +87,7 @@ const Careers = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={Courses}
+        data={listCourses}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         extraData={selectedId}

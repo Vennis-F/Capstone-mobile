@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   FlatList,
   SafeAreaView,
@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { Course, GetCoursesBySearchRequest, OrderType, SortFieldCourse } from "../apis/courses/types";
+import { getCoursesBySearch } from "../apis/courses/api";
 
 const Courses = [
   {
@@ -50,7 +52,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
         </View>
         <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
         <Text style={[styles.provider, { color: textColor }]}>
-          {item.provider}
+          {item.author}
         </Text>
         <Text style={[styles.provider, { color: textColor }]}>
           {item.level}
@@ -58,7 +60,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
         <Text style={[styles.provider, { color: textColor }]}>
           <Icon style={styles.iconS} name="star" size={15} />
           &nbsp;
-          {item.rating}
+          {item.ratedStar}
         </Text>
       </View>
     </View>
@@ -67,6 +69,28 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const MostPopular = () => {
   const [selectedId, setSelectedId] = useState();
+  const [listCourses, setListCourses] = useState<Course[]>([])
+
+  const getCourse = async () => {
+    const bodyRequest: GetCoursesBySearchRequest = {
+      categories:[],
+      levels: [],
+      search: "",
+      sortField:SortFieldCourse.PUBLISHED_DATE,
+      pageOptions: {
+        order: OrderType.DESC,
+        page: 1,
+        take: 4,
+      },
+    }
+    const dataResponse = await getCoursesBySearch(bodyRequest)
+    console.log("[screen=EditScreenInfor] ", dataResponse)
+    setListCourses([...dataResponse.data])
+  }
+
+  useEffect(()=>{
+    getCourse()
+  },[])
 
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#fff" : "#fff";
@@ -86,7 +110,7 @@ const MostPopular = () => {
     <SafeAreaView style={styles.container}>
       <FlatList
         horizontal
-        data={Courses}
+        data={listCourses}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         extraData={selectedId}

@@ -5,7 +5,9 @@ import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import Login from '../components/Login';
-
+import EditScreenInfo from '../components/EditScreenInfo';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -45,6 +47,7 @@ export default function RootLayout() {
   // return <RootLayoutNav initialRouteName={initialRouteName} />;
   return <RootLayoutNav />
 }
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   
@@ -54,6 +57,12 @@ function RootLayoutNav() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
         {/* <Stack.Screen name="login" component={Login} /> */}
+        {/* <Stack.Screen name='Home'/> */}
+        {/* <Stack.Screen
+      name="EditScreenInfo"
+       options={(props) => EditScreenInfo({ ...props, yourOption: 'yourValue' })}
+/> */}
+
       </Stack>
     </ThemeProvider>
   );

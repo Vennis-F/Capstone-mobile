@@ -27,9 +27,8 @@ export default function EditScreenInfo({ path }: { path: string }) {
   const [categories, setCategories] = useState<Category[]>([])
 
   const handleGetCategories = async ()=>{
-    console.log(process.env.EXPO_PUBLIC_API_URL)
+
     const catesRes = await getCategories("true")
-    console.log(catesRes)
     setCategories(catesRes)
     // axios.get(`https://capstone-be-7fef96e86ef9.herokuapp.com/category?active=true`).then(data=>console.log(data)).catch(err=>console.log(err))
   };
@@ -76,17 +75,17 @@ export default function EditScreenInfo({ path }: { path: string }) {
         </View>
       </View>
       <View style={styles.categories}>
-        <Text style={{ fontSize: 25, fontWeight: "bold" }}>Categories</Text>
-        <TouchableOpacity onPress={handlePress}>
+        <Text style={{ fontSize: 25, fontWeight: "bold" }}>Thể Loại</Text>
+        {/* <TouchableOpacity onPress={handlePress}>
           <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
             See All
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       <Categories categories={categories}/>
       <View style={styles.career}>
         <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-          Start Your Career
+          Danh sách khóa học
         </Text>
         <TouchableOpacity onPress={handlePress}>
           <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
@@ -97,7 +96,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
       <Careers />
       <View style={styles.career}>
         <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-          Most Popular Courses
+          Những Khóa học mới
         </Text>
         <TouchableOpacity onPress={handlePress}>
           <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
@@ -106,7 +105,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
         </TouchableOpacity>
       </View>
       <MostPopular />
-      <View style={styles.career}>
+      {/* <View style={styles.career}>
         <Text style={{ fontSize: 25, fontWeight: "bold" }}>Top Courses</Text>
         <TouchableOpacity onPress={handlePress}>
           <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
@@ -126,7 +125,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
           </Text>
         </TouchableOpacity>
       </View>
-      <TopSale />
+      <TopSale /> */}
     </ScrollView>
   </SafeAreaView>
   );

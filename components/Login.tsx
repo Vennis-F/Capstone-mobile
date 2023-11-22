@@ -10,6 +10,7 @@ import {
   import { FontAwesome5 } from "@expo/vector-icons";
   import { useNavigation } from "@react-navigation/native";
 import { guestSignIn } from "../apis/auth/api";
+import { getAccessToken, setAccessToken } from "../libs/core/handle-token";
   
    function  Login () {
     const navigation = useNavigation();
@@ -33,14 +34,15 @@ import { guestSignIn } from "../apis/auth/api";
       }
       if (inputValue1.trim() !== "" && inputValue2.trim() !== "") {
         try {
-          console.log(guestSignIn)
           const token = await guestSignIn({
             emailOrUsername: inputValue1,
             password: inputValue2
           })
+          await setAccessToken(token.accessToken)
+          navigation.navigate('index');
           console.log(token)
         } catch (error) {
-          console.log(error)
+          console.log("[error when login]",error.message)
         }
       }
     
@@ -237,4 +239,5 @@ import { guestSignIn } from "../apis/auth/api";
       fontWeight: "500",
     },
   });
-  
+  //hoanganh@gmail.com
+  //Khoi20.01
