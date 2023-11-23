@@ -8,6 +8,7 @@ import Login from '../components/Login';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import { NativeBaseProvider } from 'native-base';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -53,6 +54,7 @@ function RootLayoutNav() {
   
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <NativeBaseProvider>
       <Stack >
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
@@ -63,7 +65,7 @@ function RootLayoutNav() {
        options={(props) => EditScreenInfo({ ...props, yourOption: 'yourValue' })}
 /> */}
 
-      </Stack>
+      </Stack></NativeBaseProvider>
     </ThemeProvider>
   );
 }

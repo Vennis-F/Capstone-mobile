@@ -22,17 +22,47 @@ import TopSale from './TopSale';
 import { Category } from '../apis/category/types';
 import { getCategories } from '../apis/category/api';
 import axios from 'axios';
+import { FlatList } from 'native-base';
+import { Course, GetCoursesBySearchRequest, OrderType, SortFieldCourse } from '../apis/courses/types';
+import { getCoursesBySearch } from '../apis/courses/api';
+import { useNavigation } from "@react-navigation/native";
+
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const [categories, setCategories] = useState<Category[]>([])
+  const [isClicked,setIsClicked] = useState(false)
+  const [searchText, setSearchText] = useState<string>('')
+  const [coursesSearch, setCoursesSearch] = useState<Course[]>([])
+  const navigation = useNavigation();
+
 
   const handleGetCategories = async ()=>{
-
     const catesRes = await getCategories("true")
     setCategories(catesRes)
     // axios.get(`https://capstone-be-7fef96e86ef9.herokuapp.com/category?active=true`).then(data=>console.log(data)).catch(err=>console.log(err))
   };
+
+  const getCourse = async () => {
+    const bodyRequest: GetCoursesBySearchRequest = {
+      categories: [],
+      levels: [],
+      search: searchText,
+      sortField: SortFieldCourse.PUBLISHED_DATE,
+      pageOptions: {
+        order: OrderType.DESC,
+        page: 1,
+        take: 5,
+      },
+    }
+    const dataResponse = await getCoursesBySearch(bodyRequest)
+    setCoursesSearch([...dataResponse.data])
+  }
   
+  useEffect(() => {
+    if (searchText === '') setCoursesSearch([])
+    else getCourse()
+  }, [searchText])
+
 
   useEffect(()=>{
     handleGetCategories()
@@ -65,22 +95,33 @@ export default function EditScreenInfo({ path }: { path: string }) {
     <ScrollView>
       <View style={{ marginTop: 30, flexDirection: "row" }}>
         <View style={styles.searchContainer}>
+          
           <TextInput
             style={{ marginLeft: 30 }}
-            placeholder="Search your courses"
+            placeholder="Tìm kiếm khóa học"
+            underlineColorAndroid="transparent"
+            value={searchText}
+            onChangeText={(text) => {
+              setSearchText(text);
+            }}
           />
-          <TouchableOpacity onPress={handleSearch}>
+          <TouchableOpacity  onPress={() => {
+            setIsClicked(!isClicked)
+          }}>
             <Icon name="search" size={23} style={{ marginRight: 20 }} />
+
           </TouchableOpacity>
         </View>
       </View>
+         {(coursesSearch.length>0)?(<View style={styles.dropdownArea}>
+           <FlatList data={coursesSearch} renderItem={({item,index})=>
+              <TouchableOpacity style={styles.coursesItem} onPress={()=>{navigation.navigate('eight',{id:item.id})}}>
+                  <Text>{item.title}</Text>
+               </TouchableOpacity>
+           }/>
+         </View>):null}
       <View style={styles.categories}>
         <Text style={{ fontSize: 25, fontWeight: "bold" }}>Thể Loại</Text>
-        {/* <TouchableOpacity onPress={handlePress}>
-          <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
-            See All
-          </Text>
-        </TouchableOpacity> */}
       </View>
       <Categories categories={categories}/>
       <View style={styles.career}>
@@ -105,27 +146,6 @@ export default function EditScreenInfo({ path }: { path: string }) {
         </TouchableOpacity>
       </View>
       <MostPopular />
-      {/* <View style={styles.career}>
-        <Text style={{ fontSize: 25, fontWeight: "bold" }}>Top Courses</Text>
-        <TouchableOpacity onPress={handlePress}>
-          <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
-            See All
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <CateTop />
-      <TopCourses />
-      <View style={styles.career}>
-        <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-          Top Sale Courses
-        </Text>
-        <TouchableOpacity onPress={handlePress}>
-          <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
-            See All
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <TopSale /> */}
     </ScrollView>
   </SafeAreaView>
   );
@@ -156,4 +176,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
+  dropdownArea:{
+    width: "100%",
+    height:300,
+    borderRadius:10,
+    marginTop:0,
+    backgroundColor:'#fff',
+    elevation:5,
+    alignSelf:'center',
+  },
+  coursesItem:{
+    width:'80%',
+    height:50,
+    borderBottomWidth:2,
+    borderBottomColor:"#8e8e8e",
+    alignSelf:'center',
+    justifyContent:"center"
+  }
 });

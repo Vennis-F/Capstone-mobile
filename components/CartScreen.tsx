@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import {
   View,
   Text,
@@ -13,8 +14,9 @@ import {
 
 import  Icon  from 'react-native-vector-icons/MaterialIcons';
 import { getAccessToken } from '../libs/core/handle-token';
-import { addCartItem, deleteCartItem, getCart, getCartTotalPrice } from '../apis/cart/apis';
+import { addCartItem, checkCartIsValid, deleteCartItem, getCart, getCartTotalPrice } from '../apis/cart/apis';
 import { Cart, CartTotalPrice} from '../apis/cart/types';
+import { createOrder, createPaymentURL } from '../apis/order/api';
 
 
 const Courses = [
@@ -57,10 +59,57 @@ export default function CartScreen({ path }: { path: string }) {
     useEffect(()=>{
      handleGetCart()
     },[])
+
+    const openPaymentPage = async (paymentURL: string) => {
+        try {
+          await WebBrowser.openBrowserAsync(paymentURL);
+        } catch (error) {
+          console.error('An error occurred while opening the web page', error);
+        }
+      };
+
+    const handleCompleteCheckout = async () => {
+        try {
+          const order = await createOrder()
+          console.log("[order]", order)
+          const paymentURL = await createPaymentURL({
+            amount: order.totalPriceAfterPromotion,
+            language: 'vn',
+            message: `Thanh toán cho order ${order.id}`,
+            orderId: order.id,
+            // returnUrl: `${
+            //   process.env.NODE_ENV === 'development'
+            //     ? 'http://localhost:3001'
+            //     : process.env.REACT_APP_API_BASE_CLOUD_URL
+            returnUrl: 'https://www.facebook.com/',
+          })
+          console.log('INHERE', paymentURL)
+          openPaymentPage(paymentURL)
+          window.location.href = paymentURL
+        } catch (error) {
+          console.log('[handleCompleteCheckout_in_CartCheckoutContainer]', error)
+        }
+      }
+
+    const handleCheckout = async () => {
+        try {
+          const errorsResponse = await checkCartIsValid()
+          if (errorsResponse.length === 0) {
+            // navigate toi trang thanh toan
+            handleCompleteCheckout()
+          } else {
+            getCart()
+            console.log(errorsResponse)
+          }
+        } catch (error) {
+          console.log('[error in CartContainer]', error)
+        }
+      }
+
     
     const PrimaryButton = ({title, onPress = () => {}}) => {
         return (
-            <TouchableOpacity activeOpacity={0.8} onPress={onPress}>
+            <TouchableOpacity activeOpacity={0.8} onPress={handleCheckout}>
                 <View style={styles.btnContainer}>
                     <Text style={styles.title}>Xác Nhận</Text>
                 </View>
