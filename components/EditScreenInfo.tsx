@@ -69,14 +69,14 @@ export default function EditScreenInfo({ path }: { path: string }) {
   },[])
 
 
-  const handlePress = () => {
-    // Xử lý logic khi nút được nhấn
-    console.log("Nút See All được nhấn");
-  };
-  const handleSearch = () => {
-    // Xử lý logic khi nút được nhấn
-    console.log("Nút search đã được nhấn");
-  };
+  // const handlePress = () => {
+  //   // Xử lý logic khi nút được nhấn
+  //   console.log("Nút See All được nhấn");
+  // };
+  // const handleSearch = () => {
+  //   // Xử lý logic khi nút được nhấn
+  //   console.log("Nút search đã được nhấn");
+  // };
   return (
     <SafeAreaView
     style={{ flex: 1, paddingHorizontal: 20, backgroundColor: "white" }}
@@ -128,7 +128,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
         <Text style={{ fontSize: 25, fontWeight: "bold" }}>
           Danh sách khóa học
         </Text>
-        <TouchableOpacity onPress={handlePress}>
+        <TouchableOpacity onPress={()=>{navigation.navigate('ten')}}>
           <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
             See All
           </Text>
@@ -139,11 +139,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
         <Text style={{ fontSize: 25, fontWeight: "bold" }}>
           Những Khóa học mới
         </Text>
-        <TouchableOpacity onPress={handlePress}>
-          <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
-            See All
-          </Text>
-        </TouchableOpacity>
+        
       </View>
       <MostPopular />
     </ScrollView>
