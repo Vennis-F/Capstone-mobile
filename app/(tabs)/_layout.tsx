@@ -97,6 +97,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
+        <Tabs.Screen
+        name="eleven"
+        options={{
+          title: 'Youtube',
+          tabBarIcon: ({ color }) => <TabBarIcon name="youtube" color={color} />,
+        }}
+      />
       <Tabs.Screen
         name="seven"
         options={{
