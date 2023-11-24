@@ -5,6 +5,14 @@ import { Video, ResizeMode } from 'expo-av';
 import { Checkbox, HStack } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { COLORS } from '../libs/const/color';
+import { router } from 'expo-router';
+import { useRoute } from '@react-navigation/native';
+import { GetCourseDetailResponse, GetCoursesBySearchRequest, OrderType, SortFieldCourse } from '../apis/courses/types';
+import { getCoursesDetailById } from '../apis/courses/api';
+import { getAccessToken } from '../libs/core/handle-token';
+import { addCartItem } from '../apis/cart/apis';
+import { ChapterLectureFilter } from '../apis/chapter-lecture/types';
+import { getChapterLectureOfLearnerStudy } from '../apis/chapter-lecture/api';
 const Courses = [
   {
     id: "1",
@@ -88,31 +96,37 @@ const QuestionItem = ({ item, onPress, backgroundColor, textColor }) => (
 );
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
+
   <TouchableOpacity
     onPress={onPress}
     style={[styles.item, { backgroundColor, paddingHorizontal: 20 }]}
   >
     <View style={styles.box}>
       <View style={{ marginRight: 20, marginTop: 16 }}>
-        <Checkbox shadow={2} value='test' >
+        <Checkbox shadow={2} value='test' isChecked={item.isCompleted} isDisabled={true} >
         </Checkbox>
       </View>
       <View >
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{item.title}</Text>
+        <Text style={{ fontSize: 18 }}>{item.title}</Text>
         <View style={styles.boxSub}>
           <Icon name='ondemand-video' size={20} />
-          <Text style={{ fontSize: 15, marginLeft: 10 }}>{item.time}</Text>
+          <Text style={{ fontSize: 15, marginLeft: 10 }}>{Math.floor(item.totalContentLength / 60)} phút</Text>
         </View>
       </View>
     </View>
   </TouchableOpacity>
 )
 export default function YoutubePlayer() {
+
   const categories = ["Nội dung khóa học", "Đặt câu hỏi"]
   const video = React.useRef(null);
   const [categoryIndex, setCategoryIndex] = React.useState(0)
   const [status, setStatus] = React.useState({});
   const [selectedId, setSelectedId] = React.useState();
+  const route = useRoute();
+  const [chapterLectures, setChapterLectures] = React.useState<ChapterLectureFilter[]>([])
+  const [currChapterLecture, setCurrChapterLecture] = React.useState<ChapterLectureFilter | null>(null)
+
   const renderQuestionItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#CECADA" : COLORS.GRAY_300;
     const color = item.id === selectedId ? "white" : "black";
@@ -126,6 +140,14 @@ export default function YoutubePlayer() {
       />
     );
   };
+  const courseId = route.params?.id as string;
+  console.log("[Detail id]", courseId)
+
+  const handleGetChapterLectureStudy = async () => {
+    const currChapterLecturesRes = await getChapterLectureOfLearnerStudy(courseId)
+    setChapterLectures(currChapterLecturesRes.sort((a, b) => a.index - b.index))
+  }
+
   const CategoryList = () => {
     return (
       <View style={styles.categoryContainer}>
@@ -137,6 +159,7 @@ export default function YoutubePlayer() {
       </View>
     )
   }
+
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#CECADA" : "#fff";
     const color = item.id === selectedId ? "white" : "black";
@@ -150,6 +173,11 @@ export default function YoutubePlayer() {
       />
     );
   };
+
+  React.useEffect(() => {
+    handleGetChapterLectureStudy()
+  }, [])
+
   return (
     <View style={styles.container}>
       <Video
@@ -169,7 +197,7 @@ export default function YoutubePlayer() {
       <CategoryList />
       {categoryIndex === 0 ? (
         <FlatList
-          data={Courses}
+          data={chapterLectures}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
           extraData={selectedId}

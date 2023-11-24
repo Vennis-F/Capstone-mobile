@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FlatList,
   Image,
@@ -11,51 +11,32 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import ProgressBar from "./ProgressBar";
+import { CourseFilterResponse, CourseLearnerFilterResponse } from "../apis/courses/types";
+import { UserRole, getUserRole } from "../libs/core/handle-token";
+import { showErrorAlert } from "../libs/core/handle-show.-mesage";
+import { getCourseByCustomer } from "../apis/courses/api";
+import { getCourseForLearnerSearchByUser } from "../apis/learner/api";
+import { useNavigation } from "@react-navigation/native";
 
-const Courses = [
-  {
-    id: "1",
-    title: "Google UX Design ",
-    provider: "Google",
-    level: "Beginner",
-    rating: "4.1(21k)",
-  },
-  {
-    id: "2",
-    title: "Font-end Development ",
-    provider: "Google",
-    level: "Beginner",
-    rating: "4.1(21k)",
-  },
-  {
-    id: "3",
-    title: "Introduction To UI Design",
-    provider: "Google",
-    level: "Beginner",
-    rating: "4.1(21k)",
-  },
-];
-
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
-   
-  <TouchableOpacity
-    onPress={onPress}
+const Item = ({ item, onPress, backgroundColor, textColor }) => {
+  const navigation = useNavigation();
+  return (<TouchableOpacity
     style={[styles.item, { backgroundColor }]}
+    onPress={() => { navigation.navigate('eleven', { id: item.id }) }}
+
   >
     <View style={styles.little}>
       <View>
         <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
         <Text style={[styles.provider, { color: textColor }]}>
-          {item.provider}
+          {item.totalChapter} video
         </Text>
         <Text style={[styles.provider, { color: textColor }]}>
-          {item.level}
+          {item.prepareMaterial}
         </Text>
-        <Text style={[styles.provider, { color: textColor }]}>
-          <Icon name="star" size={15} />
-          &nbsp;
-          {item.rating}
-        </Text>
+        {/* <Text style={[styles.provider, { color: textColor }]}>
+          {item.thumbnailUrl}
+        </Text> */}
       </View>
       <View>
         <Image
@@ -67,11 +48,29 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
       </View>
     </View>
   </TouchableOpacity>
- 
-);
+  )
+};
 
-export default function MyCourses ({ path }: { path: string }) {
+export default function MyCourses({ path }: { path: string }) {
   const [selectedId, setSelectedId] = useState();
+  const [courses, setCourses] = useState<CourseLearnerFilterResponse[] | CourseFilterResponse[]>([])
+
+
+  const getCourses = async () => {
+    const userRole = await getUserRole()
+    if (!userRole) showErrorAlert('Hãy đăng nhập và tôi sẽ cho trả về khóa học của bạn ạ');
+
+    console.log("[userROle]", userRole)
+    if (userRole === UserRole.CUSTOMER) setCourses(await getCourseByCustomer())
+    else if (userRole === UserRole.LEARNER)
+      setCourses((await getCourseForLearnerSearchByUser('')).data)
+  }
+  console.log("[courses]", courses)
+
+  useEffect(() => {
+    getCourses()
+  }, [])
+  console.log('[list]', courses)
 
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#050514" : "#CECADA";
@@ -90,48 +89,48 @@ export default function MyCourses ({ path }: { path: string }) {
   return (
     <SafeAreaView style={styles.container} >
       <FlatList
-        data={Courses}
+        data={courses}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         extraData={selectedId}
       />
-    
+
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        // height: 270,
-       width:'100%',
-    
-      },
-      item: {
-        paddingTop: 15,
-        paddingBottom: 15,
-        paddingLeft: 7,
-        paddingRight: 7,
-        marginVertical: 8,
-        marginHorizontal: 16,
-        borderRadius: 15,
-      },
-      title: {
-        fontSize: 18,
-        fontWeight: "bold",
-      },
-      provider: {
-        color: "#DCDCDE",
-      },
-      little: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-      },
-      tinyLogo: {
-        width: 65,
-        height: 75,
-        borderRadius:15
-      },
+  container: {
+    flex: 1,
+    // height: 270,
+    width: '100%',
+
+  },
+  item: {
+    paddingTop: 15,
+    paddingBottom: 15,
+    paddingLeft: 7,
+    paddingRight: 7,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 15,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  provider: {
+    color: "#DCDCDE",
+  },
+  little: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  tinyLogo: {
+    width: 65,
+    height: 75,
+    borderRadius: 15
+  },
 });
 
 

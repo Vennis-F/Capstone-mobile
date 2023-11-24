@@ -1,24 +1,26 @@
-import jwt_decode from 'jwt-decode';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import JWT from 'expo-jwt';
 
 const TOKEN_KEY = '@access_token'; // Key dùng để lưu trữ token trong AsyncStorage
+const JWT_SECRET = "c25T7Azx9MdX8VBye7yNBFynBBmQEECcvarf22eeng49fBbEbaGqwL6c8efAZA7"
 
 export enum UserRole {
-    CUSTOMER = 'Customer',
-    ADMIN = 'Admin',
-    STAFF = 'Staff',
-    LEARNER = 'Learner',
-    INSTRUCTOR = 'Instructor',
+  CUSTOMER = 'Customer',
+  ADMIN = 'Admin',
+  STAFF = 'Staff',
+  LEARNER = 'Learner',
+  INSTRUCTOR = 'Instructor',
 }
 
 export type UserInfor = {
-    id: string
-    email?: string
-    username?: string
-    role: UserRole
+  id: string
+  email?: string
+  username?: string
+  role: UserRole
 }
 
-export const decodeToken = (accessToken: string): UserInfor => jwt_decode(accessToken);
+export const decodeToken = (accessToken: string): UserInfor => JWT.decode(accessToken, JWT_SECRET) as UserInfor;
 
 export const getAccessToken = async (): Promise<string | null> => {
   try {
@@ -48,3 +50,9 @@ export const removeAccessToken = async (): Promise<void> => {
     console.error('Error removing access token:', error);
   }
 };
+
+export const getUserRole = async () => {
+  const token = await getAccessToken()
+  if (!token) return null
+  return decodeToken(token).role
+}

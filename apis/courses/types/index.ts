@@ -1,32 +1,32 @@
 export type Category = {
-    id: string
-    name: string
-    active: boolean
-    totalCourses: number
-  }
-  export type Level = {
-    id: string
-    name: string
-    active: boolean
-  }
-  export enum OrderType {
-    ASC = 'ASC',
-    DESC = 'DESC',
-  }
-  export type PageOptions = {
-    take: number
-    page: number
-    order: OrderType
-  }
-  export type PageResponse<T> = { data: T[]; meta: PageMetaResponse }
-  export type PageMetaResponse = {
-    page: number
-    take: number
-    itemCount: number
-    pageCount: number
-    hasPreviousPage: boolean
-    hasNextPage: boolean
-  }
+  id: string
+  name: string
+  active: boolean
+  totalCourses: number
+}
+export type Level = {
+  id: string
+  name: string
+  active: boolean
+}
+export enum OrderType {
+  ASC = 'ASC',
+  DESC = 'DESC',
+}
+export type PageOptions = {
+  take: number
+  page: number
+  order: OrderType
+}
+export type PageResponse<T> = { data: T[]; meta: PageMetaResponse }
+export type PageMetaResponse = {
+  page: number
+  take: number
+  itemCount: number
+  pageCount: number
+  hasPreviousPage: boolean
+  hasNextPage: boolean
+}
 
 export enum CourseStatus {
   CREATED = 'Created',
