@@ -28,29 +28,15 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          // headerRight: () => (
-          //   <Link href="/modal" asChild>
-          //     <Pressable>
-          //       {({ pressed }) => (
-          //         <FontAwesome
-          //           name="info-circle"
-          //           size={25}
-          //           color={Colors[colorScheme ?? 'light'].text}
-          //           style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-          //         />
-          //       )}
-          //     </Pressable>
-          //   </Link>
-          // ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="ten"
         options={{
           title: 'List Courses',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
-      />
+      /> */}
       <Tabs.Screen
         name="eight"
         options={{
@@ -97,6 +83,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
+      {/* <Tabs.Screen
+        name="info"
+        options={{
+          title: 'Information',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      /> */}
       <Tabs.Screen
         name="eleven"
         options={{
@@ -113,7 +106,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="orderNotification"
         options={{
           title: 'Order Notification',
@@ -121,14 +114,35 @@ export default function TabLayout() {
             <TabBarIcon name="certificate" color={color} />
           ),
         }}
-      />
-      <Tabs.Screen
+      /> */}
+      {/* <Tabs.Screen
         name="orderHistory"
         options={{
           title: 'Lịch sử đơn hàng',
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="certificate" color={color} />
           ),
+        }}
+      /> */}
+      {/* <Tabs.Screen
+        name="changePassword"
+        options={{
+          title: 'Đổi mật khẩu',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      /> */}
+      {/* <Tabs.Screen
+        name="children"
+        options={{
+          title: 'Con của tôi',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      /> */}
+      <Tabs.Screen
+        name="courses"
+        options={{
+          title: 'Khóa học của tôi',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
     </Tabs>

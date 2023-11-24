@@ -55,6 +55,9 @@ const Questions = [
     time: '01-11-2023'
   },
 ];
+
+
+
 const QuestionItem = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
     onPress={onPress}
@@ -153,13 +156,12 @@ export default function YoutubePlayer() {
         ref={video}
         style={styles.video}
         source={{
-          uri: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4',
+          uri: 'https://capstone-be-7fef96e86ef9.herokuapp.com/video?id=chapter-lectures/videos/1ec1386d-db7b-4bd9-814c-503e8648249e.mp4',
         }}
         useNativeControls
         resizeMode={ResizeMode.CONTAIN}
         isLooping
         onPlaybackStatusUpdate={status => setStatus(() => status)}
-
       />
       {/* <View >
         <Text style={{fontSize:20,fontWeight:'bold',paddingHorizontal:20,marginBottom:15}}>Nội dung khóa học</Text>

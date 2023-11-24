@@ -7,4 +7,5 @@ export enum COLORS {
     GRAY_300 = '#d1d5db',
     BLACK = '#2D2F31',
     WHITE = '#FFFFFF',
+    BACKGROUND = '#F0F2F5'
 }
