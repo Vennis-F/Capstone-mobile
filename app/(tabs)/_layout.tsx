@@ -21,7 +21,8 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-      }}>
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -48,7 +49,6 @@ export default function TabLayout() {
         options={{
           title: 'List Courses',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          
         }}
       />
       <Tabs.Screen
@@ -56,37 +56,40 @@ export default function TabLayout() {
         options={{
           title: 'Detail',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          
         }}
       />
-        <Tabs.Screen
-         name="three"
-         options={{
-           title: 'My Courses',
-           tabBarIcon: ({ color }) => <TabBarIcon name="tv" color={color} />,
-         }}
-       />
-        <Tabs.Screen
-         name="four"
-         options={{
-           title: 'My Child',
-           tabBarIcon: ({ color }) => <TabBarIcon name="child" color={color} />,
-         }}
-       />
-       <Tabs.Screen
-         name="six"
-         options={{
-           title: 'Contest',
-           tabBarIcon: ({ color }) => <TabBarIcon name="certificate" color={color} />,
-         }}
-       />
-       <Tabs.Screen
-         name="five"
-         options={{
-           title: 'Cart',
-           tabBarIcon: ({ color }) => <TabBarIcon name="shopping-cart" color={color} />,
-         }}
-       />
+      <Tabs.Screen
+        name="three"
+        options={{
+          title: 'My Courses',
+          tabBarIcon: ({ color }) => <TabBarIcon name="tv" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="four"
+        options={{
+          title: 'My Child',
+          tabBarIcon: ({ color }) => <TabBarIcon name="child" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="six"
+        options={{
+          title: 'Contest',
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="certificate" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="five"
+        options={{
+          title: 'Cart',
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="shopping-cart" color={color} />
+          ),
+        }}
+      />
       <Tabs.Screen
         name="two"
         options={{
@@ -99,6 +102,15 @@ export default function TabLayout() {
         options={{
           title: 'Login',
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="orderNotification"
+        options={{
+          title: 'Order Notification',
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="certificate" color={color} />
+          ),
         }}
       />
     </Tabs>
