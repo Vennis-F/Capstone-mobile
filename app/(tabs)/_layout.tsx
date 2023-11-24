@@ -97,11 +97,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
-        <Tabs.Screen
+      <Tabs.Screen
         name="eleven"
         options={{
           title: 'Youtube',
-          tabBarIcon: ({ color }) => <TabBarIcon name="youtube" color={color} />,
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="youtube" color={color} />
+          ),
         }}
       />
       <Tabs.Screen
@@ -115,6 +117,15 @@ export default function TabLayout() {
         name="orderNotification"
         options={{
           title: 'Order Notification',
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="certificate" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="orderHistory"
+        options={{
+          title: 'Lịch sử đơn hàng',
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="certificate" color={color} />
           ),
