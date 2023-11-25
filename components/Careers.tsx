@@ -21,6 +21,7 @@ import {
 } from '../apis/courses/types';
 import { getCoursesBySearch } from '../apis/courses/api';
 import { Ionicons } from '@expo/vector-icons';
+import StarRating from './RatingStars';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
@@ -38,11 +39,12 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
           <Ionicons name="md-stats-chart-sharp" size={16} color={textColor} />
           &nbsp;{item.level}
         </Text>
-        <Text style={[styles.provider, { color: textColor }]}>
+        {/* <Text style={[styles.provider, { color: textColor }]}>
           <Icon name="star" size={15} />
           &nbsp;
           {item.ratedStar}
-        </Text>
+        </Text> */}
+        <StarRating rating={item.ratedStar} />
       </View>
       <View>
         <Image
@@ -50,6 +52,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
           source={{
             uri: item.thumbnailUrl,
           }}
+          alt="Course Thumbnail"
         />
       </View>
     </View>
@@ -69,7 +72,7 @@ const Careers = () => {
       pageOptions: {
         order: OrderType.DESC,
         page: 1,
-        take: 4,
+        take: 5,
       },
     };
     const dataResponse = await getCoursesBySearch(bodyRequest);
@@ -126,7 +129,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
-    textAlign: 'center',
+    textAlign: 'justify',
   },
   provider: {
     color: '#DCDCDE',
@@ -139,6 +142,7 @@ const styles = StyleSheet.create({
   tinyLogo: {
     width: 80,
     height: 80,
+    borderRadius: 12,
   },
 });
 

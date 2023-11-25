@@ -1,19 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   SafeAreaView,
   StyleSheet,
   Text,
   View,
-  Image,
+  ImageBackground,
   TouchableOpacity,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Course, GetCoursesBySearchRequest, OrderType, SortFieldCourse } from "../apis/courses/types";
-import { getCoursesBySearch } from "../apis/courses/api";
-
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  Course,
+  GetCoursesBySearchRequest,
+  OrderType,
+  SortFieldCourse,
+} from '../apis/courses/types';
+import { getCoursesBySearch } from '../apis/courses/api';
+import StarRating from './RatingStars';
+import { Ionicons } from '@expo/vector-icons';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
@@ -21,27 +27,29 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
     style={[styles.item, { backgroundColor }]}
   >
     <View style={styles.little}>
-      <View>
-        <View>
-          <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: "https://reactnative.dev/img/tiny_logo.png",
-            }}
-          />
-        </View>
+      <ImageBackground
+        style={styles.imgContainer}
+        imageStyle={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
+        source={{
+          uri: item.thumbnailUrl,
+        }}
+        alt="Course Thumbnail"
+      />
+      <View style={styles.infoContainer}>
         <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
         <Text style={[styles.provider, { color: textColor }]}>
           {item.author}
         </Text>
         <Text style={[styles.provider, { color: textColor }]}>
-          {item.level}
+          <Ionicons name="md-stats-chart-sharp" size={16} color={textColor} />
+          &nbsp;{item.level}
         </Text>
-        <Text style={[styles.provider, { color: textColor }]}>
+        {/* <Text style={[styles.provider, { color: textColor }]}>
           <Icon style={styles.iconS} name="star" size={15} />
           &nbsp;
           {item.ratedStar}
-        </Text>
+        </Text> */}
+        <StarRating rating={item.ratedStar} />
       </View>
     </View>
   </TouchableOpacity>
@@ -49,37 +57,38 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const MostPopular = () => {
   const [selectedId, setSelectedId] = useState();
-  const [listCourses, setListCourses] = useState<Course[]>([])
+  const [listCourses, setListCourses] = useState<Course[]>([]);
   const navigation = useNavigation();
   const getCourse = async () => {
     const bodyRequest: GetCoursesBySearchRequest = {
-      categories:[],
+      categories: [],
       levels: [],
-      search: "",
-      sortField:SortFieldCourse.PUBLISHED_DATE,
+      search: '',
+      sortField: SortFieldCourse.PUBLISHED_DATE,
       pageOptions: {
         order: OrderType.DESC,
         page: 1,
         take: 4,
       },
-    }
-    const dataResponse = await getCoursesBySearch(bodyRequest)
-    setListCourses([...dataResponse.data])
-  }
+    };
+    const dataResponse = await getCoursesBySearch(bodyRequest);
+    setListCourses([...dataResponse.data]);
+  };
 
-  useEffect(()=>{
-    getCourse()
-  },[])
+  useEffect(() => {
+    getCourse();
+  }, []);
 
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#fff" : "#fff";
-    const color = item.id === selectedId ? "black" : "black";
+    const backgroundColor = item.id === selectedId ? '#fff' : '#fff';
+    const color = item.id === selectedId ? 'black' : 'black';
 
     return (
       <Item
         item={item}
-        onPress={() => {setSelectedId(item.id)
-          navigation.navigate('eight',{id:item.id});
+        onPress={() => {
+          setSelectedId(item.id);
+          navigation.navigate('eight', { id: item.id });
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -107,22 +116,33 @@ const styles = StyleSheet.create({
   item: {
     marginVertical: 8,
     marginHorizontal: 16,
+    borderRadius: 16,
+    maxWidth: 280,
+    borderWidth: 1,
+    borderColor: '#00000024',
   },
   title: {
-    fontSize: 15,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 
   little: {
-    flexDirection: "column",
+    flexDirection: 'column',
+    width: '100%',
+    borderRadius: 16,
   },
-  tinyLogo: {
-    width: 190,
+  imgContainer: {
+    width: '100%',
     height: 120,
-    borderRadius: 15,
   },
+  tinyLogo: {},
   iconS: {
-    backgroundColor: "#CADACE",
+    backgroundColor: '#CADACE',
+  },
+  infoContainer: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
 });
 
