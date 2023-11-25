@@ -9,9 +9,50 @@ import {
     TouchableOpacity,
     ScrollView,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+
+import { useNavigation } from "@react-navigation/native";
+import Icon from "react-native-vector-icons/MaterialIcons";
+
+
 import { StatusBar } from 'expo-status-bar';
+import { COLORS } from '../libs/const/color';
+import { getAccessToken, removeAccessToken } from '../libs/core/handle-token';
+import { guestSignOut } from '../apis/auth/api';
+import { useFocusEffect } from 'expo-router';
 export default function Profile({ path }: { path: String }) {
+    const [userData, setuserData] = useState(null);
+    const navigation = useNavigation();
+    const [userLogin, setuserLogin] = useState(false);
+
+    const handleCheckIsLogin = async () => {
+        const token = await getAccessToken()
+        if (token) setuserLogin(true)
+        else setuserLogin(false)
+    }
+
+    const handleLogout = async () => {
+        const token = await getAccessToken()
+
+        if (token) {
+            await guestSignOut(token)
+            removeAccessToken()
+            setuserLogin(false)
+        }
+        else console.log("[error]", "You are not allowed to log out")
+    }
+
+    console.log("[Profile login]", userLogin)
+
+    // useEffect(() => {
+    //     handleCheckIsLogin()
+    // }, [])
+
+    useFocusEffect(
+        React.useCallback(() => {
+            handleCheckIsLogin();
+        }, [])
+    );
+
     return (
         <View >
             <View style={styles.container}>
@@ -24,16 +65,73 @@ export default function Profile({ path }: { path: String }) {
                     <Image source={require('../assets/images/HD-wallpaper-obito-naruto.jpg')}
                         style={styles.profile}
                     />
-                    <Text style={styles.name} >
-                        Sk Mustain
+                    <Text style={styles.name}>
+                        {userLogin === true ? "Sk Mustain" : "Please login into your account"}
                     </Text>
-                    <View style={styles.loginBtn}>
-                        <Text style={styles.menuText}>Example@gmail.com</Text>
-                    </View>
+                    {userLogin === false ? (
+                        <TouchableOpacity onPress={() => { navigation.navigate('seven') }}>
+                            <View style={styles.loginBtn}>
+                                <Text style={styles.menuText}>L O G I N</Text>
+                            </View>
+                        </TouchableOpacity>
+                    ) : (
 
+                        <View style={styles.loginBtn}>
+                            <Text style={styles.menuText}>Example@gmail.com</Text>
+                        </View>
+                    )}
+                    {userLogin === false ? (
+                        <View></View>
+                    ) : (
+                        <View style={styles.menuWrapper}>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View style={styles.menuItem}>
+                                    <Icon name='library-books' size={24} style={{ marginRight: 30 }} />
+                                    <Text style={styles.menuTextSub}>Hồ sơ</Text>
+                                </View>
+
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View style={styles.menuItem}>
+                                    <Icon name='security' size={24} style={{ marginRight: 30 }} />
+                                    <Text style={styles.menuTextSub}>Bảo mật tài khoản</Text>
+                                </View>
+
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View style={styles.menuItem}>
+                                    <Icon name='tag-faces' size={24} style={{ marginRight: 30 }} />
+                                    <Text style={styles.menuTextSub}>Ảnh đại diện</Text>
+                                </View>
+
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { navigation.navigate('three') }}>
+                                <View style={styles.menuItem}>
+                                    <Icon name='tv' size={24} style={{ marginRight: 30 }} />
+                                    <Text style={styles.menuTextSub}>Khóa học đã sở hữu</Text>
+                                </View>
+
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { }}>
+                                <View style={styles.menuItem}>
+                                    <Icon name='transfer-within-a-station' size={24} style={{ marginRight: 30 }} />
+                                    <Text style={styles.menuTextSub}>Quản lý tài khoản trẻ em</Text>
+                                </View>
+
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleLogout}>
+                                <View style={styles.menuItem}>
+                                    <Icon name='logout' size={24} style={{ marginRight: 30 }} />
+                                    <Text style={styles.menuTextSub}>Đăng xuất</Text>
+                                </View>
+
+                            </TouchableOpacity>
+                        </View>
+
+                    )}
                 </View>
             </View>
-            <SafeAreaView
+            {/* <SafeAreaView
                 style={{ flex: 1, paddingHorizontal: 100, backgroundColor: "white" }}>
                 <View>
                     <Text style={styles.setting}>Account Settings</Text>
@@ -65,7 +163,7 @@ export default function Profile({ path }: { path: String }) {
                         <Icon name='chevron-right' size={20} />
                     </View>
                 </View>
-            </SafeAreaView>
+            </SafeAreaView> */}
 
         </View>
 
@@ -100,18 +198,26 @@ const styles = StyleSheet.create({
     loginBtn: {
         backgroundColor: '#BFEFFF',
         paddingBottom: 2,
-        paddingRight: 20,
-        paddingLeft: -20,
+        paddingLeft: 15,
+        paddingRight: 15,
         borderWidth: 0.5,
         borderRadius: 30,
 
 
     },
     menuText: {
+        // fontFamily: "regular",
         color: 'gray',
-        marginLeft: 28,
+        // marginLeft: 28,
         fontWeight: "400",
         fontSize: 14,
+        lineHeight: 26,
+    },
+    menuTextSub: {
+        color: 'gray',
+        // marginLeft: 28,
+        fontWeight: "400",
+        fontSize: 16,
         lineHeight: 26,
     },
     setting: {
@@ -135,6 +241,22 @@ const styles = StyleSheet.create({
 
         fontSize: 18,
 
+    },
+    menuWrapper: {
+        marginTop: 10,
+        backgroundColor: COLORS.WHITE,
+        borderRadius: 12,
+        width: "68%"
+    },
+    menuItem: {
+        borderBottomWidth: 1,
+        flexDirection: 'row',
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderColor: COLORS.GRAY_300
+
     }
+
+
 })
 

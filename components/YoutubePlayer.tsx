@@ -11,7 +11,7 @@ import { GetCourseDetailResponse, GetCoursesBySearchRequest, OrderType, SortFiel
 import { getCoursesDetailById } from '../apis/courses/api';
 import { getAccessToken } from '../libs/core/handle-token';
 import { addCartItem } from '../apis/cart/apis';
-import { ChapterLectureFilter } from '../apis/chapter-lecture/types';
+import { ChapterLecture, ChapterLectureFilter } from '../apis/chapter-lecture/types';
 import { getChapterLectureOfLearnerStudy } from '../apis/chapter-lecture/api';
 const Courses = [
   {
@@ -167,7 +167,7 @@ export default function YoutubePlayer() {
     return (
       <Item
         item={item}
-        onPress={() => setSelectedId(item.id)}
+        onPress={() => { setSelectedId(item.id); setCurrChapterLecture(item as ChapterLectureFilter) }}
         backgroundColor={backgroundColor}
         textColor={color}
       />
@@ -184,7 +184,11 @@ export default function YoutubePlayer() {
         ref={video}
         style={styles.video}
         source={{
-          uri: 'https://capstone-be-7fef96e86ef9.herokuapp.com/video?id=chapter-lectures/videos/1ec1386d-db7b-4bd9-814c-503e8648249e.mp4',
+          // uri: 'https://capstone-be-7fef96e86ef9.herokuapp.com/video?id=chapter-lectures/videos/1ec1386d-db7b-4bd9-814c-503e8648249e.mp4',
+          uri: `https://capstone-be-7fef96e86ef9.herokuapp.com/video?id=${currChapterLecture && currChapterLecture.video
+            ? currChapterLecture.video
+            : 'chapter-lectures/videos/dded2a31-a980-4727-88a8-aa328cedc3e9.mp4'
+            }`,
         }}
         useNativeControls
         resizeMode={ResizeMode.CONTAIN}

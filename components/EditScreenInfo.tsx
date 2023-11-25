@@ -4,7 +4,7 @@ import {
   View,
   Text,
   SafeAreaView,
-  
+
   TextInput,
   TouchableOpacity,
   ScrollView,
@@ -30,13 +30,13 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const [categories, setCategories] = useState<Category[]>([])
-  const [isClicked,setIsClicked] = useState(false)
+  const [isClicked, setIsClicked] = useState(false)
   const [searchText, setSearchText] = useState<string>('')
   const [coursesSearch, setCoursesSearch] = useState<Course[]>([])
   const navigation = useNavigation();
 
 
-  const handleGetCategories = async ()=>{
+  const handleGetCategories = async () => {
     const catesRes = await getCategories("true")
     setCategories(catesRes)
     // axios.get(`https://capstone-be-7fef96e86ef9.herokuapp.com/category?active=true`).then(data=>console.log(data)).catch(err=>console.log(err))
@@ -57,16 +57,16 @@ export default function EditScreenInfo({ path }: { path: string }) {
     const dataResponse = await getCoursesBySearch(bodyRequest)
     setCoursesSearch([...dataResponse.data])
   }
-  
+
   useEffect(() => {
     if (searchText === '') setCoursesSearch([])
     else getCourse()
   }, [searchText])
 
 
-  useEffect(()=>{
+  useEffect(() => {
     handleGetCategories()
-  },[])
+  }, [])
 
 
   // const handlePress = () => {
@@ -79,71 +79,71 @@ export default function EditScreenInfo({ path }: { path: string }) {
   // };
   return (
     <SafeAreaView
-    style={{ flex: 1, paddingHorizontal: 20, backgroundColor: "white" }}
-  >
-    <View style={styles.header}>
-      <View>
-        <Text style={{ fontSize: 25, fontWeight: "bold", color: "#FB641B" }}>
-          Hello, Mustain!
-        </Text>
-        <Text style={{ fontSize: 19, fontWeight: "bold", marginTop: 5 }}>
-          Ready to become better?
-        </Text>
+      style={{ flex: 1, paddingHorizontal: 20, backgroundColor: "white", marginTop: -50 }}
+    >
+      <View style={styles.header}>
+        <View>
+          <Text style={{ fontSize: 25, fontWeight: "bold", color: "#FB641B" }}>
+            Hello, Mustain!
+          </Text>
+          <Text style={{ fontSize: 19, fontWeight: "bold", marginTop: 5 }}>
+            Ready to become better?
+          </Text>
+        </View>
+        <Icon name="shopping-cart" size={25} />
       </View>
-      <Icon name="shopping-cart" size={25} />
-    </View>
-    <ScrollView>
-      <View style={{ marginTop: 30, flexDirection: "row" }}>
-        <View style={styles.searchContainer}>
-          
-          <TextInput
-            style={{ marginLeft: 30 }}
-            placeholder="Tìm kiếm khóa học"
-            underlineColorAndroid="transparent"
-            value={searchText}
-            onChangeText={(text) => {
-              setSearchText(text);
-            }}
-          />
-          <TouchableOpacity  onPress={() => {
-            setIsClicked(!isClicked)
-          }}>
-            <Icon name="search" size={23} style={{ marginRight: 20 }} />
+      <ScrollView>
+        <View style={{ marginTop: 30, flexDirection: "row" }}>
+          <View style={styles.searchContainer}>
 
+            <TextInput
+              style={{ marginLeft: 30 }}
+              placeholder="Tìm kiếm khóa học"
+              underlineColorAndroid="transparent"
+              value={searchText}
+              onChangeText={(text) => {
+                setSearchText(text);
+              }}
+            />
+            <TouchableOpacity onPress={() => {
+              setIsClicked(!isClicked)
+            }}>
+              <Icon name="search" size={23} style={{ marginRight: 20 }} />
+
+            </TouchableOpacity>
+          </View>
+        </View>
+        {(coursesSearch.length > 0) ? (<View style={styles.dropdownArea}>
+          <FlatList data={coursesSearch} renderItem={({ item, index }) =>
+            <TouchableOpacity style={styles.coursesItem} onPress={() => { navigation.navigate('eight', { id: item.id }) }}>
+              <Text>{item.title}</Text>
+            </TouchableOpacity>
+          } />
+        </View>) : null}
+        <View style={styles.categories}>
+          <Text style={{ fontSize: 25, fontWeight: "bold" }}>Thể Loại</Text>
+        </View>
+        <Categories categories={categories} />
+        <View style={styles.career}>
+          <Text style={{ fontSize: 25, fontWeight: "bold" }}>
+            Danh sách khóa học
+          </Text>
+          <TouchableOpacity onPress={() => { navigation.navigate('ten') }}>
+            <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
+              See All
+            </Text>
           </TouchableOpacity>
         </View>
-      </View>
-         {(coursesSearch.length>0)?(<View style={styles.dropdownArea}>
-           <FlatList data={coursesSearch} renderItem={({item,index})=>
-              <TouchableOpacity style={styles.coursesItem} onPress={()=>{navigation.navigate('eight',{id:item.id})}}>
-                  <Text>{item.title}</Text>
-               </TouchableOpacity>
-           }/>
-         </View>):null}
-      <View style={styles.categories}>
-        <Text style={{ fontSize: 25, fontWeight: "bold" }}>Thể Loại</Text>
-      </View>
-      <Categories categories={categories}/>
-      <View style={styles.career}>
-        <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-          Danh sách khóa học
-        </Text>
-        <TouchableOpacity onPress={()=>{navigation.navigate('ten')}}>
-          <Text style={{ fontWeight: "bold", fontSize: 15, marginTop: 10 }}>
-            See All
+        <Careers />
+        <View style={styles.career}>
+          <Text style={{ fontSize: 25, fontWeight: "bold" }}>
+            Những Khóa học mới
           </Text>
-        </TouchableOpacity>
-      </View>
-      <Careers />
-      <View style={styles.career}>
-        <Text style={{ fontSize: 25, fontWeight: "bold" }}>
-          Những Khóa học mới
-        </Text>
-        
-      </View>
-      <MostPopular />
-    </ScrollView>
-  </SafeAreaView>
+
+        </View>
+        <MostPopular />
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -172,21 +172,21 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
   },
-  dropdownArea:{
+  dropdownArea: {
     width: "100%",
-    height:300,
-    borderRadius:10,
-    marginTop:0,
-    backgroundColor:'#fff',
-    elevation:5,
-    alignSelf:'center',
+    height: 300,
+    borderRadius: 10,
+    marginTop: 0,
+    backgroundColor: '#fff',
+    elevation: 5,
+    alignSelf: 'center',
   },
-  coursesItem:{
-    width:'80%',
-    height:50,
-    borderBottomWidth:2,
-    borderBottomColor:"#8e8e8e",
-    alignSelf:'center',
-    justifyContent:"center"
+  coursesItem: {
+    width: '80%',
+    height: 50,
+    borderBottomWidth: 2,
+    borderBottomColor: "#8e8e8e",
+    alignSelf: 'center',
+    justifyContent: "center"
   }
 });

@@ -58,6 +58,10 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
                 <Picker.Item label="Option 2" value="option2" />
                 <Picker.Item label="Option 3" value="option3" />
             </Picker>
+            <View style={{ marginTop: -15 }}>
+
+                <DividerCustom />
+            </View>
         </View>
     </TouchableOpacity>
 )
@@ -80,7 +84,7 @@ export default function CoursesForChild({ path }: { path: string }) {
     return (
         <SafeAreaView style={{ paddingHorizontal: 10, flex: 1, backgroundColor: COLORS.BACKGROUND, width: "100%" }}>
             <View style={styles.container}>
-                <Text style={{ fontSize: 25, fontWeight: "bold", marginBottom: 20 }}>Con của tôi</Text>
+                <Text style={{ fontSize: 25, fontWeight: "bold", marginBottom: 20 }}>Khóa học của tôi</Text>
                 <FlatList
                     data={DATA}
                     renderItem={renderItem}
