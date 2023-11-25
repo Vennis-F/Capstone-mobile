@@ -3,7 +3,7 @@ import { Button } from 'native-base';
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 
-const OrderHistory = () => {
+const OrderHistory = ({ path }: { path: string }) => {
   const [items, setItems] = useState([
     {
       id: '1',

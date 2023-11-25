@@ -145,6 +145,15 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="orderDetail"
+        options={{
+          title: 'Đơn hàng chi tiết',
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="certificate" color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
