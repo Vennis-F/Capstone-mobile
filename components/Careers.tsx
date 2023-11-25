@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -8,12 +8,19 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Course, GetCoursesBySearchRequest, OrderType, SortCourseBy, SortFieldCourse } from "../apis/courses/types";
-import { getCoursesBySearch } from "../apis/courses/api";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  Course,
+  GetCoursesBySearchRequest,
+  OrderType,
+  SortCourseBy,
+  SortFieldCourse,
+} from '../apis/courses/types';
+import { getCoursesBySearch } from '../apis/courses/api';
+import { Ionicons } from '@expo/vector-icons';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
@@ -24,10 +31,12 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
       <View>
         <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
         <Text style={[styles.provider, { color: textColor }]}>
-          {item.author}
+          <Ionicons name="md-logo-youtube" size={16} color={textColor} />
+          &nbsp;{item.totalChapter} Bài học
         </Text>
-        <Text style={[styles.provider, { color: textColor }]}>
-          {item.level}
+        <Text style={[styles.provider, { color: textColor, opacity: 0.8 }]}>
+          <Ionicons name="md-stats-chart-sharp" size={16} color={textColor} />
+          &nbsp;{item.level}
         </Text>
         <Text style={[styles.provider, { color: textColor }]}>
           <Icon name="star" size={15} />
@@ -39,7 +48,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
         <Image
           style={styles.tinyLogo}
           source={{
-            uri: "https://reactnative.dev/img/tiny_logo.png",
+            uri: item.thumbnailUrl,
           }}
         />
       </View>
@@ -49,38 +58,38 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const Careers = () => {
   const [selectedId, setSelectedId] = useState();
-  const [listCourses, setListCourses] = useState<Course[]>([])
+  const [listCourses, setListCourses] = useState<Course[]>([]);
   const navigation = useNavigation();
   const getCourse = async () => {
     const bodyRequest: GetCoursesBySearchRequest = {
-      categories:[],
+      categories: [],
       levels: [],
-      search: "",
-      sortField:SortFieldCourse.PUBLISHED_DATE,
+      search: '',
+      sortField: SortFieldCourse.PUBLISHED_DATE,
       pageOptions: {
         order: OrderType.DESC,
         page: 1,
         take: 4,
       },
-    }
-    const dataResponse = await getCoursesBySearch(bodyRequest)
-    setListCourses([...dataResponse.data])
-  }
+    };
+    const dataResponse = await getCoursesBySearch(bodyRequest);
+    setListCourses([...dataResponse.data]);
+  };
 
-  useEffect(()=>{
-    getCourse()
-  },[])
+  useEffect(() => {
+    getCourse();
+  }, []);
 
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#050514" : "#CECADA";
-    const color = item.id === selectedId ? "white" : "black";
+    const backgroundColor = item.id === selectedId ? '#ef4444' : '#fff';
+    const color = item.id === selectedId ? 'white' : '#000';
 
     return (
       <Item
         item={item}
         onPress={() => {
-          setSelectedId(item.id)
-          navigation.navigate('eight',{id:item.id});
+          setSelectedId(item.id);
+          navigation.navigate('eight', { id: item.id });
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -106,28 +115,30 @@ const styles = StyleSheet.create({
     // height: 270,
   },
   item: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingLeft: 10,
-    paddingRight: 10,
+    padding: 12,
     marginVertical: 8,
     marginHorizontal: 16,
     borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#0000001b',
   },
   title: {
-    fontSize: 15,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+    textAlign: 'center',
   },
   provider: {
-    color: "#DCDCDE",
+    color: '#DCDCDE',
+    marginBottom: 2,
   },
   little: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   tinyLogo: {
-    width: 60,
-    height: 70,
+    width: 80,
+    height: 80,
   },
 });
 

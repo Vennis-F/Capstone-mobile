@@ -21,12 +21,14 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        headerStyle: { backgroundColor: '#ef4444' },
+        headerTitleStyle: { color: '#fff', fontWeight: 'bold', fontSize: 20 },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Home',
+          title: 'Trang chủ',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
