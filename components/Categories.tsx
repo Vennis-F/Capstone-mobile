@@ -1,13 +1,12 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   FlatList,
   SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
-} from "react-native";
-import { Category } from "../apis/category/types";
-
+} from 'react-native';
+import { Category } from '../apis/category/types';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
@@ -19,15 +18,15 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 );
 
 type Props = {
-  categories: Category[]
-}
+  categories: Category[];
+};
 
-const Categories = (props:Props) => {
+const Categories = (props: Props) => {
   const [selectedId, setSelectedId] = useState();
 
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#050514" : "#CECADA";
-    const color = item.id === selectedId ? "white" : "black";
+    const backgroundColor = item.id === selectedId ? '#ef4444' : '#fff';
+    const color = item.id === selectedId ? 'white' : '#000';
 
     return (
       <Item
@@ -60,7 +59,8 @@ const styles = StyleSheet.create({
     padding: 20,
     marginVertical: 10,
     marginHorizontal: 9,
-
+    borderWidth: 1,
+    borderColor: '#0000001b',
     borderRadius: 15,
   },
   title: {
