@@ -29,7 +29,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
     style={[styles.item, { backgroundColor }]}
   >
     <View style={styles.little}>
-      <View>
+      <View style={{ maxWidth: '70%' }}>
         <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
         <Text style={[styles.provider, { color: textColor }]}>
           <Ionicons name="md-logo-youtube" size={16} color={textColor} />
