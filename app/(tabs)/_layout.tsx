@@ -106,7 +106,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="orderNotification"
         options={{
           title: 'Order Notification',
@@ -114,7 +114,7 @@ export default function TabLayout() {
             <TabBarIcon name="certificate" color={color} />
           ),
         }}
-      /> */}
+      />
       {/* <Tabs.Screen
         name="orderHistory"
         options={{

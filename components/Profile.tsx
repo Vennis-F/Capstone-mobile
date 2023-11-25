@@ -80,6 +80,8 @@ export default function Profile({ path }: { path: String }) {
                             <Text style={styles.menuText}>Example@gmail.com</Text>
                         </View>
                     )}
+
+
                     {userLogin === false ? (
                         <View></View>
                     ) : (
