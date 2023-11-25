@@ -1,5 +1,4 @@
 import Icon from 'react-native-vector-icons/FontAwesome';
-
 import { StyleSheet, View } from 'react-native';
 
 const StarRating = ({ rating }: { rating: number }) => {

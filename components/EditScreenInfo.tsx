@@ -150,7 +150,8 @@ export default function EditScreenInfo({ path }: { path: string }) {
 
         <View style={styles.career}>
           <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
-            Những Khóa học mới
+            Những Khóa học&nbsp;
+            <Text style={{ color: '#dc2626' }}>mới</Text>
           </Text>
         </View>
         <MostPopular />

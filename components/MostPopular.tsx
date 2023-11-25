@@ -125,6 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
+    marginVertical: 2,
   },
 
   little: {
@@ -143,6 +144,9 @@ const styles = StyleSheet.create({
   infoContainer: {
     paddingHorizontal: 12,
     paddingVertical: 8,
+  },
+  provider: {
+    marginBottom: 4,
   },
 });
 
