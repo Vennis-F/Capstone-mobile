@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   SafeAreaView,
   StyleSheet,
   Text,
   View,
-  Image,
+  ImageBackground,
   TouchableOpacity,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
@@ -14,6 +14,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import { Course, GetCoursesBySearchRequest, OrderType, SortFieldCourse } from "../apis/courses/types";
 import { getCoursesBySearch } from "../apis/courses/api";
 import { Ionicons } from '@expo/vector-icons';
+import StarRating from './RatingStars';
+
 
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
@@ -22,15 +24,15 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
     style={[styles.item, { backgroundColor }]}
   >
     <View style={styles.little}>
-      <View>
-        <View>
-          <Image
-            style={styles.tinyLogo}
-            source={{
-              uri: "https://reactnative.dev/img/tiny_logo.png",
-            }}
-          />
-        </View>
+      <ImageBackground
+        style={styles.imgContainer}
+        imageStyle={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
+        source={{
+          uri: item.thumbnailUrl,
+        }}
+        alt="Course Thumbnail"
+      />
+      <View style={styles.infoContainer}>
         <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
         <Text style={[styles.provider, { color: textColor }]}>
           <Ionicons name="md-logo-youtube" size={16} color={textColor} />
@@ -45,6 +47,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
           &nbsp;
           {item.ratedStar}
         </Text>
+        <StarRating rating={item.ratedStar} />
       </View>
     </View>
   </TouchableOpacity>
@@ -52,7 +55,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const MostPopular = () => {
   const [selectedId, setSelectedId] = useState();
-  const [listCourses, setListCourses] = useState<Course[]>([])
+  const [listCourses, setListCourses] = useState<Course[]>([]);
   const navigation = useNavigation();
   const getCourse = async () => {
     const bodyRequest: GetCoursesBySearchRequest = {
@@ -65,10 +68,10 @@ const MostPopular = () => {
         page: 1,
         take: 4,
       },
-    }
-    const dataResponse = await getCoursesBySearch(bodyRequest)
-    setListCourses([...dataResponse.data])
-  }
+    };
+    const dataResponse = await getCoursesBySearch(bodyRequest);
+    setListCourses([...dataResponse.data]);
+  };
 
   useEffect(() => {
     getCourse()

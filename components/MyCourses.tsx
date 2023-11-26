@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import {
   FlatList,
   Image,
@@ -8,73 +8,89 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
-import ProgressBar from "./ProgressBar";
-import { CourseFilterResponse, CourseLearnerFilterResponse } from "../apis/courses/types";
-import { UserRole, getUserRole } from "../libs/core/handle-token";
-import { showErrorAlert } from "../libs/core/handle-show.-mesage";
-import { getCourseByCustomer } from "../apis/courses/api";
-import { getCourseForLearnerSearchByUser } from "../apis/learner/api";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import ProgressBar from './ProgressBar';
+import {
+  CourseFilterResponse,
+  CourseLearnerFilterResponse,
+} from '../apis/courses/types';
+import { UserRole, getUserRole } from '../libs/core/handle-token';
+import { showErrorAlert } from '../libs/core/handle-show.-mesage';
+import { getCourseByCustomer } from '../apis/courses/api';
+import { getCourseForLearnerSearchByUser } from '../apis/learner/api';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => {
   const navigation = useNavigation();
-  return (<TouchableOpacity
-    style={[styles.item, { backgroundColor }]}
-    onPress={() => { navigation.navigate('eleven', { id: item.id }) }}
-
-  >
-    <View style={styles.little}>
-      <View>
-        <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
-        <Text style={[styles.provider, { color: textColor }]}>
-          {item.totalChapter} video
-        </Text>
-        <Text style={[styles.provider, { color: textColor }]}>
-          {item.prepareMaterial}
-        </Text>
-        {/* <Text style={[styles.provider, { color: textColor }]}>
-          {item.thumbnailUrl}
-        </Text> */}
-      </View>
-      <View>
-        <Image
-          style={styles.tinyLogo}
-          source={{
-            uri: "https://reactnative.dev/img/tiny_logo.png",
+  return (
+    <TouchableOpacity
+      style={[styles.item]}
+      onPress={() => {
+        navigation.navigate('eleven', { id: item.id });
+      }}
+    >
+      <View style={styles.little}>
+        <View style={{ maxWidth: '50%' }}>
+          <Image
+            style={styles.tinyLogo}
+            source={{
+              uri: item.thumbnailUrl,
+            }}
+            alt="Course Thumbnail"
+          />
+        </View>
+        <View
+          style={{
+            maxWidth: '50%',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
           }}
-        />
+        >
+          <View>
+            <Text style={[styles.title, { color: textColor }]}>
+              {item.title}
+            </Text>
+            <Text style={[styles.provider, { color: textColor }]}>
+              <Ionicons name="md-logo-youtube" size={16} color="#ef4444" />
+              &nbsp;{item.totalChapter} Bài học
+            </Text>
+          </View>
+          <View style={styles.startToLearn}>
+            <Text style={{ color: '#fff', fontSize: 16 }}>Bắt đầu học</Text>
+            <Ionicons name="md-play-forward" size={20} color="#fff" />
+          </View>
+        </View>
       </View>
-    </View>
-  </TouchableOpacity>
-  )
+    </TouchableOpacity>
+  );
 };
 
 export default function MyCourses({ path }: { path: string }) {
   const [selectedId, setSelectedId] = useState();
-  const [courses, setCourses] = useState<CourseLearnerFilterResponse[] | CourseFilterResponse[]>([])
-
+  const [courses, setCourses] = useState<
+    CourseLearnerFilterResponse[] | CourseFilterResponse[]
+  >([]);
 
   const getCourses = async () => {
-    const userRole = await getUserRole()
-    if (!userRole) showErrorAlert('Hãy đăng nhập và tôi sẽ cho trả về khóa học của bạn ạ');
+    const userRole = await getUserRole();
+    if (!userRole)
+      showErrorAlert('Hãy đăng nhập và tôi sẽ cho trả về khóa học của bạn ạ');
 
-    console.log("[userROle]", userRole)
-    if (userRole === UserRole.CUSTOMER) setCourses(await getCourseByCustomer())
+    console.log('[userROle]', userRole);
+    if (userRole === UserRole.CUSTOMER) setCourses(await getCourseByCustomer());
     else if (userRole === UserRole.LEARNER)
-      setCourses((await getCourseForLearnerSearchByUser('')).data)
-  }
-  console.log("[courses]", courses)
+      setCourses((await getCourseForLearnerSearchByUser('')).data);
+  };
 
   useEffect(() => {
-    getCourses()
-  }, [])
-  console.log('[list]', courses)
+    getCourses();
+  }, []);
 
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#050514" : "#CECADA";
-    const color = item.id === selectedId ? "white" : "black";
+    const backgroundColor = item.id === selectedId ? '#050514' : '#CECADA';
+    const color = item.id === selectedId ? 'white' : 'black';
 
     return (
       <Item
@@ -87,50 +103,60 @@ export default function MyCourses({ path }: { path: string }) {
   };
 
   return (
-    <SafeAreaView style={styles.container} >
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={courses}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         extraData={selectedId}
       />
-
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     // height: 270,
     width: '100%',
-
+    backgroundColor: '#f8f6f0',
   },
   item: {
-    paddingTop: 15,
-    paddingBottom: 15,
-    paddingLeft: 7,
-    paddingRight: 7,
-    marginVertical: 8,
-    marginHorizontal: 16,
+    padding: 20,
+    marginVertical: 12,
+    marginHorizontal: 24,
     borderRadius: 15,
+    borderWidth: 1,
+    borderColor: '#0000001b',
+    backgroundColor: '#fff',
   },
   title: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
   },
   provider: {
-    color: "#DCDCDE",
+    color: '#DCDCDE',
+    marginBottom: 2,
   },
   little: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    gap: 28,
   },
   tinyLogo: {
-    width: 65,
-    height: 75,
-    borderRadius: 15
+    height: 140,
+    width: 140,
+    borderRadius: 12,
+  },
+  startToLearn: {
+    backgroundColor: '#ef4444cd',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    minWidth: 60,
+    maxWidth: 160,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
 });
-
-
