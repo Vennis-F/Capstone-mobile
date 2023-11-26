@@ -228,8 +228,7 @@ const styles = StyleSheet.create({
         textDecorationLine: "underline",
         overflow: "hidden",
         width: "70%",
-        numberOfLines: 1,
-        ellipsizeMode: "tail"
+
     },
     time: {
         fontSize: 20

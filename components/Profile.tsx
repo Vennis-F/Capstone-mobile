@@ -19,15 +19,31 @@ import { COLORS } from '../libs/const/color';
 import { getAccessToken, removeAccessToken } from '../libs/core/handle-token';
 import { guestSignOut } from '../apis/auth/api';
 import { useFocusEffect } from 'expo-router';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 export default function Profile({ path }: { path: String }) {
     const [userData, setuserData] = useState(null);
     const navigation = useNavigation();
     const [userLogin, setuserLogin] = useState(false);
 
+
+    const showSuccessMessage = () => {
+
+        showMessage({
+            message: "Đăng xuất thành công",
+            type: "success",
+            duration: 30000, // Thời gian hiển thị (3 giây)
+        });
+    };
     const handleCheckIsLogin = async () => {
+
         const token = await getAccessToken()
-        if (token) setuserLogin(true)
-        else setuserLogin(false)
+        if (token)
+            setuserLogin(true)
+        else {
+            setuserLogin(false)
+
+        }
+
     }
 
     const handleLogout = async () => {
@@ -35,17 +51,16 @@ export default function Profile({ path }: { path: String }) {
 
         if (token) {
             await guestSignOut(token)
+            showSuccessMessage()
             removeAccessToken()
             setuserLogin(false)
         }
         else console.log("[error]", "You are not allowed to log out")
     }
 
-    console.log("[Profile login]", userLogin)
+    // console.log("[Profile login]", userLogin)
 
-    // useEffect(() => {
-    //     handleCheckIsLogin()
-    // }, [])
+
 
     useFocusEffect(
         React.useCallback(() => {
@@ -55,6 +70,7 @@ export default function Profile({ path }: { path: String }) {
 
     return (
         <View >
+            <FlashMessage position="top" />
             <View style={styles.container}>
                 <View style={{ width: '100%' }}>
                     <Image source={require('../assets/images/360_F_562024161_tGM4lFlnO0OczLYHFFuNNdMUTG9ekHxb.jpg')}
@@ -70,6 +86,7 @@ export default function Profile({ path }: { path: String }) {
                     </Text>
                     {userLogin === false ? (
                         <TouchableOpacity onPress={() => { navigation.navigate('seven') }}>
+
                             <View style={styles.loginBtn}>
                                 <Text style={styles.menuText}>L O G I N</Text>
                             </View>
@@ -80,7 +97,6 @@ export default function Profile({ path }: { path: String }) {
                             <Text style={styles.menuText}>Example@gmail.com</Text>
                         </View>
                     )}
-
 
                     {userLogin === false ? (
                         <View></View>
@@ -121,7 +137,7 @@ export default function Profile({ path }: { path: String }) {
                                 </View>
 
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={handleLogout}>
+                            <TouchableOpacity onPress={handleLogout} >
                                 <View style={styles.menuItem}>
                                     <Icon name='logout' size={24} style={{ marginRight: 30 }} />
                                     <Text style={styles.menuTextSub}>Đăng xuất</Text>
@@ -133,39 +149,6 @@ export default function Profile({ path }: { path: String }) {
                     )}
                 </View>
             </View>
-            {/* <SafeAreaView
-                style={{ flex: 1, paddingHorizontal: 100, backgroundColor: "white" }}>
-                <View>
-                    <Text style={styles.setting}>Account Settings</Text>
-                    <View style={styles.account}>
-                        <Text style={styles.security}>Hồ sơ</Text>
-                        <Icon name='chevron-right' size={20} />
-                    </View>
-                    <View style={styles.account}>
-                        <Text style={styles.security}>Email notification preferences</Text>
-                        <Icon name='chevron-right' size={20} />
-                    </View>
-                    <View style={styles.account}>
-                        <Text style={styles.security}>Learning reminders</Text>
-                        <Icon name='chevron-right' size={20} />
-                    </View>
-                </View>
-                <View>
-                    <Text style={styles.support}>Support</Text>
-                    <View style={styles.account}>
-                        <Text style={styles.security}>About</Text>
-                        <Icon name='chevron-right' size={20} />
-                    </View>
-                    <View style={styles.account}>
-                        <Text style={styles.security}>Frequently asked questions</Text>
-                        <Icon name='chevron-right' size={20} />
-                    </View>
-                    <View style={styles.account}>
-                        <Text style={styles.security}>Share app</Text>
-                        <Icon name='chevron-right' size={20} />
-                    </View>
-                </View>
-            </SafeAreaView> */}
 
         </View>
 

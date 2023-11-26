@@ -9,6 +9,7 @@ import EditScreenInfo from '../components/EditScreenInfo';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import { NativeBaseProvider } from 'native-base';
+import FlashMessage from 'react-native-flash-message';
 
 export {
   // Catch any errors thrown by the Layout component.

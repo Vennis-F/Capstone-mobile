@@ -31,6 +31,7 @@ import {
 import { getCoursesBySearch } from '../apis/courses/api';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import FlashMessage from 'react-native-flash-message';
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -89,6 +90,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
     >
       <View style={styles.header}>
         <View>
+          <FlashMessage style={{ paddingHorizontal: 20 }} />
           <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#FB641B' }}>
             Xin chào, Mẫn Nhi
           </Text>
