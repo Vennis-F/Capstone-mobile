@@ -13,26 +13,8 @@ import { getAccessToken } from '../libs/core/handle-token';
 import { addCartItem } from '../apis/cart/apis';
 import { ChapterLecture, ChapterLectureFilter } from '../apis/chapter-lecture/types';
 import { getChapterLectureOfLearnerStudy } from '../apis/chapter-lecture/api';
-const Courses = [
-  {
-    id: "1",
-    title: "Bài 1 : Cách vẽ con bò",
-    time: "4 phút",
+import { useAuthMiddleware } from './useAuthMiddleware';
 
-  },
-  {
-    id: "2",
-    title: "Bài 2",
-    time: "3 phút",
-
-  },
-  {
-    id: "3",
-    title: "Bài 3",
-    time: "5 phút",
-
-  },
-];
 const Questions = [
   {
     id: "1",
@@ -117,7 +99,6 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
   </TouchableOpacity>
 )
 export default function YoutubePlayer() {
-
   const categories = ["Nội dung khóa học", "Đặt câu hỏi"]
   const video = React.useRef(null);
   const [categoryIndex, setCategoryIndex] = React.useState(0)
@@ -126,6 +107,9 @@ export default function YoutubePlayer() {
   const route = useRoute();
   const [chapterLectures, setChapterLectures] = React.useState<ChapterLectureFilter[]>([])
   const [currChapterLecture, setCurrChapterLecture] = React.useState<ChapterLectureFilter | null>(null)
+  const courseId = route.params?.id as string;
+
+  useAuthMiddleware()
 
   const renderQuestionItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#CECADA" : COLORS.GRAY_300;
@@ -140,7 +124,7 @@ export default function YoutubePlayer() {
       />
     );
   };
-  const courseId = route.params?.id as string;
+
   console.log("[Detail id]", courseId)
 
   const handleGetChapterLectureStudy = async () => {

@@ -3,6 +3,8 @@ import { Link, Tabs } from 'expo-router';
 import { Pressable, useColorScheme } from 'react-native';
 
 import Colors from '../../constants/Colors';
+import { UserRole, getUserRole } from '../../libs/core/handle-token';
+import { useEffect, useState } from 'react';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -16,6 +18,16 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const [userRole, setUserRole] = useState<UserRole | null>(null)
+
+  const handleGetUserRole = async () => {
+    setUserRole(await getUserRole())
+  }
+
+  useEffect(() => {
+    handleGetUserRole()
+  })
+
 
   return (
     <Tabs
@@ -92,7 +104,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       /> */}
-      <Tabs.Screen
+      {userRole && <Tabs.Screen
         name="eleven"
         options={{
           title: 'Youtube',
@@ -100,7 +112,7 @@ export default function TabLayout() {
             <TabBarIcon name="youtube" color={color} />
           ),
         }}
-      />
+      />}
       <Tabs.Screen
         name="seven"
         options={{

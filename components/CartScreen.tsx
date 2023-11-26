@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getAccessToken } from '../libs/core/handle-token';
@@ -35,10 +35,14 @@ export default function CartScreen({ path }: { path: string }) {
     setCart(dataResponse)
   }
 
-  useEffect(() => {
-    handleGetCart()
-  }, [])
-
+  // useEffect(() => {
+  //   handleGetCart()
+  // }, [])
+  useFocusEffect(
+    React.useCallback(() => {
+      handleGetCart()
+    }, [])
+  );
   const openPaymentPage = async (paymentURL: string) => {
     try {
       await WebBrowser.openBrowserAsync(paymentURL);
