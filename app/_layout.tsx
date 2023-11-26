@@ -51,21 +51,22 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <NativeBaseProvider>
-      <Stack >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        {/* <Stack.Screen name="login" component={Login} /> */}
-        {/* <Stack.Screen name='Home'/> */}
-        {/* <Stack.Screen
-      name="EditScreenInfo"
-       options={(props) => EditScreenInfo({ ...props, yourOption: 'yourValue' })}
-/> */}
+        <Stack >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          {/* <Stack.Screen name="login" component={Login} /> */}
+          {/* <Stack.Screen name='Home'/> */}
+          {/* <Stack.Screen
+        name="EditScreenInfo"
+        options={(props) => EditScreenInfo({ ...props, yourOption: 'yourValue' })}
+        /> */}
 
-      </Stack></NativeBaseProvider>
+        </Stack>
+      </NativeBaseProvider>
     </ThemeProvider>
   );
 }

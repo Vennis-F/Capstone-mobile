@@ -61,7 +61,7 @@ export default function CartScreen({ path }: { path: string }) {
         //     ? 'http://localhost:3001'
         //     : process.env.REACT_APP_API_BASE_CLOUD_URL
         // returnUrl: 'myapp://payment-return',
-        returnUrl: "exp://192.168.1.4:8081"
+        returnUrl: "exp://192.168.1.4:8082"
 
       })
       console.log('INHERE', paymentURL)
@@ -72,7 +72,7 @@ export default function CartScreen({ path }: { path: string }) {
         console.log('Returned URL:', url);
 
         // Kiểm tra xem URL có chứa định dạng của ứng dụng Expo không
-        if (url.includes('exp://192.168.1.4:8081')) {
+        if (url.includes('exp://192.168.1.4:8082')) {
           navigation.navigate("orderNotification")
         }
 
