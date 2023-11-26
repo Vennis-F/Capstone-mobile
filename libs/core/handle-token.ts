@@ -18,7 +18,7 @@ export type UserInfor = {
   email?: string
   username?: string
   role: UserRole
-}
+};
 
 export const decodeToken = (accessToken: string): UserInfor => JWT.decode(accessToken, JWT_SECRET) as UserInfor;
 
@@ -52,7 +52,7 @@ export const removeAccessToken = async (): Promise<void> => {
 };
 
 export const getUserRole = async () => {
-  const token = await getAccessToken()
-  if (!token) return null
-  return decodeToken(token).role
-}
+  const token = await getAccessToken();
+  if (!token) return null;
+  return decodeToken(token).role;
+};

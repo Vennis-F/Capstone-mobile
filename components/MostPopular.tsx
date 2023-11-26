@@ -7,16 +7,19 @@ import {
   View,
   ImageBackground,
   TouchableOpacity,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Course, GetCoursesBySearchRequest, OrderType, SortFieldCourse } from "../apis/courses/types";
-import { getCoursesBySearch } from "../apis/courses/api";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  Course,
+  GetCoursesBySearchRequest,
+  OrderType,
+  SortFieldCourse,
+} from '../apis/courses/types';
+import { getCoursesBySearch } from '../apis/courses/api';
 import { Ionicons } from '@expo/vector-icons';
 import StarRating from './RatingStars';
-
-
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
@@ -35,18 +38,17 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
       <View style={styles.infoContainer}>
         <Text style={[styles.title, { color: textColor }]}>{item.title}</Text>
         <Text style={[styles.provider, { color: textColor }]}>
-          <Ionicons name="md-logo-youtube" size={16} color={textColor} />
-          &nbsp;{item.totalChapter} Bài học
+          {item.author}
         </Text>
-        <Text style={[styles.provider, { color: textColor, opacity: 0.8 }]}>
+        <Text style={[styles.provider, { color: textColor }]}>
           <Ionicons name="md-stats-chart-sharp" size={16} color={textColor} />
           &nbsp;{item.level}
         </Text>
-        <Text style={[styles.provider, { color: textColor }]}>
-          <Icon name="star" size={15} />
+        {/* <Text style={[styles.provider, { color: textColor }]}>
+          <Icon style={styles.iconS} name="star" size={15} />
           &nbsp;
           {item.ratedStar}
-        </Text>
+        </Text> */}
         <StarRating rating={item.ratedStar} />
       </View>
     </View>
@@ -61,7 +63,7 @@ const MostPopular = () => {
     const bodyRequest: GetCoursesBySearchRequest = {
       categories: [],
       levels: [],
-      search: "",
+      search: '',
       sortField: SortFieldCourse.PUBLISHED_DATE,
       pageOptions: {
         order: OrderType.DESC,
@@ -74,8 +76,8 @@ const MostPopular = () => {
   };
 
   useEffect(() => {
-    getCourse()
-  }, [])
+    getCourse();
+  }, []);
 
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? '#ef4444' : '#fff';
@@ -85,7 +87,7 @@ const MostPopular = () => {
       <Item
         item={item}
         onPress={() => {
-          setSelectedId(item.id)
+          setSelectedId(item.id);
           navigation.navigate('eight', { id: item.id });
         }}
         backgroundColor={backgroundColor}
@@ -110,34 +112,40 @@ const MostPopular = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // height: 270,
   },
   item: {
-    padding: 12,
     marginVertical: 8,
     marginHorizontal: 16,
-    borderRadius: 15,
+    borderRadius: 16,
+    maxWidth: 280,
     borderWidth: 1,
-    borderColor: '#0000001b',
+    borderColor: '#00000024',
   },
   title: {
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginVertical: 2,
+  },
 
+  little: {
+    flexDirection: 'column',
+    width: '100%',
+    borderRadius: 16,
+  },
+  imgContainer: {
+    width: '100%',
+    height: 120,
+  },
+  tinyLogo: {},
+  iconS: {
+    backgroundColor: '#CADACE',
+  },
+  infoContainer: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
   },
   provider: {
-    color: '#DCDCDE',
-    marginBottom: 2,
-  },
-  little: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  tinyLogo: {
-    width: 80,
-    height: 80,
-    // marginLeft: 30
+    marginBottom: 4,
   },
 });
 

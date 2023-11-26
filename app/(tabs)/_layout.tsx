@@ -54,14 +54,14 @@ export default function TabLayout() {
       <Tabs.Screen
         name="eight"
         options={{
-          title: 'Detail',
+          title: 'Chi tiết khóa học',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
       <Tabs.Screen
         name="three"
         options={{
-          title: 'My Courses',
+          title: 'Khóa học của tôi',
           tabBarIcon: ({ color }) => <TabBarIcon name="tv" color={color} />,
         }}
       />
@@ -84,7 +84,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="five"
         options={{
-          title: 'Cart',
+          title: 'Giỏ hàng',
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="shopping-cart" color={color} />
           ),
@@ -93,7 +93,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="two"
         options={{
-          title: 'Profile',
+          title: 'Hồ sơ của tôi',
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       />
