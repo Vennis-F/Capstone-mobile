@@ -1,9 +1,9 @@
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import JWT from 'expo-jwt';
 
 const TOKEN_KEY = '@access_token'; // Key dùng để lưu trữ token trong AsyncStorage
-const JWT_SECRET = "c25T7Azx9MdX8VBye7yNBFynBBmQEECcvarf22eeng49fBbEbaGqwL6c8efAZA7"
+const JWT_SECRET =
+  'c25T7Azx9MdX8VBye7yNBFynBBmQEECcvarf22eeng49fBbEbaGqwL6c8efAZA7';
 
 export enum UserRole {
   CUSTOMER = 'Customer',
@@ -14,13 +14,14 @@ export enum UserRole {
 }
 
 export type UserInfor = {
-  id: string
-  email?: string
-  username?: string
-  role: UserRole
+  id: string;
+  email?: string;
+  username?: string;
+  role: UserRole;
 };
 
-export const decodeToken = (accessToken: string): UserInfor => JWT.decode(accessToken, JWT_SECRET) as UserInfor;
+export const decodeToken = (accessToken: string): UserInfor =>
+  JWT.decode(accessToken, JWT_SECRET) as UserInfor;
 
 export const getAccessToken = async (): Promise<string | null> => {
   try {

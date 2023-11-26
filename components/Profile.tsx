@@ -24,8 +24,11 @@ import {
 import { guestSignOut } from '../apis/auth/api';
 import { useFocusEffect } from 'expo-router';
 
-import { getProfileUser } from '../apis/user/apis';
-import { UserFilterResponse } from '../apis/user/types';
+import { getProfileUser, updateProfile } from '../apis/user/apis';
+import {
+  UpdateProfileBodyRequest,
+  UserFilterResponse,
+} from '../apis/user/types';
 import { showErrorAlert } from '../libs/core/handle-show.-mesage';
 import { getImage } from '../apis/image/components/apis';
 import { Button, Input } from 'native-base';
@@ -81,15 +84,47 @@ export default function Profile({ path }: { path: String }) {
     }, [])
   );
 
+  useEffect(() => {
+    setEmail(userData?.email);
+    setUsername(userData?.userName);
+    setFirstname(userData?.firstName);
+    setMiddlename(userData?.middleName);
+    setLastname(userData?.lastName);
+    setPhone(userData?.phoneNumber);
+  }, [userData]);
+
   const fullname =
     userData?.lastName + ' ' + userData?.middleName + ' ' + userData?.firstName;
+
+  const handleReset = () => {
+    setEmail(userData?.email);
+    setUsername(userData?.userName);
+    setFirstname(userData?.firstName);
+    setMiddlename(userData?.middleName);
+    setLastname(userData?.lastName);
+    setPhone(userData?.phoneNumber);
+  };
+
+  const handleUpdate = async () => {
+    const body: UpdateProfileBodyRequest = {
+      firstName: firstname,
+      lastName: lastname,
+      middleName: middlename,
+      phoneNumber: phone,
+      userName: username,
+    };
+
+    await updateProfile(body);
+    await getUserProfile();
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
         source={require('../assets/images/360_F_562024161_tGM4lFlnO0OczLYHFFuNNdMUTG9ekHxb.jpg')}
         style={styles.cover}
       >
-        {userLogin ? (
+        {userLogin && userData?.avatar ? (
           <Image
             source={{ uri: getImage(userData?.avatar) }}
             style={styles.profile}
@@ -101,7 +136,9 @@ export default function Profile({ path }: { path: String }) {
       <ScrollView>
         <View style={styles.profileContainer}>
           <Text style={styles.name}>
-            {userLogin === true ? fullname : 'Xin hãy đăng nhập trước'}
+            {userLogin === true && userData?.firstName
+              ? fullname
+              : 'Xin hãy đăng nhập trước'}
           </Text>
           {userLogin === false ? (
             <TouchableOpacity
@@ -149,11 +186,12 @@ export default function Profile({ path }: { path: String }) {
                     <Text style={{ backgroundColor: '#ffffff97' }}>Email</Text>
                   </Text>
                   <Input
-                    value={email || userData?.email}
-                    onChangeText={(text) => setEmail(text)}
+                    value={email}
                     variant="filled"
                     placeholder="Nhập Email ở đây"
+                    isReadOnly={true}
                     borderRadius={10}
+                    paddingLeft={4}
                   />
                   {/* {errorText1 && (
                   <Text style={{ color: 'red' }}>{errorText1}</Text>
@@ -166,11 +204,12 @@ export default function Profile({ path }: { path: String }) {
                     </Text>
                   </Text>
                   <Input
-                    value={username || userData?.userName}
+                    value={username}
                     onChangeText={(text) => setUsername(text)}
                     variant="filled"
                     placeholder="Nhập Tên đăng nhập ở đây"
                     borderRadius={10}
+                    paddingLeft={4}
                   />
                   {/* {errorText1 && (
                   <Text style={{ color: 'red' }}>{errorText1}</Text>
@@ -191,11 +230,12 @@ export default function Profile({ path }: { path: String }) {
                       <Text style={{ backgroundColor: '#ffffff97' }}>Tên</Text>
                     </Text>
                     <Input
-                      value={firstname || userData?.firstName}
+                      value={firstname}
                       onChangeText={(text) => setFirstname(text)}
                       variant="filled"
                       placeholder="Tên"
                       borderRadius={10}
+                      paddingLeft={4}
                     />
                     {/* {errorText1 && (
                   <Text style={{ color: 'red' }}>{errorText1}</Text>
@@ -208,10 +248,11 @@ export default function Profile({ path }: { path: String }) {
                       </Text>
                     </Text>
                     <Input
-                      value={middlename || userData?.middleName}
+                      value={middlename}
                       onChangeText={(text) => setMiddlename(text)}
                       variant="filled"
                       placeholder="Tên đệm"
+                      paddingLeft={4}
                       borderRadius={10}
                     />
                     {/* {errorText1 && (
@@ -223,10 +264,11 @@ export default function Profile({ path }: { path: String }) {
                       <Text style={{ backgroundColor: '#ffffff97' }}>Họ</Text>
                     </Text>
                     <Input
-                      value={lastname || userData?.lastName}
+                      value={lastname}
                       onChangeText={(text) => setLastname(text)}
                       variant="filled"
                       placeholder="Họ"
+                      paddingLeft={4}
                       borderRadius={10}
                     />
                     {/* {errorText1 && (
@@ -241,10 +283,11 @@ export default function Profile({ path }: { path: String }) {
                     </Text>
                   </Text>
                   <Input
-                    value={phone || userData?.phoneNumber}
+                    value={phone}
                     onChangeText={(text) => setPhone(text)}
                     variant="filled"
                     placeholder="Nhập Số điện thoại ở đây"
+                    paddingLeft={4}
                     borderRadius={10}
                   />
                   {/* {errorText1 && (
@@ -265,6 +308,7 @@ export default function Profile({ path }: { path: String }) {
                     style={styles.buttonReset}
                     borderRadius={10}
                     paddingBottom={3}
+                    onPress={handleReset}
                   >
                     <Text style={{ color: '#ef4444', fontWeight: 'bold' }}>
                       Đặt lại
@@ -275,6 +319,7 @@ export default function Profile({ path }: { path: String }) {
                     style={styles.buttonUpdate}
                     borderRadius={8}
                     paddingBottom={3}
+                    onPress={handleUpdate}
                   >
                     <Text style={{ color: '#fff', fontWeight: 'bold' }}>
                       Cập nhật
