@@ -1,11 +1,9 @@
 import { StyleSheet } from 'react-native';
 
-
 import { Text, View } from '../../components/Themed';
 import MyChild from '../../components/Mychild';
 import Cart from '../../components/CartScreen';
 import CartScreen from '../../components/CartScreen';
-
 
 export default function TabThreeScreen() {
   return (

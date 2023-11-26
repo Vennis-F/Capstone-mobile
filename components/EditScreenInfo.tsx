@@ -147,6 +147,15 @@ export default function EditScreenInfo({ path }: { path: string }) {
           </Text>
         </View>
         <Categories categories={categories} />
+
+        <View style={styles.career}>
+          <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
+            Những Khóa học&nbsp;
+            <Text style={{ color: '#dc2626' }}>mới</Text>
+          </Text>
+        </View>
+        <MostPopular />
+
         <View style={styles.career}>
           <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
             Danh sách khóa học
@@ -169,12 +178,6 @@ export default function EditScreenInfo({ path }: { path: string }) {
           </TouchableOpacity>
         </View>
         <Careers />
-        <View style={styles.career}>
-          <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
-            Những Khóa học mới
-          </Text>
-        </View>
-        <MostPopular />
       </ScrollView>
     </SafeAreaView>
   );
