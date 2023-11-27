@@ -24,8 +24,14 @@ import {
 import { guestSignOut } from '../apis/auth/api';
 import { useFocusEffect } from 'expo-router';
 
-import { getProfileUser, updateProfile } from '../apis/user/apis';
 import {
+  changePasswordUser,
+  getProfileUser,
+  updateProfile,
+  uploadAvatarUser,
+} from '../apis/user/apis';
+import {
+  ChangePasswordUserBodyRequest,
   UpdateProfileBodyRequest,
   UserFilterResponse,
 } from '../apis/user/types';
@@ -33,12 +39,17 @@ import { showErrorAlert } from '../libs/core/handle-show.-mesage';
 import { getImage } from '../apis/image/components/apis';
 import { Button, Input } from 'native-base';
 import Notification from './Notification';
+import { showMessage } from 'react-native-flash-message';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function Profile({ path }: { path: String }) {
   const [userData, setuserData] = useState<UserFilterResponse>();
   const navigation = useNavigation();
   const [userLogin, setuserLogin] = useState(false);
   const [pressDetail, setPressDetail] = useState(false);
+  const [pressPassword, setPressPassword] = useState(false);
+  const [pressAvatar, setPressAvatar] = useState(false);
+
   const [notification, setNotification] = useState(null);
   const [email, setEmail] = useState(userData?.email);
   const [username, setUsername] = useState(userData?.userName);
@@ -46,6 +57,20 @@ export default function Profile({ path }: { path: String }) {
   const [middlename, setMiddlename] = useState(userData?.middleName);
   const [lastname, setLastname] = useState(userData?.lastName);
   const [phone, setPhone] = useState(userData?.phoneNumber);
+  const [oldPassword, setOldpassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const [image, setImage] = useState(null);
+
+  const showSuccessMessage = () => {
+    // Hiển thị thông báo khi đăng nhập thành công
+    showMessage({
+      message: 'Đã đăng xuất khỏi tài khoản',
+      type: 'warning',
+      duration: 2000, // Thời gian hiển thị (2 giây)
+    });
+  };
 
   const handleCheckIsLogin = async () => {
     const token = await getAccessToken();
@@ -60,6 +85,7 @@ export default function Profile({ path }: { path: String }) {
       await guestSignOut(token);
       removeAccessToken();
       setuserLogin(false);
+      showSuccessMessage();
       navigation.navigate('index');
     } else console.log('[error]', 'You are not allowed to log out');
   };
@@ -124,7 +150,6 @@ export default function Profile({ path }: { path: String }) {
         message: 'Cập nhật thông tin thành công',
         type: 'success',
       });
-      console.log(notification);
     } catch (error) {
       setNotification({
         message: 'Không thể cập nhật thông tin',
@@ -133,7 +158,61 @@ export default function Profile({ path }: { path: String }) {
     }
     await getUserProfile();
   };
-  console.log(notification);
+
+  const handleUpdatePassword = async (
+    currentPassword: string,
+    newPassword: string,
+    confirmPassword: string
+  ) => {
+    const body: ChangePasswordUserBodyRequest = {
+      currentPassword: currentPassword,
+      newPassword: newPassword,
+      confirmNewPassword: confirmPassword,
+    };
+    try {
+      await changePasswordUser(body);
+      setNotification({
+        message: 'Mật khẩu đã thay đổi',
+        type: 'success',
+      });
+    } catch (error) {
+      setNotification({
+        message: 'Mật khẩu chưa được thay đổi',
+        type: 'danger',
+      });
+    }
+  };
+
+  const handleUpdateAvatar = async (uri: any) => {
+    // const formData = new FormData();
+    // formData.append('file', body);
+    // try {
+    //   await uploadAvatarUser(formData);
+    //   setNotification({
+    //     message: 'đã thay đổi ảnh đại diện',
+    //     type: 'success',
+    //   });
+    // } catch (error) {
+    //   setNotification({
+    //     message: 'Xảy ra sự cố khi thay đổi ảnh đại diện',
+    //     type: 'danger',
+    //   });
+    // }
+    // await getUserProfile();
+  };
+
+  const pickImage = async () => {
+    // No permissions request is necessary for launching the image library
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -335,7 +414,9 @@ export default function Profile({ path }: { path: String }) {
                     style={styles.buttonUpdate}
                     borderRadius={8}
                     paddingBottom={3}
-                    onPress={handleUpdate}
+                    onPress={() => {
+                      handleUpdate;
+                    }}
                   >
                     <Text style={{ color: '#fff', fontWeight: 'bold' }}>
                       Cập nhật
@@ -343,7 +424,11 @@ export default function Profile({ path }: { path: String }) {
                   </Button>
                 </View>
               </View>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity
+                onPress={() => {
+                  setPressPassword(!pressPassword);
+                }}
+              >
                 <View style={styles.menuItem}>
                   <Icon
                     name="security"
@@ -354,7 +439,112 @@ export default function Profile({ path }: { path: String }) {
                   <Text style={styles.menuTextSub}>Bảo mật tài khoản</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}}>
+              <View
+                style={[
+                  styles.userInfo,
+                  pressPassword ? styles.show : styles.hidden,
+                ]}
+              >
+                <View style={styles.infoContainer}>
+                  <Text style={styles.label}>
+                    <Text style={{ backgroundColor: '#ffffff97' }}>
+                      Mật khẩu hiện tại
+                    </Text>
+                  </Text>
+                  <Input
+                    value={oldPassword}
+                    onChangeText={(text) => setOldpassword(text)}
+                    type="password"
+                    variant="filled"
+                    placeholder="Nhập Mật khẩu hiện tại ở đây"
+                    borderRadius={10}
+                    paddingLeft={4}
+                  />
+                  {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                </View>
+                <View style={styles.infoContainer}>
+                  <Text style={styles.label}>
+                    <Text style={{ backgroundColor: '#ffffff97' }}>
+                      Mật khẩu mới
+                    </Text>
+                  </Text>
+                  <Input
+                    value={newPassword}
+                    onChangeText={(text) => setNewPassword(text)}
+                    type="password"
+                    variant="filled"
+                    placeholder="Nhập Mật khẩu mới ở đây"
+                    borderRadius={10}
+                    paddingLeft={4}
+                  />
+                  {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignSelf: 'center',
+                    width: '80%',
+                    justifyContent: 'space-between',
+                    padding: 4,
+                  }}
+                ></View>
+                <View style={styles.infoContainer}>
+                  <Text style={styles.label}>
+                    <Text style={{ backgroundColor: '#ffffff97' }}>
+                      Xác nhận mật khẩu mới
+                    </Text>
+                  </Text>
+                  <Input
+                    value={confirmPassword}
+                    onChangeText={(text) => setConfirmPassword(text)}
+                    type="password"
+                    variant="filled"
+                    placeholder="Xác nhận mật khẩu mới  "
+                    paddingLeft={4}
+                    borderRadius={10}
+                  />
+                  {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    width: '80%',
+                    alignSelf: 'center',
+                    marginVertical: 8,
+                  }}
+                >
+                  <Button
+                    //   onPress={handleSubmit}
+                    style={styles.buttonPassword}
+                    borderRadius={8}
+                    paddingBottom={3}
+                    onPress={() => {
+                      handleUpdatePassword(
+                        oldPassword,
+                        newPassword,
+                        confirmPassword
+                      );
+                    }}
+                  >
+                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                      Đổi mật khẩu
+                    </Text>
+                  </Button>
+                </View>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  setPressAvatar(!pressAvatar);
+                }}
+              >
                 <View style={styles.menuItem}>
                   <Icon
                     name="tag-faces"
@@ -365,6 +555,73 @@ export default function Profile({ path }: { path: String }) {
                   <Text style={styles.menuTextSub}>Ảnh đại diện</Text>
                 </View>
               </TouchableOpacity>
+              <View
+                style={[
+                  styles.userInfo,
+                  pressAvatar ? styles.show : styles.hidden,
+                ]}
+              >
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-around',
+                    width: '80%',
+                    alignSelf: 'center',
+                    marginVertical: 8,
+                  }}
+                >
+                  <Button
+                    //   onPress={handleSubmit}
+                    style={styles.buttonAvatar}
+                    borderRadius={8}
+                    paddingBottom={3}
+                    onPress={pickImage}
+                  >
+                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                      Tải lên ảnh đại diện mới
+                    </Text>
+                  </Button>
+                </View>
+                {image && (
+                  <>
+                    <Image
+                      source={{ uri: image }}
+                      style={{
+                        width: 140,
+                        height: 140,
+                        alignSelf: 'center',
+                        borderRadius: 999,
+                        borderWidth: 4,
+                        borderColor: '#00568184',
+                        resizeMode: 'center',
+                      }}
+                    />
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-around',
+                        width: '80%',
+                        alignSelf: 'center',
+                        marginVertical: 8,
+                      }}
+                    >
+                      <Button
+                        //   onPress={handleSubmit}
+                        style={styles.buttonAvatarConfirm}
+                        borderRadius={8}
+                        paddingBottom={3}
+                        onPress={() => {
+                          handleUpdateAvatar(image);
+                        }}
+                      >
+                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                          Xác nhận
+                        </Text>
+                      </Button>
+                    </View>
+                  </>
+                )}
+              </View>
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('three');
@@ -544,6 +801,24 @@ const styles = StyleSheet.create({
   buttonUpdate: {
     width: '40%',
     backgroundColor: '#ef4444',
+    borderWidth: 1,
+    borderColor: '#fff',
+  },
+  buttonPassword: {
+    width: '60%',
+    backgroundColor: '#ef4444',
+    borderWidth: 1,
+    borderColor: '#fff',
+  },
+  buttonAvatar: {
+    width: '70%',
+    backgroundColor: '#1976d2',
+    borderWidth: 1,
+    borderColor: '#fff',
+  },
+  buttonAvatarConfirm: {
+    width: '35%',
+    backgroundColor: '#25b92d',
     borderWidth: 1,
     borderColor: '#fff',
   },
