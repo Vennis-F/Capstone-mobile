@@ -47,12 +47,6 @@ export default function Profile({ path }: { path: String }) {
   const [lastname, setLastname] = useState(userData?.lastName);
   const [phone, setPhone] = useState(userData?.phoneNumber);
 
-  const [notification, setNotification] = useState(null);
-
-  const closeNotification = () => {
-    setNotification(null);
-  };
-
   const handleCheckIsLogin = async () => {
     const token = await getAccessToken();
     if (token) setuserLogin(true);
@@ -67,7 +61,6 @@ export default function Profile({ path }: { path: String }) {
       removeAccessToken();
       setuserLogin(false);
       navigation.navigate('index');
-
     } else console.log('[error]', 'You are not allowed to log out');
   };
 
@@ -350,7 +343,7 @@ export default function Profile({ path }: { path: String }) {
                   </Button>
                 </View>
               </View>
-              <TouchableOpacity onPress={() => { }}>
+              <TouchableOpacity onPress={() => {}}>
                 <View style={styles.menuItem}>
                   <Icon
                     name="security"
@@ -361,7 +354,7 @@ export default function Profile({ path }: { path: String }) {
                   <Text style={styles.menuTextSub}>Bảo mật tài khoản</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { }}>
+              <TouchableOpacity onPress={() => {}}>
                 <View style={styles.menuItem}>
                   <Icon
                     name="tag-faces"
@@ -387,7 +380,7 @@ export default function Profile({ path }: { path: String }) {
                   <Text style={styles.menuTextSub}>Khóa học đã sở hữu</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => { }}>
+              <TouchableOpacity onPress={() => {}}>
                 <View style={styles.menuItem}>
                   <Icon
                     name="transfer-within-a-station"
