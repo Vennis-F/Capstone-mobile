@@ -36,7 +36,6 @@ function Login() {
   };
   const handleSubmit = async () => {
     if (inputValue1.trim() === "") {
-      // Nếu Input trống, hiển thị thông báo
       setErrorText1("Vui lòng nhập dữ liệu");
     } else {
       // Xử lý khi có giá trị nhập vào Input

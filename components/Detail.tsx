@@ -33,6 +33,8 @@ import { formatCurrency } from '../libs/core/handle-price';
 import { secondsToMinutesString } from '../libs/core/handle-time';
 import { Ionicons } from '@expo/vector-icons';
 import StarRating from './RatingStars';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
+import Notification from './Notification';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity onPress={onPress}>
@@ -48,12 +50,13 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
   </TouchableOpacity>
 );
 
-const Detail = ({}) => {
+const Detail = ({ }) => {
   const navigation = useNavigation();
   const [selectedId, setSelectedId] = useState();
   const [course, setCourse] = useState<GetCourseDetailResponse>();
   const [chapterLectures, setChapterLectures] = useState<ChapterLecture[]>([]);
   const route = useRoute();
+  const [notification, setNotification] = useState(null);
   const id = route.params?.id as string;
   console.log('[Detail id]', id);
 
@@ -75,25 +78,42 @@ const Detail = ({}) => {
     setCourse(dataResponse);
   };
   const handleAddCartItem = async () => {
+    showMessage({
+      message: 'Thêm vào giỏ hàng thành công',
+      type: 'success',
+      duration: 300000
+    });
     const token = await getAccessToken();
     if (token) {
-      await addCartItem({
-        promotionCourseId: null,
-        courseId: id,
-      });
+      try {
+        await addCartItem({
+          promotionCourseId: null,
+          courseId: id,
+        });
+        setNotification({
+          message: 'Thêm vào giỏ hàng thành công',
+          type: 'success',
+        });
+      } catch (error) {
+        setNotification({
+          message: 'Không thể thêm vào giỏ hàng',
+          type: 'danger',
+        });
+      }
     } else {
-      //   toastWarn({ message: 'Hãy đăng nhập trước khi thêm vào giỏ hàng' })
+      setNotification({
+        message: 'Không thể thêm vào giỏ hàng',
+        type: 'danger',
+      });
     }
   };
 
   useEffect(() => {
     getCourse();
   }, [id]);
-  // useFocusEffect(
-  //     React.useCallback(() => {
-  //         getCourse()
-  //     }, [])
-  // );
+  const closeNotification = () => {
+    setNotification(null);
+  };
 
   console.log('[coruseDetail]', course);
   const renderItem = ({ item }) => {
@@ -105,7 +125,6 @@ const Detail = ({}) => {
         item={item}
         onPress={() => {
           setSelectedId(item.id);
-          //   navigation.navigate('eight', { id: item.id });
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -119,6 +138,7 @@ const Detail = ({}) => {
     >
       {course && (
         <>
+
           <ImageBackground
             style={styles.tinyLogo}
             source={{
@@ -143,14 +163,14 @@ const Detail = ({}) => {
             </View>
 
             <View style={{ alignItems: 'flex-end' }}>
-              <View style={styles.buyBtn}>
+              {/* <View style={styles.buyBtn}>
                 <Text
                   style={{ color: '#000', fontSize: 16, fontWeight: 'bold' }}
-                  //   onPress={handleAddCartItem}
+                //   onPress={handleAddCartItem}
                 >
                   Mua ngay
                 </Text>
-              </View>
+              </View> */}
               <View style={styles.addCartBtn}>
                 <Text
                   style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
@@ -160,16 +180,9 @@ const Detail = ({}) => {
                 </Text>
               </View>
             </View>
+
           </ImageBackground>
           <ScrollView>
-            {/* <View style={styles.image}>
-            <Image
-              style={styles.tinyLogo}
-              source={{
-                uri: course.thumbnailUrl,
-              }}
-            />
-          </View> */}
             <View style={styles.details}>
               <View
                 style={{
@@ -201,7 +214,7 @@ const Detail = ({}) => {
                         fontSize: 16,
                       }}
                     >
-                      {course.discount ? course.discountPrice : course.price}
+                      {formatCurrency(course.discount ? course.discountPrice : course.price)}
                       VND
                     </Text>
                   </View>
@@ -215,7 +228,7 @@ const Detail = ({}) => {
                         textDecorationLine: 'line-through',
                       }}
                     >
-                      {course.price} VND
+                      {formatCurrency(course.price)} VND
                     </Text>
                   ) : (
                     ''
@@ -327,8 +340,16 @@ const Detail = ({}) => {
             </View> */}
             </View>
           </ScrollView>
+          {notification && (
+            <Notification
+              message={notification.message}
+              type={notification.type}
+              onClose={closeNotification}
+            />
+          )}
         </>
       )}
+
     </SafeAreaView>
   );
 };
