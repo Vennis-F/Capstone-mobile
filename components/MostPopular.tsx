@@ -21,6 +21,7 @@ import { getCoursesBySearch } from '../apis/courses/api';
 import { Ionicons } from '@expo/vector-icons';
 import StarRating from './RatingStars';
 import { getImage } from '../apis/image/components/apis';
+import { formatCurrency } from '../libs/core/handle-price';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
@@ -51,6 +52,9 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
           {item.ratedStar}
         </Text> */}
         <StarRating rating={item.ratedStar} />
+        <Text style={[styles.title, { color: textColor, fontSize: 14 }]}>
+          {formatCurrency(item.discount ? item.discountPrice : item.price)}đ
+        </Text>
       </View>
     </View>
   </TouchableOpacity>
