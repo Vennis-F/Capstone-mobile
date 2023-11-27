@@ -70,15 +70,6 @@ export default function EditScreenInfo({ path }: { path: string }) {
   useEffect(() => {
     handleGetCategories();
   }, []);
-
-  // const handlePress = () => {
-  //   // Xử lý logic khi nút được nhấn
-  //   console.log("Nút See All được nhấn");
-  // };
-  // const handleSearch = () => {
-  //   // Xử lý logic khi nút được nhấn
-  //   console.log("Nút search đã được nhấn");
-  // };
   return (
     <SafeAreaView
       style={{
@@ -142,13 +133,6 @@ export default function EditScreenInfo({ path }: { path: string }) {
             />
           </View>
         ) : null}
-        <View style={styles.categories}>
-          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
-            Thể Loại&nbsp;
-            <Text style={{ color: '#dc2626' }}>mới nhất</Text>
-          </Text>
-        </View>
-        <Categories categories={categories} />
 
         <View style={styles.career}>
           <Text style={{ fontSize: 25, fontWeight: 'bold' }}>
@@ -157,6 +141,13 @@ export default function EditScreenInfo({ path }: { path: string }) {
           </Text>
         </View>
         <MostPopular />
+        {/* <View style={styles.categories}>
+          <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+            Thể Loại&nbsp;
+            <Text style={{ color: '#dc2626' }}>mới nhất</Text>
+          </Text>
+        </View>
+        <Categories categories={categories} /> */}
 
         <View style={styles.career}>
           <Text style={{ fontSize: 24, fontWeight: 'bold' }}>

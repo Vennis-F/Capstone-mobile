@@ -20,6 +20,7 @@ import {
   SortFieldCourse,
 } from '../apis/courses/types';
 import {
+  checkCourseIsOwnedByCourseId,
   getCourseById,
   getCoursesBySearch,
   getCoursesDetailById,
@@ -59,6 +60,7 @@ const Detail = ({}) => {
   const route = useRoute();
   const [notification, setNotification] = useState(null);
   const id = route.params?.id as string;
+  const [isOwned, setIsOwned] = useState(false)
   console.log('[Detail id]', id);
 
   const getCourse = async () => {
@@ -78,12 +80,8 @@ const Detail = ({}) => {
     setChapterLectures(chapterLecturesRes);
     setCourse(dataResponse);
   };
+
   const handleAddCartItem = async () => {
-    showMessage({
-      message: 'Thêm vào giỏ hàng thành công',
-      type: 'success',
-      duration: 300000,
-    });
     const token = await getAccessToken();
     if (token) {
       try {
@@ -109,14 +107,26 @@ const Detail = ({}) => {
     }
   };
 
+  const handleCheckCourseIsOwned = async () => {
+    if (!(await getAccessToken())) return;
+    const response = await checkCourseIsOwnedByCourseId(id)
+    setIsOwned(response.status)
+  }
+
   useEffect(() => {
     getCourse();
   }, [id]);
+
+  useEffect(() => {
+    handleCheckCourseIsOwned()
+  }, [handleCheckCourseIsOwned, id])
+
   const closeNotification = () => {
     setNotification(null);
   };
 
-  console.log('[coruseDetail]', course);
+  console.log('[coruseDetail]', isOwned);
+
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? '#ef4444' : '#fff';
     const color = item.id === selectedId ? 'white' : '#000';
@@ -171,14 +181,24 @@ const Detail = ({}) => {
                   Mua ngay
                 </Text>
               </View> */}
-              <View style={styles.addCartBtn}>
+              {isOwned ? <View style={styles.addCartBtn}>
+                <Text
+                  style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
+                  onPress={() => {
+                    navigation.navigate('eleven', { id: id });
+                  }}
+                >
+                  Chuyển đến khóa học
+                </Text>
+              </View> : <View style={styles.addCartBtn}>
                 <Text
                   style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
                   onPress={handleAddCartItem}
                 >
                   Thêm vào giỏ hàng
                 </Text>
-              </View>
+              </View>}
+
             </View>
           </ImageBackground>
           <ScrollView>
