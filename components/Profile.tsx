@@ -32,13 +32,14 @@ import {
 import { showErrorAlert } from '../libs/core/handle-show.-mesage';
 import { getImage } from '../apis/image/components/apis';
 import { Button, Input } from 'native-base';
+import Notification from './Notification';
 
 export default function Profile({ path }: { path: String }) {
   const [userData, setuserData] = useState<UserFilterResponse>();
   const navigation = useNavigation();
   const [userLogin, setuserLogin] = useState(false);
   const [pressDetail, setPressDetail] = useState(false);
-
+  const [notification, setNotification] = useState(null);
   const [email, setEmail] = useState(userData?.email);
   const [username, setUsername] = useState(userData?.userName);
   const [firstname, setFirstname] = useState(userData?.firstName);
@@ -59,6 +60,10 @@ export default function Profile({ path }: { path: String }) {
       await guestSignOut(token);
       removeAccessToken();
       setuserLogin(false);
+      setNotification({
+        message: 'Đăng xuất thành công',
+        type: 'success',
+      });
     } else console.log('[error]', 'You are not allowed to log out');
   };
 
@@ -77,6 +82,9 @@ export default function Profile({ path }: { path: String }) {
       getUserProfile();
     }
   }, [userLogin]);
+  const closeNotification = () => {
+    setNotification(null);
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -327,7 +335,7 @@ export default function Profile({ path }: { path: String }) {
                   </Button>
                 </View>
               </View>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => { }}>
                 <View style={styles.menuItem}>
                   <Icon
                     name="security"
@@ -338,7 +346,7 @@ export default function Profile({ path }: { path: String }) {
                   <Text style={styles.menuTextSub}>Bảo mật tài khoản</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => { }}>
                 <View style={styles.menuItem}>
                   <Icon
                     name="tag-faces"
@@ -364,7 +372,7 @@ export default function Profile({ path }: { path: String }) {
                   <Text style={styles.menuTextSub}>Khóa học đã sở hữu</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => { }}>
                 <View style={styles.menuItem}>
                   <Icon
                     name="transfer-within-a-station"
@@ -392,6 +400,13 @@ export default function Profile({ path }: { path: String }) {
           )}
         </View>
       </ScrollView>
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
     </View>
   );
 }
