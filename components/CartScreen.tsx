@@ -145,11 +145,6 @@ export default function CartScreen({ path }: { path: string }) {
           <Text style={{ fontSize: 17, fontWeight: "bold" }}>{formatCurrency(item.course.price)}VND</Text>
         </View>
         <View style={{ marginRight: 10, alignItems: 'center' }}>
-          {/* <Icon name='delete' size={30} onPress={async () => {
-            await deleteCartItem(item.id)
-            await handleGetCart()
-            handleDeleteCartItem
-          }} /> */}
           <Icon name='delete' size={30} onPress={handleDeleteCartItem} />
         </View>
       </View>
