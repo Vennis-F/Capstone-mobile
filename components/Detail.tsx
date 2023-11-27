@@ -326,6 +326,7 @@ const Detail = ({ }) => {
                 <HTML
                   source={{ html: course.prepareMaterial }}
                   contentWidth={300}
+
                 />
               </View>
               <View
@@ -343,6 +344,11 @@ const Detail = ({ }) => {
                 <HTML
                   source={{ html: course.description }}
                   contentWidth={300}
+                  tagsStyles={{
+                    p: { marginBottom: 10, fontSize: 16, lineHeight: 24, marginHorizontal: 15 }, // ví dụ: kiểu dáng cho thẻ p (đoạn văn bản)
+                    strong: { fontWeight: 'bold' }, // kiểu dáng cho thẻ strong (chữ in đậm)
+                    em: { fontStyle: 'italic' }, // kiểu dáng cho thẻ em (chữ in nghiêng)
+                  }}
                 />
               </View>
               {/* <View style={{flexDirection:"row", alignItems:"center",paddingHorizontal:20, marginTop:20}}>

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Text, StyleSheet, View, SafeAreaView, FlatList, TouchableOpacity, Image } from 'react-native';
 
-import { Video, ResizeMode } from 'expo-av';
+import { Video, ResizeMode, AVPlaybackStatusToSet, AVPlaybackStatus } from 'expo-av';
 import { Checkbox, HStack } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { COLORS } from '../libs/const/color';
@@ -12,7 +12,7 @@ import { getCoursesDetailById } from '../apis/courses/api';
 import { getAccessToken } from '../libs/core/handle-token';
 import { addCartItem } from '../apis/cart/apis';
 import { ChapterLecture, ChapterLectureFilter } from '../apis/chapter-lecture/types';
-import { getChapterLectureOfLearnerStudy } from '../apis/chapter-lecture/api';
+import { getChapterLectureOfLearnerStudy, saveUserLectureCompleted } from '../apis/chapter-lecture/api';
 import { useAuthMiddleware } from './useAuthMiddleware';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import { Dimensions } from 'react-native';
@@ -108,7 +108,22 @@ export default function YoutubePlayer() {
   const [currChapterLecture, setCurrChapterLecture] = React.useState<ChapterLectureFilter | null>(null)
   const courseId = route.params?.id as string;
 
+  const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
+    if (status.isLoaded && !status.isPlaying) {
+      const videoDuration = status.durationMillis;
+      const playbackPosition = status.positionMillis;
+      const eightyPercent = (videoDuration as number) * 0.8;
+
+      console.log(videoDuration, playbackPosition)
+      if (playbackPosition >= eightyPercent && currChapterLecture && !currChapterLecture.isCompleted) {
+        console.log('User reached 80% of the video!');
+        handleSaveCompleteChapterLecture(currChapterLecture.id)
+      }
+    }
+  };
+
   useAuthMiddleware()
+
   function setOrientation() {
     if (Dimensions.get('window').height > Dimensions.get('window').width) {
       //Device is in portrait mode, rotate to landscape mode.
@@ -119,6 +134,7 @@ export default function YoutubePlayer() {
       ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
     }
   }
+
   const renderQuestionItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#CECADA" : COLORS.GRAY_300;
     const color = item.id === selectedId ? "white" : "black";
@@ -166,6 +182,11 @@ export default function YoutubePlayer() {
     );
   };
 
+  const handleSaveCompleteChapterLecture = async (chapterLectureId: string) => {
+    await saveUserLectureCompleted(chapterLectureId)
+    handleGetChapterLectureStudy()
+  }
+
   React.useEffect(() => {
     handleGetChapterLectureStudy()
   }, [])
@@ -183,14 +204,13 @@ export default function YoutubePlayer() {
             }`,
         }}
         useNativeControls
+        // onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+        onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
         // resizeMode={ResizeMode.CONTAIN}
         resizeMode={ResizeMode.COVER}
         onFullscreenUpdate={setOrientation}
-        onPlaybackStatusUpdate={status => setStatus(() => status)}
+      // onPlaybackStatusUpdate={status => setStatus(() => status)}
       />
-      {/* <View >
-        <Text style={{fontSize:20,fontWeight:'bold',paddingHorizontal:20,marginBottom:15}}>Nội dung khóa học</Text>
-      </View> */}
       <CategoryList />
       {categoryIndex === 0 ? (
         <FlatList
