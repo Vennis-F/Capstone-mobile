@@ -99,7 +99,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 )
 export default function YoutubePlayer() {
   const categories = ["Nội dung khóa học", "Đặt câu hỏi"]
-  const video = React.useRef(null);
+  const video = React.useRef<Video>(null);
   const [categoryIndex, setCategoryIndex] = React.useState(0)
   const [status, setStatus] = React.useState({});
   const [selectedId, setSelectedId] = React.useState();
@@ -107,7 +107,33 @@ export default function YoutubePlayer() {
   const [chapterLectures, setChapterLectures] = React.useState<ChapterLectureFilter[]>([])
   const [currChapterLecture, setCurrChapterLecture] = React.useState<ChapterLectureFilter | null>(null)
   const courseId = route.params?.id as string;
+  // React.useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     checkVideoProgress();
+  //   }, 5000);
 
+  //   return () => {
+  //     clearInterval(interval);
+  //   };
+  // }, []);
+
+  // const checkVideoProgress = async () => {
+  //   if (video.current) {
+  //     const status = await video.current.getStatusAsync();
+
+  //     if (status.isLoaded && !status.isPlaying) {
+  //       const videoDuration = status.durationMillis;
+  //       const playbackPosition = status.positionMillis;
+  //       const eightyPercent = (videoDuration as number) * 0.8;
+
+  //       console.log(videoDuration, playbackPosition)
+  //       if (playbackPosition >= eightyPercent && currChapterLecture && !currChapterLecture.isCompleted) {
+  //         console.log('User reached 80% of the video!');
+  //         handleSaveCompleteChapterLecture(currChapterLecture.id)
+  //       }
+  //     }
+  //   }
+  // };
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (status.isLoaded && !status.isPlaying) {
       const videoDuration = status.durationMillis;

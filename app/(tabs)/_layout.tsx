@@ -122,13 +122,23 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="orderNotification"
-        options={{
-          title: 'Tình trạng đơn hàng',
-          // tabBarIcon: ({ color }) => (
-          //   <TabBarIcon name="certificate" color={color} />
-          // ),
-          href: null,
-        }}
+        // options={{
+        //   title: 'Tình trạng đơn hàng',
+        //   // tabBarIcon: ({ color }) => (
+        //   //   <TabBarIcon name="certificate" color={color} />
+        //   // ),
+        //   href: null,
+        // }}
+        options={
+          userRole
+            ? {
+              title: 'Tình trạng đơn hàng',
+              tabBarIcon: ({ color }) => (
+                <TabBarIcon name="certificate" color={color} />
+              ),
+            }
+            : { title: 'Tình trạng đơn hàng', href: null }
+        }
       />
       {/* <Tabs.Screen
         name="info"
@@ -201,6 +211,7 @@ export default function TabLayout() {
                 ),
               }
             : { title: 'Khóa học của tôi', href: null }
+
         }
       />
       <Tabs.Screen

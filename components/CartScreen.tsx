@@ -12,6 +12,7 @@ import {
   ScrollView,
 } from "react-native";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
+import { Alert } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getAccessToken } from '../libs/core/handle-token';
@@ -19,6 +20,7 @@ import { addCartItem, checkCartIsValid, deleteCartItem, getCart, getCartTotalPri
 import { Cart, CartTotalPrice } from '../apis/cart/types';
 import { createOrder, createPaymentURL } from '../apis/order/api';
 import { COLORS } from '../libs/const/color';
+import { formatCurrency } from '../libs/core/handle-price';
 
 
 export default function CartScreen({ path }: { path: string }) {
@@ -65,7 +67,7 @@ export default function CartScreen({ path }: { path: string }) {
         //     ? 'http://localhost:3001'
         //     : process.env.REACT_APP_API_BASE_CLOUD_URL
         // returnUrl: 'myapp://payment-return',
-        returnUrl: "exp://192.168.1.4:8082"
+        returnUrl: "exp://192.168.1.4:8081"
 
       })
       console.log('INHERE', paymentURL)
@@ -76,7 +78,7 @@ export default function CartScreen({ path }: { path: string }) {
         console.log('Returned URL:', url);
 
         // Kiểm tra xem URL có chứa định dạng của ứng dụng Expo không
-        if (url.includes('exp://192.168.1.4:8082')) {
+        if (url.includes('exp://192.168.1.4:8081')) {
           navigation.navigate("orderNotification")
         }
 
@@ -113,6 +115,26 @@ export default function CartScreen({ path }: { path: string }) {
     )
   }
   const CartCard = ({ item }) => {
+    const handleDeleteCartItem = async () => {
+      Alert.alert(
+        'Xác nhận xóa',
+        'Bạn có chắc chắn muốn xóa khóa học này không?',
+        [
+          {
+            text: 'Hủy',
+            style: 'cancel',
+          },
+          {
+            text: 'Xác nhận',
+            onPress: async () => {
+              await deleteCartItem(item.id);
+              await handleGetCart();
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    };
     return (
       <View style={styles.CartCard}>
         <Image
@@ -120,13 +142,10 @@ export default function CartScreen({ path }: { path: string }) {
         <View style={{ height: 100, marginLeft: 10, paddingVertical: 10, flex: 1 }}>
           <Text style={{ fontWeight: "bold", fontSize: 16 }}>{item.course.title}</Text>
           <Text style={{ fontSize: 16, color: '#908e8c' }}>{item.course.totalChapter} bài giảng</Text>
-          <Text style={{ fontSize: 17, fontWeight: "bold" }}>{item.course.price}đ</Text>
+          <Text style={{ fontSize: 17, fontWeight: "bold" }}>{formatCurrency(item.course.price)}VND</Text>
         </View>
         <View style={{ marginRight: 10, alignItems: 'center' }}>
-          <Icon name='delete' size={30} onPress={async () => {
-            await deleteCartItem(item.id)
-            await handleGetCart()
-          }} />
+          <Icon name='delete' size={30} onPress={handleDeleteCartItem} />
         </View>
       </View>
     )
@@ -143,7 +162,7 @@ export default function CartScreen({ path }: { path: string }) {
           <View>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginVertical: 15 }}>
               <Text style={{ fontSize: 18, fontWeight: "bold" }}>Tổng tiền</Text>
-              <Text style={{ fontSize: 18, fontWeight: "bold" }}>{cartTotalPrice.totalPrice}đ</Text>
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>{formatCurrency(cartTotalPrice.totalPrice)}VND</Text>
             </View>
             <View style={{ marginHorizontal: 30 }}>
               <PrimaryButton title="Xác Nhận" />
