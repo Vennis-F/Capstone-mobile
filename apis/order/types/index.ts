@@ -1,5 +1,5 @@
-import { PromotionCourse } from "../../cart/types"
-import { Course } from "../../courses/types"
+import { PromotionCourse } from "../../cart/types";
+import { Course } from "../../courses/types";
 
 
 export enum NameOrderStatus {
@@ -12,59 +12,60 @@ export enum NameOrderStatus {
 export const convertOrderStatus = (orderStatus: NameOrderStatus) => {
   switch (orderStatus) {
     case NameOrderStatus.Success:
-      return { color: '#008000', vietnamse: 'Thành công' }
+      return { color: '#008000', vietnamse: 'Thành công' };
     case NameOrderStatus.Cancel:
-      return { color: '#FF0000', vietnamse: 'Hủy bỏ' }
+      return { color: '#FF0000', vietnamse: 'Hủy bỏ' };
     case NameOrderStatus.Pending:
-      return { color: '#FFD700', vietnamse: 'Đang chờ' }
+      return { color: '#FFD700', vietnamse: 'Đang chờ' };
     case NameOrderStatus.Fail:
-      return { color: '#FF0000', vietnamse: 'Thất bại' }
+      return { color: '#FF0000', vietnamse: 'Thất bại' };
     default:
-      return { color: '#808080', vietnamse: 'Unkown' }
+      return { color: '#808080', vietnamse: 'Unknown' };
   }
-}
+};
 
 export type Order = {
-  id: string
-  totalPrice: number
-  totalPriceAfterPromotion: number
-  note: string
-  active: boolean
-  orderDetails: OrderDetail[]
-  insertedDate: string
-  updatedDate: string
-  orderStatus: NameOrderStatus
-}
+  id: string;
+  totalPrice: number;
+  totalPriceAfterPromotion: number;
+  note: string;
+  active: boolean;
+  orderDetails: OrderDetail[];
+  insertedDate: string;
+  updatedDate: string;
+  orderStatus: NameOrderStatus;
+};
 
 export type OrderDetail = {
-  id: string
-  price: number
-  priceAfterPromotion: number
-  status: null | string
-  note: null | string
-  refundReason: null | string
-  active: boolean
-  course: Course
-  promotionCourse: PromotionCourse
-}
+  id: string;
+  price: number;
+  priceAfterPromotion: number;
+  status: null | string;
+  note: null | string;
+  refundReason: null | string;
+  active: boolean;
+  course: Course;
+  promotionCourse: PromotionCourse;
+  updatedDate: string;
+};
 
 export type UpdateOrderBodyRequest = {
-  orderId: string
-  nameOrderStatus: NameOrderStatus
-}
+  orderId: string;
+  nameOrderStatus: NameOrderStatus;
+};
 
 export type CreatePaymentURLBody = {
-  orderId: string
+  orderId: string;
 
-  message: string
+  message: string;
 
-  amount: number
+  amount: number;
 
-  language: 'vn'
+  language: 'vn';
 
-  returnUrl: string | undefined
+  returnUrl: string | undefined;
 
-  bankCode?: string
+  bankCode?: string;
 
-  ip?: string
-}
+  ip?: string;
+};

@@ -53,7 +53,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
   </TouchableOpacity>
 );
 
-const Detail = ({ }) => {
+const Detail = ({}) => {
   const navigation = useNavigation();
   const [selectedId, setSelectedId] = useState();
   const [course, setCourse] = useState<GetCourseDetailResponse>();
@@ -61,7 +61,7 @@ const Detail = ({ }) => {
   const route = useRoute();
   const [notification, setNotification] = useState(null);
   const id = route.params?.id as string;
-  const [isOwned, setIsOwned] = useState(false)
+  const [isOwned, setIsOwned] = useState(false);
   console.log('[Detail id]', id);
 
   const getCourse = async () => {
@@ -110,17 +110,17 @@ const Detail = ({ }) => {
 
   const handleCheckCourseIsOwned = async () => {
     if (!(await getAccessToken())) return;
-    const response = await checkCourseIsOwnedByCourseId(id)
-    setIsOwned(response.status)
-  }
+    const response = await checkCourseIsOwnedByCourseId(id);
+    setIsOwned(response.status);
+  };
 
   useEffect(() => {
     getCourse();
   }, [id]);
 
   useEffect(() => {
-    handleCheckCourseIsOwned()
-  }, [handleCheckCourseIsOwned, id])
+    handleCheckCourseIsOwned();
+  }, [handleCheckCourseIsOwned, id]);
 
   const closeNotification = () => {
     setNotification(null);
@@ -165,33 +165,38 @@ const Detail = ({ }) => {
                   style={styles.icons}
                 />
               </TouchableOpacity>
-              <Ionicons
-                name="md-cart-outline"
-                size={32}
-                color={'white'}
-                style={styles.icons}
-              />
+              <TouchableOpacity onPress={() => navigation.navigate('five')}>
+                <Ionicons
+                  name="md-cart-outline"
+                  size={32}
+                  color={'white'}
+                  style={styles.icons}
+                />
+              </TouchableOpacity>
             </View>
 
             <View style={{ alignItems: 'flex-end' }}>
-              {isOwned ? <View style={styles.addCartBtn}>
-                <Text
-                  style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
-                  onPress={() => {
-                    navigation.navigate('eleven', { id: id });
-                  }}
-                >
-                  Chuyển đến khóa học
-                </Text>
-              </View> : <View style={styles.addCartBtn}>
-                <Text
-                  style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
-                  onPress={handleAddCartItem}
-                >
-                  Thêm vào giỏ hàng
-                </Text>
-              </View>}
-
+              {isOwned ? (
+                <View style={styles.addCartBtn}>
+                  <Text
+                    style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
+                    onPress={() => {
+                      navigation.navigate('eleven', { id: id });
+                    }}
+                  >
+                    Chuyển đến khóa học
+                  </Text>
+                </View>
+              ) : (
+                <View style={styles.addCartBtn}>
+                  <Text
+                    style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
+                    onPress={handleAddCartItem}
+                  >
+                    Thêm vào giỏ hàng
+                  </Text>
+                </View>
+              )}
             </View>
           </ImageBackground>
           <ScrollView>
@@ -317,16 +322,19 @@ const Detail = ({ }) => {
                   </Text>
                 </View>
               </View>
-              <View style={{ paddingHorizontal: 20, marginTop: 10, marginBottom: -20 }}>
-                <Text
-                  style={{ fontSize: 20, fontWeight: 'bold' }}
-                >
+              <View
+                style={{
+                  paddingHorizontal: 20,
+                  marginTop: 10,
+                  marginBottom: -20,
+                }}
+              >
+                <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
                   Yêu cầu
                 </Text>
                 <HTML
                   source={{ html: course.prepareMaterial }}
                   contentWidth={300}
-
                 />
               </View>
               <View
@@ -345,7 +353,12 @@ const Detail = ({ }) => {
                   source={{ html: course.description }}
                   contentWidth={300}
                   tagsStyles={{
-                    p: { marginBottom: 10, fontSize: 16, lineHeight: 24, marginHorizontal: 15 }, // ví dụ: kiểu dáng cho thẻ p (đoạn văn bản)
+                    p: {
+                      marginBottom: 10,
+                      fontSize: 16,
+                      lineHeight: 24,
+                      marginHorizontal: 15,
+                    }, // ví dụ: kiểu dáng cho thẻ p (đoạn văn bản)
                     strong: { fontWeight: 'bold' }, // kiểu dáng cho thẻ strong (chữ in đậm)
                     em: { fontStyle: 'italic' }, // kiểu dáng cho thẻ em (chữ in nghiêng)
                   }}
@@ -487,6 +500,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginBottom: 20,
     marginRight: 12,
+    padding: 4,
   },
 });
 export default Detail;
