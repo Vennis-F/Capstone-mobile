@@ -65,6 +65,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="certificate" color={color} />
           ),
+          href: null,
         }}
       />
       <Tabs.Screen
@@ -172,15 +173,19 @@ export default function TabLayout() {
             : { title: 'Đăng nhập', href: null }
         }
       />
-      {/* <Tabs.Screen
+      <Tabs.Screen
         name="orderHistory"
-        options={{
-          title: 'Lịch sử đơn hàng',
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="certificate" color={color} />
-          ),
-        }}
-      /> */}
+        options={
+          userRole
+            ? {
+                title: 'Lịch sử đơn hàng',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="certificate" color={color} />
+                ),
+              }
+            : { title: 'Lịch sử đơn hàng', href: null }
+        }
+      />
       {/* <Tabs.Screen
         name="changePassword"
         options={{
