@@ -71,7 +71,7 @@ function Login() {
     <SafeAreaView
       style={{
         flex: 1,
-        paddingHorizontal: 20,
+        paddingHorizontal: 70,
         backgroundColor: "#fff",
       }}
     >

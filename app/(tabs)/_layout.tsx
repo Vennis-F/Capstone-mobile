@@ -72,11 +72,11 @@ export default function TabLayout() {
         options={
           userRole
             ? {
-                title: 'Khóa học của tôi',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="tv" color={color} />
-                ),
-              }
+              title: 'Khóa học của tôi',
+              tabBarIcon: ({ color }) => (
+                <TabBarIcon name="tv" color={color} />
+              ),
+            }
             : { title: 'Khóa học của tôi', href: null }
         }
       />
@@ -85,11 +85,11 @@ export default function TabLayout() {
         options={
           userRole
             ? {
-                title: 'Tài khoản của con',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="child" color={color} />
-                ),
-              }
+              title: 'Tài khoản của con',
+              tabBarIcon: ({ color }) => (
+                <TabBarIcon name="child" color={color} />
+              ),
+            }
             : { title: 'Tài khoản của con', href: null }
         }
       />
@@ -98,11 +98,11 @@ export default function TabLayout() {
         options={
           userRole
             ? {
-                title: 'Giỏ hàng',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="shopping-cart" color={color} />
-                ),
-              }
+              title: 'Giỏ hàng',
+              tabBarIcon: ({ color }) => (
+                <TabBarIcon name="shopping-cart" color={color} />
+              ),
+            }
             : { title: 'Giỏ hàng', href: null }
         }
       />
@@ -111,11 +111,11 @@ export default function TabLayout() {
         options={
           userRole
             ? {
-                title: 'Hồ sơ của tôi',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="user" color={color} />
-                ),
-              }
+              title: 'Hồ sơ của tôi',
+              tabBarIcon: ({ color }) => (
+                <TabBarIcon name="user" color={color} />
+              ),
+            }
             : { title: 'Hồ sơ của tôi', href: null }
         }
       />
@@ -141,11 +141,11 @@ export default function TabLayout() {
         options={
           userRole
             ? {
-                title: 'Bài giảng',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="youtube" color={color} />
-                ),
-              }
+              title: 'Bài giảng',
+              tabBarIcon: ({ color }) => (
+                <TabBarIcon name="youtube" color={color} />
+              ),
+            }
             : { title: 'Bài giảng', href: null }
         }
       />
@@ -154,11 +154,11 @@ export default function TabLayout() {
         options={
           !userRole
             ? {
-                title: 'Đăng nhập',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="user" color={color} />
-                ),
-              }
+              title: 'Đăng nhập',
+              tabBarIcon: ({ color }) => (
+                <TabBarIcon name="user" color={color} />
+              ),
+            }
             : { title: 'Đăng nhập', href: null }
         }
       />
@@ -190,11 +190,11 @@ export default function TabLayout() {
         options={
           userRole
             ? {
-                title: 'Khóa học của tôi',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="user" color={color} />
-                ),
-              }
+              title: 'Khóa học của tôi',
+              tabBarIcon: ({ color }) => (
+                <TabBarIcon name="user" color={color} />
+              ),
+            }
             : { title: 'Khóa học của tôi', href: null }
         }
       />

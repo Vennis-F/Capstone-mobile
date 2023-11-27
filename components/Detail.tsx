@@ -37,6 +37,7 @@ import StarRating from './RatingStars';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import Notification from './Notification';
 import { getImage } from '../apis/image/components/apis';
+import HTML from 'react-native-render-html';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity onPress={onPress}>
@@ -52,7 +53,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
   </TouchableOpacity>
 );
 
-const Detail = ({}) => {
+const Detail = ({ }) => {
   const navigation = useNavigation();
   const [selectedId, setSelectedId] = useState();
   const [course, setCourse] = useState<GetCourseDetailResponse>();
@@ -173,14 +174,6 @@ const Detail = ({}) => {
             </View>
 
             <View style={{ alignItems: 'flex-end' }}>
-              {/* <View style={styles.buyBtn}>
-                <Text
-                  style={{ color: '#000', fontSize: 16, fontWeight: 'bold' }}
-                //   onPress={handleAddCartItem}
-                >
-                  Mua ngay
-                </Text>
-              </View> */}
               {isOwned ? <View style={styles.addCartBtn}>
                 <Text
                   style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
@@ -324,15 +317,16 @@ const Detail = ({}) => {
                   </Text>
                 </View>
               </View>
-              <View style={{ paddingHorizontal: 20, marginTop: 10 }}>
+              <View style={{ paddingHorizontal: 20, marginTop: 10, marginBottom: -20 }}>
                 <Text
-                  style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}
+                  style={{ fontSize: 20, fontWeight: 'bold' }}
                 >
                   Yêu cầu
                 </Text>
-                <Text style={{ marginHorizontal: 15, fontSize: 18 }}>
-                  {course.prepareMaterial}
-                </Text>
+                <HTML
+                  source={{ html: course.prepareMaterial }}
+                  contentWidth={300}
+                />
               </View>
               <View
                 style={{
@@ -346,9 +340,10 @@ const Detail = ({}) => {
                 >
                   Miêu tả
                 </Text>
-                <Text style={{ marginHorizontal: 15, fontSize: 18 }}>
-                  {course.description}
-                </Text>
+                <HTML
+                  source={{ html: course.description }}
+                  contentWidth={300}
+                />
               </View>
               {/* <View style={{flexDirection:"row", alignItems:"center",paddingHorizontal:20, marginTop:20}}>
                 <View style={styles.borderBtn}>

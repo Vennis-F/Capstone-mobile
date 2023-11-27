@@ -14,7 +14,8 @@ import { addCartItem } from '../apis/cart/apis';
 import { ChapterLecture, ChapterLectureFilter } from '../apis/chapter-lecture/types';
 import { getChapterLectureOfLearnerStudy } from '../apis/chapter-lecture/api';
 import { useAuthMiddleware } from './useAuthMiddleware';
-
+import * as ScreenOrientation from 'expo-screen-orientation';
+import { Dimensions } from 'react-native';
 const Questions = [
   {
     id: "1",
@@ -45,8 +46,6 @@ const Questions = [
     time: '01-11-2023'
   },
 ];
-
-
 
 const QuestionItem = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
@@ -110,7 +109,16 @@ export default function YoutubePlayer() {
   const courseId = route.params?.id as string;
 
   useAuthMiddleware()
-
+  function setOrientation() {
+    if (Dimensions.get('window').height > Dimensions.get('window').width) {
+      //Device is in portrait mode, rotate to landscape mode.
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+    }
+    else {
+      //Device is in landscape mode, rotate to portrait mode.
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    }
+  }
   const renderQuestionItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#CECADA" : COLORS.GRAY_300;
     const color = item.id === selectedId ? "white" : "black";
@@ -175,8 +183,9 @@ export default function YoutubePlayer() {
             }`,
         }}
         useNativeControls
-        resizeMode={ResizeMode.CONTAIN}
-        isLooping
+        // resizeMode={ResizeMode.CONTAIN}
+        resizeMode={ResizeMode.COVER}
+        onFullscreenUpdate={setOrientation}
         onPlaybackStatusUpdate={status => setStatus(() => status)}
       />
       {/* <View >
