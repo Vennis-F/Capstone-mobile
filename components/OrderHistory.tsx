@@ -112,7 +112,12 @@ const OrderHistory = ({ path }: { path: string }) => {
                 </Text>
               </View>
 
-              <Button style={styles.detailButton}>
+              <Button
+                style={styles.detailButton}
+                onPress={() => {
+                  navigation.navigate('orderDetail', { id: item.id });
+                }}
+              >
                 <Text style={styles.buttonText}>Chi Tiết</Text>
               </Button>
             </View>

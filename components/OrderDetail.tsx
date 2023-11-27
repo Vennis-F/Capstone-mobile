@@ -1,130 +1,185 @@
-import React, { startTransition, useState } from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import React, { startTransition, useState, useEffect } from 'react';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Button, FlatList, ScrollView } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { findOrderByOrderId } from '../apis/order/api';
+import { Order, convertOrderStatus } from '../apis/order/types';
+import { formatStringtoDate } from '../libs/core/handle-time';
+import { formatCurrency } from '../libs/core/handle-price';
+import { getImage } from '../apis/image/components/apis';
+import { Ionicons } from '@expo/vector-icons';
 
-const OrderDetail = ({ path }: { path: string }) => {
-  const detail = {
-    id: 'c2343ba2-8abf-11ee-b9d1-0242ac120002',
-    date: '5-10-2023',
-    customer: 'Nguyễn Đoàn Thiện Nguyên',
-    total: 180000,
-    status: true,
+const DetailOrder = ({ path }: { path: string }) => {
+  const navigation = useNavigation();
+
+  const [orderDetail, setOrderDetail] = useState<Order>();
+  const route = useRoute();
+  const id = route.params?.id;
+
+  const getOrderById = async (id: string) => {
+    setOrderDetail(await findOrderByOrderId(id));
   };
-  const courses = [
-    {
-      id: 1,
-      title: 'Học vẽ phác họa tĩnh vật cấp tốc',
-      amount: 100000,
-      price: 80000,
-    },
-    {
-      id: 2,
-      title: 'Học lên màu cơ bản',
-      price: 100000,
-    },
-  ];
-  const transaction = {
-    transactionId: 'VNP14175749',
-    payment: 'VNPay',
-    date: '5-10-2023',
-    bank: 'NCB',
-    status: true,
+
+  useEffect(() => {
+    getOrderById(id);
+  }, [id]);
+
+  const fullname = () => {
+    if (orderDetail?.user) {
+      const userInfo = orderDetail.user;
+      const result = `${userInfo.lastName} ${userInfo.middleName} ${userInfo.firstName}`;
+      return result;
+    } else return '';
   };
+
+  let status = { color: '#000', vietnamse: 'Unknow' };
+  if (orderDetail?.orderStatus)
+    status = convertOrderStatus(orderDetail?.orderStatus);
+  const color = { color: status.color };
+
+  console.log(orderDetail);
+
+  let tranStatus = { color: '#000', vietnamse: 'Unknow' };
+  if (orderDetail?.transaction?.status)
+    tranStatus = convertOrderStatus(orderDetail.transaction.status);
+  const tranColor = { color: tranStatus.color };
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.detail}>
-        <Text style={styles.title}>Thông tin đơn hàng</Text>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Đơn đặt hàng số: &nbsp;</Text>
-          <Text style={styles.detailData}>{detail.id}</Text>
-        </View>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Ngày:</Text>
-          <Text style={styles.detailData}>{detail.date}</Text>
-        </View>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Khách hàng:</Text>
-          <Text style={styles.detailData}>{detail.customer}</Text>
-        </View>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Tổng tiền thanh toán:</Text>
-          <Text style={[styles.detailData, styles.detailTotal]}>
-            {detail.total} VND
-          </Text>
-        </View>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Trạng thái:</Text>
-          <Text
-            style={[
-              styles.detailData,
-              detail.status ? styles.success : styles.fail,
-            ]}
-          >
-            {detail.status ? 'Thành công' : 'Không thành công'}
-          </Text>
-        </View>
-      </View>
-
-      <Text style={styles.title}>Chi Tiết đơn hàng</Text>
-      <FlatList
-        style={{ marginBottom: 12 }}
-        data={courses}
-        renderItem={({ item }) => (
-          <>
-            <View style={[styles.detail, styles.courseContainer]}>
-              <View style={styles.courseDetail}>
-                <Text style={[styles.detailInfo, styles.courseTitle]}>
-                  {item.title}
-                </Text>
-                <Text style={styles.courseAmount}>{item.price} VND</Text>
-                {item.amount ? (
-                  <Text style={styles.coursePrice}>{item.amount} VND</Text>
-                ) : (
-                  ''
-                )}
-              </View>
-              <Image
-                style={styles.courseImg}
-                source={{
-                  uri: 'https://paintvine.co.nz/cdn/shop/articles/The_Magic_of_Paint_Mixing_and_Blending_46ae6a58-4182-4145-aaec-865d494cd44a.png?crop=center&height=720&v=1693260679&width=1440',
-                }}
-              />
+      <TouchableOpacity onPress={() => navigation.navigate('orderHistory')}>
+        <Icon
+          name="arrow-back"
+          size={30}
+          color={'white'}
+          style={styles.icons}
+        />
+      </TouchableOpacity>
+      {orderDetail ? (
+        <>
+          <View style={styles.detail}>
+            <Text style={styles.title}>Thông tin đơn hàng</Text>
+            <View style={styles.detailInfoContainer}>
+              <Text style={styles.detailInfo}>Đơn đặt hàng số: &nbsp;</Text>
+              <Text style={styles.detailData}>{orderDetail.id}</Text>
             </View>
-          </>
-        )}
-      ></FlatList>
-      <View style={styles.detail}>
-        <Text style={styles.title}>Thông tin giao dịch ngân hàng</Text>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Mã số giao dịch:</Text>
-          <Text style={styles.detailData}>{transaction.transactionId}</Text>
-        </View>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Thanh toán thông quá:</Text>
-          <Text style={styles.detailData}>{transaction.payment}</Text>
-        </View>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Ngày giao dịch:</Text>
-          <Text style={styles.detailData}>{transaction.date}</Text>
-        </View>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Ngân hàng thanh toán:</Text>
-          <Text style={[styles.detailData]}>{transaction.bank}</Text>
-        </View>
-        <View style={styles.detailInfoContainer}>
-          <Text style={styles.detailInfo}>Trạng thái:</Text>
-          <Text
-            style={[
-              styles.detailData,
-              detail.status ? styles.success : styles.fail,
-            ]}
-          >
-            {detail.status ? 'Thành công' : 'Không thành công'}
+            <View style={styles.detailInfoContainer}>
+              <Text style={styles.detailInfo}>Ngày:</Text>
+              <Text style={styles.detailData}>
+                {formatStringtoDate(orderDetail.updatedDate)}
+              </Text>
+            </View>
+            <View style={styles.detailInfoContainer}>
+              <Text style={styles.detailInfo}>Khách hàng:</Text>
+              <Text style={styles.detailData}>{fullname()}</Text>
+            </View>
+            <View style={styles.detailInfoContainer}>
+              <Text style={styles.detailInfo}>Tổng tiền thanh toán:</Text>
+              <Text style={[styles.detailData, styles.detailTotal]}>
+                {formatCurrency(orderDetail.totalPriceAfterPromotion)} VND
+              </Text>
+            </View>
+            <View style={styles.detailInfoContainer}>
+              <Text style={[styles.detailInfo]}>Trạng thái:</Text>
+              <Text style={[styles.detailData, color]}>{status.vietnamse}</Text>
+            </View>
+          </View>
+
+          <Text style={styles.title}>Chi Tiết đơn hàng</Text>
+          {orderDetail.orderDetails.length >= 1 ? (
+            <FlatList
+              style={{ marginBottom: 12 }}
+              data={orderDetail.orderDetails}
+              renderItem={({ item }) => (
+                <>
+                  <View style={[styles.detail, styles.courseContainer]}>
+                    <View style={styles.courseDetail}>
+                      <Text style={[styles.detailInfo, styles.courseTitle]}>
+                        {item.course.title}
+                      </Text>
+                      <Text style={styles.courseAmount}>
+                        {item.priceAfterPromotion} VND
+                      </Text>
+                      {item.price !== item.priceAfterPromotion ? (
+                        <Text style={styles.coursePrice}>{item.price} VND</Text>
+                      ) : (
+                        ''
+                      )}
+                    </View>
+                    <Image
+                      style={styles.courseImg}
+                      source={{
+                        uri: getImage(item.course.thumbnailUrl),
+                      }}
+                    />
+                  </View>
+                </>
+              )}
+            ></FlatList>
+          ) : (
+            ''
+          )}
+          {orderDetail.transaction ? (
+            <View style={styles.detail}>
+              <Text style={styles.title}>Thông tin giao dịch ngân hàng</Text>
+              <View style={styles.detailInfoContainer}>
+                <Text style={styles.detailInfo}>Mã số giao dịch:</Text>
+                <Text style={styles.detailData}>
+                  {orderDetail.transaction?.bankTranNo}
+                </Text>
+              </View>
+              <View style={styles.detailInfoContainer}>
+                <Text style={styles.detailInfo}>Thanh toán thông quá:</Text>
+                <Text style={styles.detailData}>
+                  {orderDetail.transaction.cardType}
+                </Text>
+              </View>
+              <View style={styles.detailInfoContainer}>
+                <Text style={styles.detailInfo}>Ngày giao dịch:</Text>
+                <Text style={styles.detailData}>
+                  {formatStringtoDate(orderDetail.transaction.insertedDate)}
+                </Text>
+              </View>
+              <View style={styles.detailInfoContainer}>
+                <Text style={styles.detailInfo}>Ngân hàng thanh toán:</Text>
+                <Text style={[styles.detailData]}>
+                  {orderDetail.transaction.bankCode}
+                </Text>
+              </View>
+              <View style={styles.detailInfoContainer}>
+                <Text style={styles.detailInfo}>Trạng thái:</Text>
+                <Text style={[styles.detailData, tranColor]}>
+                  {tranStatus.vietnamse}
+                </Text>
+              </View>
+            </View>
+          ) : (
+            ''
+          )}
+        </>
+      ) : (
+        <View style={[styles.item, { alignItems: 'center', marginTop: 60 }]}>
+          <Ionicons name="md-reload-circle-outline" size={92} color="grey" />
+          <Text style={{ fontSize: 24, textAlign: 'justify' }}>
+            Đã có lỗi ngoài mong muốn. Xin chờ trong giây lát hoặc trở về trang
+            chủ!
           </Text>
+          <Button
+            style={{
+              backgroundColor: '#ff4444',
+              marginVertical: 12,
+              borderRadius: 12,
+            }}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>
+              Quay trở lại
+            </Text>
+          </Button>
         </View>
-      </View>
+      )}
     </ScrollView>
   );
 };
@@ -135,6 +190,7 @@ const styles = StyleSheet.create({
     width: '85%',
     padding: 4,
     marginTop: 16,
+    backgroundColor: '#f8f6f0',
   },
   detail: {
     padding: 12,
@@ -142,6 +198,7 @@ const styles = StyleSheet.create({
     borderColor: '#0000006e',
     borderRadius: 12,
     marginBottom: 32,
+    backgroundColor: '#fff',
   },
   title: {
     color: 'rgba(9, 42, 250, 1)',
@@ -197,6 +254,25 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     color: '#f94848',
   },
+  icons: {
+    borderWidth: 1,
+    borderColor: '#0000005c',
+    borderRadius: 8,
+    backgroundColor: '#0000002a',
+    padding: 2,
+    width: 36,
+    margin: 8,
+  },
+  item: {
+    backgroundColor: '#fff',
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#00000061',
+    borderRadius: 16,
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: 24,
+  },
 });
 
-export default OrderDetail;
+export default DetailOrder;
