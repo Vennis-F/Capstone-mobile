@@ -32,6 +32,7 @@ import {
 import { showErrorAlert } from '../libs/core/handle-show.-mesage';
 import { getImage } from '../apis/image/components/apis';
 import { Button, Input } from 'native-base';
+import Notification from './Notification';
 
 export default function Profile({ path }: { path: String }) {
   const [userData, setuserData] = useState<UserFilterResponse>();
@@ -46,6 +47,12 @@ export default function Profile({ path }: { path: String }) {
   const [lastname, setLastname] = useState(userData?.lastName);
   const [phone, setPhone] = useState(userData?.phoneNumber);
 
+  const [notification, setNotification] = useState(null);
+
+  const closeNotification = () => {
+    setNotification(null);
+  };
+
   const handleCheckIsLogin = async () => {
     const token = await getAccessToken();
     if (token) setuserLogin(true);
@@ -59,6 +66,7 @@ export default function Profile({ path }: { path: String }) {
       await guestSignOut(token);
       removeAccessToken();
       setuserLogin(false);
+      navigation.navigate('index');
     } else console.log('[error]', 'You are not allowed to log out');
   };
 
@@ -113,11 +121,22 @@ export default function Profile({ path }: { path: String }) {
       phoneNumber: phone,
       userName: username,
     };
-
-    await updateProfile(body);
+    try {
+      await updateProfile(body);
+      setNotification({
+        message: 'Cập nhật thông tin thành công',
+        type: 'success',
+      });
+      console.log(notification);
+    } catch (error) {
+      setNotification({
+        message: 'Không thể cập nhật thông tin',
+        type: 'danger',
+      });
+    }
     await getUserProfile();
   };
-
+  console.log(notification);
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -392,6 +411,13 @@ export default function Profile({ path }: { path: String }) {
           )}
         </View>
       </ScrollView>
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
     </View>
   );
 }
