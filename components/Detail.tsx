@@ -36,6 +36,7 @@ import { Ionicons } from '@expo/vector-icons';
 import StarRating from './RatingStars';
 import FlashMessage, { showMessage } from 'react-native-flash-message';
 import Notification from './Notification';
+import { getImage } from '../apis/image/components/apis';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity onPress={onPress}>
@@ -51,7 +52,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
   </TouchableOpacity>
 );
 
-const Detail = ({ }) => {
+const Detail = ({}) => {
   const navigation = useNavigation();
   const [selectedId, setSelectedId] = useState();
   const [course, setCourse] = useState<GetCourseDetailResponse>();
@@ -148,11 +149,10 @@ const Detail = ({ }) => {
     >
       {course && (
         <>
-
           <ImageBackground
             style={styles.tinyLogo}
             source={{
-              uri: course.thumbnailUrl,
+              uri: getImage(course.thumbnailUrl),
             }}
           >
             <View style={styles.header}>
@@ -200,7 +200,6 @@ const Detail = ({ }) => {
               </View>}
 
             </View>
-
           </ImageBackground>
           <ScrollView>
             <View style={styles.details}>
@@ -234,7 +233,9 @@ const Detail = ({ }) => {
                         fontSize: 16,
                       }}
                     >
-                      {formatCurrency(course.discount ? course.discountPrice : course.price)}
+                      {formatCurrency(
+                        course.discount ? course.discountPrice : course.price
+                      )}
                       VND
                     </Text>
                   </View>
@@ -369,7 +370,6 @@ const Detail = ({ }) => {
           )}
         </>
       )}
-
     </SafeAreaView>
   );
 };

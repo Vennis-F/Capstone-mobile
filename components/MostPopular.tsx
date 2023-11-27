@@ -20,6 +20,7 @@ import {
 import { getCoursesBySearch } from '../apis/courses/api';
 import { Ionicons } from '@expo/vector-icons';
 import StarRating from './RatingStars';
+import { getImage } from '../apis/image/components/apis';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
@@ -31,7 +32,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
         style={styles.imgContainer}
         imageStyle={{ borderTopLeftRadius: 16, borderTopRightRadius: 16 }}
         source={{
-          uri: item.thumbnailUrl,
+          uri: getImage(item.thumbnailUrl),
         }}
         alt="Course Thumbnail"
       />

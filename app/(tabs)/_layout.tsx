@@ -5,6 +5,10 @@ import { Pressable, useColorScheme } from 'react-native';
 import Colors from '../../constants/Colors';
 import { UserRole, getUserRole } from '../../libs/core/handle-token';
 import { useEffect, useState } from 'react';
+import {
+  background,
+  color,
+} from 'native-base/lib/typescript/theme/styled-system';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -18,23 +22,25 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const [userRole, setUserRole] = useState<UserRole | null>(null)
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
 
   const handleGetUserRole = async () => {
-    setUserRole(await getUserRole())
-  }
+    setUserRole(await getUserRole());
+  };
 
   useEffect(() => {
-    handleGetUserRole()
-  })
-
+    handleGetUserRole();
+  });
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarInactiveTintColor: '#fff',
         headerStyle: { backgroundColor: '#ef4444' },
         headerTitleStyle: { color: '#fff', fontWeight: 'bold', fontSize: 20 },
+        tabBarStyle: { backgroundColor: '#ef4444', paddingBottom: 4 },
+        tabBarShowLabel: false,
       }}
     >
       <Tabs.Screen
@@ -44,57 +50,83 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
         }}
       />
-      {/* <Tabs.Screen
-        name="ten"
-        options={{
-          title: 'List Courses',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-        }}
-      /> */}
+      {/* chi tiet khoa hoc */}
       <Tabs.Screen
         name="eight"
         options={{
           title: 'Chi tiết khóa học',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="three"
-        options={{
-          title: 'Khóa học của tôi',
-          tabBarIcon: ({ color }) => <TabBarIcon name="tv" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="four"
-        options={{
-          title: 'My Child',
-          tabBarIcon: ({ color }) => <TabBarIcon name="child" color={color} />,
+          href: null,
         }}
       />
       <Tabs.Screen
         name="six"
         options={{
-          title: 'Contest',
+          title: 'Diễn đàn thi vẽ',
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="certificate" color={color} />
           ),
         }}
       />
       <Tabs.Screen
+        name="three"
+        options={
+          userRole
+            ? {
+                title: 'Khóa học của tôi',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="tv" color={color} />
+                ),
+              }
+            : { title: 'Khóa học của tôi', href: null }
+        }
+      />
+      <Tabs.Screen
+        name="four"
+        options={
+          userRole
+            ? {
+                title: 'Tài khoản của con',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="child" color={color} />
+                ),
+              }
+            : { title: 'Tài khoản của con', href: null }
+        }
+      />
+      <Tabs.Screen
         name="five"
-        options={{
-          title: 'Giỏ hàng',
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="shopping-cart" color={color} />
-          ),
-        }}
+        options={
+          userRole
+            ? {
+                title: 'Giỏ hàng',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="shopping-cart" color={color} />
+                ),
+              }
+            : { title: 'Giỏ hàng', href: null }
+        }
       />
       <Tabs.Screen
         name="two"
+        options={
+          userRole
+            ? {
+                title: 'Hồ sơ của tôi',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="user" color={color} />
+                ),
+              }
+            : { title: 'Hồ sơ của tôi', href: null }
+        }
+      />
+      <Tabs.Screen
+        name="orderNotification"
         options={{
-          title: 'Hồ sơ của tôi',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          title: 'Tình trạng đơn hàng',
+          // tabBarIcon: ({ color }) => (
+          //   <TabBarIcon name="certificate" color={color} />
+          // ),
+          href: null,
         }}
       />
       {/* <Tabs.Screen
@@ -104,30 +136,31 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       /> */}
-      {userRole && <Tabs.Screen
-        name="eleven"
-        options={{
-          title: 'Youtube',
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="youtube" color={color} />
-          ),
-        }}
-      />}
       <Tabs.Screen
-        name="seven"
-        options={{
-          title: 'Login',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-        }}
+        name="eleven"
+        options={
+          userRole
+            ? {
+                title: 'Bài giảng',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="youtube" color={color} />
+                ),
+              }
+            : { title: 'Bài giảng', href: null }
+        }
       />
       <Tabs.Screen
-        name="orderNotification"
-        options={{
-          title: 'Order Notification',
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="certificate" color={color} />
-          ),
-        }}
+        name="seven"
+        options={
+          !userRole
+            ? {
+                title: 'Đăng nhập',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="user" color={color} />
+                ),
+              }
+            : { title: 'Đăng nhập', href: null }
+        }
       />
       {/* <Tabs.Screen
         name="orderHistory"
@@ -154,18 +187,25 @@ export default function TabLayout() {
       /> */}
       <Tabs.Screen
         name="courses"
-        options={{
-          title: 'Khóa học của tôi',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-        }}
+        options={
+          userRole
+            ? {
+                title: 'Khóa học của tôi',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="user" color={color} />
+                ),
+              }
+            : { title: 'Khóa học của tôi', href: null }
+        }
       />
       <Tabs.Screen
         name="orderDetail"
         options={{
           title: 'Đơn hàng chi tiết',
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="certificate" color={color} />
-          ),
+          // tabBarIcon: ({ color }) => (
+          //   <TabBarIcon name="certificate" color={color} />
+          // ),
+          href: null,
         }}
       />
     </Tabs>
