@@ -21,7 +21,7 @@ import TopSale from './TopSale';
 import { Category } from '../apis/category/types';
 import { getCategories } from '../apis/category/api';
 import axios from 'axios';
-import { FlatList } from 'native-base';
+import { FlatList, Image } from 'native-base';
 import {
   Course,
   GetCoursesBySearchRequest,
@@ -32,6 +32,7 @@ import { getCoursesBySearch } from '../apis/courses/api';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import FlashMessage from 'react-native-flash-message';
+import { getProfileUser } from '../apis/user/apis';
 
 export default function EditScreenInfo({ path }: { path: string }) {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -70,29 +71,52 @@ export default function EditScreenInfo({ path }: { path: string }) {
   useEffect(() => {
     handleGetCategories();
   }, []);
+
   return (
     <SafeAreaView
       style={{
         flex: 1,
         paddingHorizontal: 20,
-        backgroundColor: '#f8f6f0',
+        backgroundColor: '#ffffffb1',
         marginTop: -30,
       }}
     >
       <View style={styles.header}>
         <View>
           <FlashMessage style={{ paddingHorizontal: 20 }} />
-          <Text style={{ fontSize: 25, fontWeight: 'bold', color: '#FB641B' }}>
-            Xin chào, Mẫn Nhi
-          </Text>
-          <Text style={{ fontSize: 19, fontWeight: 'bold', marginTop: 5 }}>
-            Cùng nhau vẽ nào!
-          </Text>
         </View>
-        <Ionicons name="md-cart-outline" size={36} />
+        <View
+          style={{
+            paddingHorizontal: 4,
+            justifyContent: 'space-between',
+            flexDirection: 'row',
+          }}
+        >
+          <Ionicons name="person-circle-outline" size={36} color="black" />
+          <Ionicons name="md-cart-outline" size={36} />
+        </View>
       </View>
       <ScrollView>
-        <View style={{ marginTop: 30, flexDirection: 'row' }}>
+        <Image
+          source={require('../assets/images/poster.png')}
+          alt="Poster"
+          height={'200'}
+          resizeMode="cover"
+          borderWidth={4}
+          borderColor={'#82C3EC'}
+          marginTop={8}
+        />
+        <View>
+          <Text style={styles.posterTitle}>
+            Cùng nhau khám phá Giáng sinh Lung Linh nào!
+          </Text>
+          <Text style={styles.posterContent}>
+            Khám phá niềm đam mê nghệ thuật cùng chúng mình và tận hưởng mùa
+            đông sáng tạo với các khóa học vẽ độc đáo. Từ hôm nay, giảm giá đặc
+            biệt cho mùa Giáng Sinh.
+          </Text>
+        </View>
+        <View style={{ marginTop: 20, flexDirection: 'row' }}>
           <View style={styles.searchContainer}>
             <TextInput
               style={{ marginLeft: 30 }}
@@ -179,8 +203,18 @@ export default function EditScreenInfo({ path }: { path: string }) {
 const styles = StyleSheet.create({
   header: {
     marginTop: 55,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+  },
+  posterTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    width: '85%',
+    padding: 12,
+    paddingBottom: 0,
+    color: '#1f8acd',
+  },
+  posterContent: {
+    padding: 12,
+    paddingTop: 8,
   },
   searchContainer: {
     height: 50,

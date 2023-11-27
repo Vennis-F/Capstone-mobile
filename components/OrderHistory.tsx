@@ -1,62 +1,31 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Button } from 'native-base';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
+import { findOrdersByUser } from '../apis/order/api';
+import { Order } from '../apis/order/types';
+import { formatCurrency } from '../libs/core/handle-price';
+import { formatStringtoDate } from '../libs/core/handle-time';
+import { useFocusEffect, useNavigation } from 'expo-router';
 
 const OrderHistory = ({ path }: { path: string }) => {
-  const [items, setItems] = useState([
-    {
-      id: '1',
-      title: '2 Khóa học đã mua',
-      date: '5/10/2023',
-      total: '420000',
-      status: true,
-      subject: [
-        {
-          id: '1_1',
-          title: 'Học Tô màu cảnh vật',
-          total: 220000,
-        },
-        {
-          id: '1_2',
-          title: 'Học phác thảo cảnh vật bằng chì khối',
-          total: 200000,
-        },
-      ],
-    },
-    {
-      id: '2',
-      title: 'Học vẽ phác thảo tĩnh vật bằng chì màu',
-      date: '25/01/2023',
-      total: '400000',
-      status: true,
-    },
-    {
-      id: '3',
-      title: 'Học vẽ chân dung',
-      date: '13/08/2023',
-      total: '320000',
-      status: false,
-    },
-    {
-      id: '4',
-      title: '3 Khóa học đã mua',
-      date: '31/03/2023',
-      total: '1380000',
-      status: true,
-      subject: [
-        { id: '4_1', title: 'Học pha màu nước cơ bản', total: 520000 },
-        {
-          id: '4_2',
-          title: 'Học vẽ tranh nghệ thuật với màu nước',
-          total: 620000,
-        },
-        { id: '4_3', title: 'Học thiết kế bố cục tranh vẽ', total: 240000 },
-      ],
-    },
-  ]);
-
   const [dropdownPress, setdropdownPress] = useState<string[]>([]);
+  const [orders, setOrders] = useState<Order[]>();
+
+  const getOrder = async () => {
+    setOrders(await findOrdersByUser());
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getOrder();
+    }, [])
+  );
+
+  const navigation = useNavigation();
+  const backToHome = () => {
+    navigation.navigate('index');
+  };
 
   const dropdownHandle = (id: string) => {
     if (dropdownPress.includes(id)) {
@@ -70,72 +39,105 @@ const OrderHistory = ({ path }: { path: string }) => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={items}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <View style={styles.headerContainer}>
-              <View style={styles.header}>
-                <Ionicons name="md-cart-outline" size={28} color={'#000'} />
-                <Text style={styles.title}>{item.title}</Text>
+      {orders ? (
+        <FlatList
+          data={orders}
+          renderItem={({ item }) => (
+            <View style={styles.item}>
+              <View style={styles.headerContainer}>
+                <View style={styles.header}>
+                  <Ionicons name="md-cart-outline" size={28} color={'#000'} />
+                  <Text style={styles.title}>
+                    {item.orderDetails.length > 1
+                      ? `${item.orderDetails.length} Khóa học đã mua`
+                      : item.orderDetails[0].course.title}
+                  </Text>
+                </View>
+                {item.orderDetails.length > 1 ? (
+                  <Ionicons
+                    style={[
+                      dropdownPress.includes(item.id)
+                        ? styles.unpressedButton
+                        : styles.pressedButton,
+                    ]}
+                    name="caret-down-circle-outline"
+                    size={28}
+                    onPress={() => {
+                      dropdownHandle(item.id);
+                    }}
+                  />
+                ) : (
+                  ''
+                )}
               </View>
-              {item.subject ? (
-                <Ionicons
-                  style={[
-                    dropdownPress.includes(item.id)
-                      ? styles.unpressedButton
-                      : styles.pressedButton,
-                  ]}
-                  name="caret-down-circle-outline"
-                  size={28}
-                  onPress={() => {
-                    dropdownHandle(item.id);
-                  }}
-                />
+              {item.orderDetails.length > 1 ? (
+                <FlatList
+                  style={dropdownPress.includes(item.id) ? null : styles.hidden}
+                  data={item.orderDetails}
+                  renderItem={({ item }) => (
+                    <View style={styles.subjectDetail}>
+                      <Text style={styles.subjectTitle}>
+                        {item.course.title} :
+                      </Text>
+                      <Text style={styles.subjectPrice}>
+                        {formatCurrency(item.priceAfterPromotion)} vnđ
+                      </Text>
+                    </View>
+                  )}
+                ></FlatList>
               ) : (
                 ''
               )}
-            </View>
-            {item.subject ? (
-              <FlatList
-                style={dropdownPress.includes(item.id) ? null : styles.hidden}
-                data={item.subject}
-                renderItem={({ item }) => (
-                  <View style={styles.subjectDetail}>
-                    <Text style={styles.subjectTitle}>{item.title} :</Text>
-                    <Text style={styles.subjectPrice}>{item.total} vnd</Text>
-                  </View>
-                )}
-              ></FlatList>
-            ) : (
-              ''
-            )}
-            <View style={styles.detailContainer}>
-              <Text style={styles.detail}>Ngày:</Text>
-              <Text style={styles.info}>{item.date}</Text>
-            </View>
-            <View style={styles.detailContainer}>
-              <Text style={styles.detail}>Tổng Tiền:</Text>
-              <Text style={styles.info}>{item.total} vnd</Text>
-            </View>
-            <View style={styles.detailContainer}>
-              <Text style={styles.detail}>Trạng thái:</Text>
-              <Text
-                style={[
-                  styles.info,
-                  item.status ? styles.statusSuccess : styles.statusFail,
-                ]}
-              >
-                {item.status ? 'Thành công' : 'Không thành công'}
-              </Text>
-            </View>
+              <View style={styles.detailContainer}>
+                <Text style={styles.detail}>Ngày:</Text>
+                <Text style={styles.info}>
+                  {formatStringtoDate(item.updatedDate)}
+                </Text>
+              </View>
+              <View style={styles.detailContainer}>
+                <Text style={styles.detail}>Tổng Tiền:</Text>
+                <Text style={[styles.info, { fontWeight: 'bold' }]}>
+                  {formatCurrency(item.totalPriceAfterPromotion)} VNĐ
+                </Text>
+              </View>
+              <View style={styles.detailContainer}>
+                <Text style={styles.detail}>Trạng thái:</Text>
+                <Text
+                  style={[
+                    styles.info,
+                    item.orderStatus ? styles.statusSuccess : styles.statusFail,
+                  ]}
+                >
+                  {item.orderStatus ? 'Thành công' : 'Không thành công'}
+                </Text>
+              </View>
 
-            <Button style={styles.detailButton}>
-              <Text style={styles.buttonText}>Chi Tiết</Text>
-            </Button>
-          </View>
-        )}
-      />
+              <Button style={styles.detailButton}>
+                <Text style={styles.buttonText}>Chi Tiết</Text>
+              </Button>
+            </View>
+          )}
+        />
+      ) : (
+        <View style={[styles.item, { alignItems: 'center', marginTop: 60 }]}>
+          <Ionicons name="md-cart" size={92} color="grey" />
+          <Text style={{ fontSize: 24, textAlign: 'center' }}>
+            Bạn chưa có đơn hàng nào, hãy mua sắm nào!
+          </Text>
+          <Button
+            style={{
+              backgroundColor: '#ff4444',
+              marginVertical: 12,
+              borderRadius: 12,
+            }}
+            onPress={backToHome}
+          >
+            <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>
+              Mua Sắm Ngay
+            </Text>
+          </Button>
+        </View>
+      )}
     </View>
   );
 };
@@ -143,16 +145,18 @@ const OrderHistory = ({ path }: { path: string }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: '#f8f6f0',
     width: '100%',
   },
   item: {
+    backgroundColor: '#fff',
     padding: 16,
-    borderBottomColor: '#ddd',
-    borderBottomWidth: 1,
+    borderWidth: 1,
+    borderColor: '#00000061',
+    borderRadius: 16,
     width: '90%',
     alignSelf: 'center',
-    marginBottom: 24,
+    marginTop: 24,
   },
   headerContainer: {
     flex: 1,
@@ -208,12 +212,12 @@ const styles = StyleSheet.create({
   subjectDetail: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 40,
+    gap: 8,
     padding: 12,
   },
   subjectTitle: {
     fontSize: 16,
-    color: '#ea8a41e2',
+    color: '#ef4444',
     fontWeight: '600',
     width: '55%',
   },
