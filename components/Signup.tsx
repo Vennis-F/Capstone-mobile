@@ -4,8 +4,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-} from "react-native";
-import React, { useState } from "react";
+} from 'react-native';
+import React, { useState } from 'react';
 
 import {
   Input,
@@ -15,51 +15,51 @@ import {
   Box,
   Image,
   AspectRatio,
-} from "native-base";
-import { FontAwesome5 } from "@expo/vector-icons";
+} from 'native-base';
+import { FontAwesome5 } from '@expo/vector-icons';
 
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation } from '@react-navigation/native';
 
 function Signup() {
   const navigation = useNavigation();
-  const [inputValue1, setInputValue1] = useState("");
-  const [inputValue2, setInputValue2] = useState("");
-  const [inputValue3, setInputValue3] = useState("");
-  const [inputValue4, setInputValue4] = useState("");
-  const [errorText1, setErrorText1] = useState("");
-  const [errorText2, setErrorText2] = useState("");
-  const [errorText3, setErrorText3] = useState("");
-  const [errorText4, setErrorText4] = useState("");
+  const [inputValue1, setInputValue1] = useState('');
+  const [inputValue2, setInputValue2] = useState('');
+  const [inputValue3, setInputValue3] = useState('');
+  const [inputValue4, setInputValue4] = useState('');
+  const [errorText1, setErrorText1] = useState('');
+  const [errorText2, setErrorText2] = useState('');
+  const [errorText3, setErrorText3] = useState('');
+  const [errorText4, setErrorText4] = useState('');
 
   const handleSubmit = () => {
-    if (inputValue1.trim() === "") {
+    if (inputValue1.trim() === '') {
       // Nếu Input trống, hiển thị thông báo
-      setErrorText1("Vui lòng nhập dữ liệu");
+      setErrorText1('Vui lòng nhập dữ liệu');
     } else {
       // Xử lý khi có giá trị nhập vào Input
-      setErrorText1("");
+      setErrorText1('');
       // ... Thực hiện các xử lý khác ở đây
     }
-    if (inputValue2.trim() === "") {
-      setErrorText2("Vui lòng nhập dữ liệu");
+    if (inputValue2.trim() === '') {
+      setErrorText2('Vui lòng nhập dữ liệu');
     } else {
-      setErrorText2("");
+      setErrorText2('');
     }
-    if (inputValue3.trim() === "") {
-      setErrorText3("Vui lòng nhập dữ liệu");
+    if (inputValue3.trim() === '') {
+      setErrorText3('Vui lòng nhập dữ liệu');
     } else {
-      setErrorText3("");
+      setErrorText3('');
     }
-    if (inputValue4.trim() === "") {
-      setErrorText4("Vui lòng nhập dữ liệu");
+    if (inputValue4.trim() === '') {
+      setErrorText4('Vui lòng nhập dữ liệu');
     } else {
-      setErrorText4("");
+      setErrorText4('');
     }
     if (
-      inputValue1.trim() !== "" &&
-      inputValue2.trim() !== "" &&
-      inputValue4.trim() !== "" &&
-      inputValue4.trim() !== ""
+      inputValue1.trim() !== '' &&
+      inputValue2.trim() !== '' &&
+      inputValue4.trim() !== '' &&
+      inputValue4.trim() !== ''
     ) {
       // Xử lý khi cả hai trường đều có giá trị
       // ... Thực hiện các xử lý khác ở đây
@@ -67,7 +67,13 @@ function Signup() {
   };
   return (
     <SafeAreaView
-      style={{ flex: 1, paddingHorizontal: 20, backgroundColor: "#fff", width: 330, marginTop: -65 }}
+      style={{
+        flex: 1,
+        paddingHorizontal: 20,
+        backgroundColor: '#fff',
+        width: 330,
+        marginTop: -65,
+      }}
     >
       <View style={styles.container}>
         <View style={styles.Middle}>
@@ -85,14 +91,14 @@ function Signup() {
               placeholder="Tên"
               borderRadius={10}
               _light={{
-                placeholderTextColor: "blueGray.400",
+                placeholderTextColor: 'blueGray.400',
               }}
               _dark={{
-                placeholderTextColor: "blueGray.50",
+                placeholderTextColor: 'blueGray.50',
               }}
             />
             {errorText1 && (
-              <Text style={{ color: "red", fontSize: 10 }}>{errorText1}</Text>
+              <Text style={{ color: 'red', fontSize: 10 }}>{errorText1}</Text>
             )}
           </View>
         </View>
@@ -109,15 +115,15 @@ function Signup() {
               placeholder="Nhập Họ"
               borderRadius={10}
               _light={{
-                placeholderTextColor: "blueGray.400",
+                placeholderTextColor: 'blueGray.400',
               }}
               _dark={{
-                placeholderTextColor: "blueGray.50",
+                placeholderTextColor: 'blueGray.50',
               }}
             />
 
             {errorText2 && (
-              <Text style={{ color: "red", fontSize: 10 }}>{errorText2}</Text>
+              <Text style={{ color: 'red', fontSize: 10 }}>{errorText2}</Text>
             )}
           </View>
         </View>
@@ -133,15 +139,15 @@ function Signup() {
               placeholder="Nhập tên đệm"
               borderRadius={10}
               _light={{
-                placeholderTextColor: "blueGray.400",
+                placeholderTextColor: 'blueGray.400',
               }}
               _dark={{
-                placeholderTextColor: "blueGray.50",
+                placeholderTextColor: 'blueGray.50',
               }}
             />
 
             {errorText2 && (
-              <Text style={{ color: "red", fontSize: 10 }}>{errorText2}</Text>
+              <Text style={{ color: 'red', fontSize: 10 }}>{errorText2}</Text>
             )}
           </View>
         </View>
@@ -157,15 +163,15 @@ function Signup() {
               placeholder="Nhập số điện thoại"
               borderRadius={10}
               _light={{
-                placeholderTextColor: "blueGray.400",
+                placeholderTextColor: 'blueGray.400',
               }}
               _dark={{
-                placeholderTextColor: "blueGray.50",
+                placeholderTextColor: 'blueGray.50',
               }}
             />
 
             {errorText2 && (
-              <Text style={{ color: "red", fontSize: 10 }}>{errorText2}</Text>
+              <Text style={{ color: 'red', fontSize: 10 }}>{errorText2}</Text>
             )}
           </View>
         </View>
@@ -180,15 +186,15 @@ function Signup() {
               placeholder="Nhập Email"
               borderRadius={10}
               _light={{
-                placeholderTextColor: "blueGray.400",
+                placeholderTextColor: 'blueGray.400',
               }}
               _dark={{
-                placeholderTextColor: "blueGray.50",
+                placeholderTextColor: 'blueGray.50',
               }}
             />
 
             {errorText2 && (
-              <Text style={{ color: "red", fontSize: 10 }}>{errorText2}</Text>
+              <Text style={{ color: 'red', fontSize: 10 }}>{errorText2}</Text>
             )}
           </View>
         </View>
@@ -204,14 +210,14 @@ function Signup() {
               borderRadius={10}
               secureTextEntry={true}
               _light={{
-                placeholderTextColor: "blueGray.400",
+                placeholderTextColor: 'blueGray.400',
               }}
               _dark={{
-                placeholderTextColor: "blueGray.50",
+                placeholderTextColor: 'blueGray.50',
               }}
             />
             {errorText3 && (
-              <Text style={{ color: "red", fontSize: 10 }}>{errorText3}</Text>
+              <Text style={{ color: 'red', fontSize: 10 }}>{errorText3}</Text>
             )}
           </View>
         </View>
@@ -230,7 +236,7 @@ function Signup() {
         <View style={styles.buttonGoogle}>
           <View style={styles.text4}>
             <Text style={styles.loginText}>Bạn đã có tài khoản? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("seven")}>
+            <TouchableOpacity onPress={() => navigation.navigate('seven')}>
               <Text style={styles.loginText1}>Đăng nhập</Text>
             </TouchableOpacity>
           </View>
@@ -249,16 +255,16 @@ export default () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   SignupText: {
     marginTop: 70,
     fontSize: 30,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   Middle: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonStyle: {
     marginTop: 5,
@@ -266,7 +272,7 @@ const styles = StyleSheet.create({
   },
   emailInput: {
     fontSize: 17,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 2,
   },
   buttonStyle2: {
@@ -277,46 +283,46 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   buttonDesgin: {
-    backgroundColor: "#FB641B",
+    backgroundColor: '#FB641B',
   },
   text3: {
-    color: "black",
+    color: 'black',
     fontSize: 18,
-    fontWeight: "400",
-    flexDirection: "row",
-    justifyContent: "center",
+    fontWeight: '400',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   buttonSigup: {
     marginTop: 3,
   },
   lineStyle: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 15,
     marginLeft: 15,
     marginRight: 15,
     marginBottom: 15,
-    alignItems: "center",
+    alignItems: 'center',
   },
   buttonDesgin2: {
-    backgroundColor: "#FB641B",
+    backgroundColor: '#FB641B',
   },
   buttonDesgin3: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   text4: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginTop: 0,
   },
   loginText: {
-    color: "black",
+    color: 'black',
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   loginText1: {
-    color: "#0000BB",
+    color: '#0000BB',
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: '500',
   },
 });

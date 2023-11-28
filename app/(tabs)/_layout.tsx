@@ -84,14 +84,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="four"
         options={
-          userRole
-            ? {
-                title: 'Tài khoản của con',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="child" color={color} />
-                ),
-              }
-            : { title: 'Tài khoản của con', href: null }
+          // userRole
+          //   ? {
+          //       title: 'Tài khoản của con',
+          //       tabBarIcon: ({ color }) => (
+          //         <TabBarIcon name="child" color={color} />
+          //       ),
+          //     }
+          //   :
+          { title: 'Tài khoản của con', href: null }
         }
       />
       <Tabs.Screen
@@ -192,14 +193,15 @@ export default function TabLayout() {
       <Tabs.Screen
         name="courses"
         options={
-          userRole
-            ? {
-                title: 'Khóa học của tôi',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="user" color={color} />
-                ),
-              }
-            : { title: 'Khóa học của tôi', href: null }
+          // userRole
+          //   ? {
+          //       title: 'Khóa học của tôi',
+          //       tabBarIcon: ({ color }) => (
+          //         <TabBarIcon name="user" color={color} />
+          //       ),
+          //     }
+          //   :
+          { title: 'Khóa học của tôi', href: null }
         }
       />
     </Tabs>

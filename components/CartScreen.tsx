@@ -193,7 +193,7 @@ export default function CartScreen({ path }: { path: string }) {
     );
   };
   return (
-    <SafeAreaView style={{ backgroundColor: '#fff', flex: 1 }}>
+    <SafeAreaView style={{ backgroundColor: '#f8f6f0', flex: 1 }}>
       {cart && cart.cartItems.length > 0 ? (
         <FlatList
           showsHorizontalScrollIndicator={false}

@@ -92,8 +92,8 @@ export default function EditScreenInfo({ path }: { path: string }) {
             flexDirection: 'row',
           }}
         >
-          <Ionicons name="person-circle-outline" size={36} color="black" />
-          <Ionicons name="md-cart-outline" size={36} />
+          {/* <Ionicons name="person-circle-outline" size={36} color="black" />
+          <Ionicons name="md-cart-outline" size={36} /> */}
         </View>
       </View>
       <ScrollView>

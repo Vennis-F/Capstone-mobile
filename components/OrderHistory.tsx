@@ -36,10 +36,10 @@ const OrderHistory = ({ path }: { path: string }) => {
       setdropdownPress([...dropdownPress, id]);
     }
   };
-
+  console.log('[orders] ', orders);
   return (
     <View style={styles.container}>
-      {orders ? (
+      {orders?.length >= 1 ? (
         <FlatList
           data={orders}
           renderItem={({ item }) => (
