@@ -202,7 +202,6 @@ export default function Profile({ path }: { path: String }) {
   };
 
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       quality: 1,
@@ -637,7 +636,7 @@ export default function Profile({ path }: { path: String }) {
                   <Text style={styles.menuTextSub}>Khóa học đã sở hữu</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity onPress={() => { }}>
                 <View style={styles.menuItem}>
                   <Icon
                     name="transfer-within-a-station"

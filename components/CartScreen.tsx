@@ -16,11 +16,12 @@ import { Alert } from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getAccessToken } from '../libs/core/handle-token';
-import { addCartItem, checkCartIsValid, deleteCartItem, getCart, getCartTotalPrice } from '../apis/cart/apis';
+import { addCartItem, checkCartIsValid, deleteAllCartItems, deleteCartItem, getCart, getCartTotalPrice } from '../apis/cart/apis';
 import { Cart, CartTotalPrice } from '../apis/cart/types';
 import { createOrder, createPaymentURL } from '../apis/order/api';
 import { COLORS } from '../libs/const/color';
 import { formatCurrency } from '../libs/core/handle-price';
+import { getImage } from '../apis/image/components/apis';
 
 
 export default function CartScreen({ path }: { path: string }) {
@@ -36,10 +37,6 @@ export default function CartScreen({ path }: { path: string }) {
     setCartTotalPrice(priceRes)
     setCart(dataResponse)
   }
-
-  // useEffect(() => {
-  //   handleGetCart()
-  // }, [])
   useFocusEffect(
     React.useCallback(() => {
       handleGetCart()
@@ -114,6 +111,30 @@ export default function CartScreen({ path }: { path: string }) {
       </TouchableOpacity>
     )
   }
+  const handleDeleteAllItems = async () => {
+    Alert.alert(
+      'Xác nhận xóa',
+      'Bạn có chắc chắn muốn xóa tất cả sản phẩm khỏi giỏ hàng không?',
+      [
+        {
+          text: 'Hủy',
+          style: 'cancel',
+        },
+        {
+          text: 'Xác nhận',
+          onPress: async () => {
+            // Call your API or function to delete all items from the cart
+            // For example, you might have an API like deleteAllCartItems()
+            await deleteAllCartItems();
+
+            // After deleting, refresh the cart data
+            await handleGetCart();
+          },
+        },
+      ],
+      { cancelable: false }
+    );
+  };
   const CartCard = ({ item }) => {
     const handleDeleteCartItem = async () => {
       Alert.alert(
@@ -138,7 +159,9 @@ export default function CartScreen({ path }: { path: string }) {
     return (
       <View style={styles.CartCard}>
         <Image
-          source={{ uri: "https://reactnative.dev/img/tiny_logo.png", }} style={{ height: 80, width: 80 }} />
+          source={{
+            uri: getImage(item.course.thumbnailUrl),
+          }} style={{ height: 80, width: 80 }} />
         <View style={{ height: 100, marginLeft: 10, paddingVertical: 10, flex: 1 }}>
           <Text style={{ fontWeight: "bold", fontSize: 16 }}>{item.course.title}</Text>
           <Text style={{ fontSize: 16, color: '#908e8c' }}>{item.course.totalChapter} bài giảng</Text>
@@ -167,6 +190,14 @@ export default function CartScreen({ path }: { path: string }) {
             <View style={{ marginHorizontal: 30 }}>
               <PrimaryButton title="Xác Nhận" />
             </View>
+            {cart && cart.cartItems.length > 1 && <TouchableOpacity
+              style={styles.btnContainer1}
+              onPress={handleDeleteAllItems}
+            >
+              <Text style={{ fontSize: 20, fontWeight: "bold", color: "#FFF" }}>
+                Xóa tất cả sản phẩm
+              </Text>
+            </TouchableOpacity>}
           </View>
         )}
       />) : (
@@ -215,6 +246,15 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  btnContainer1: {
+    backgroundColor: COLORS.RED_450,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginTop: 20
   },
   title: {
     color: "#FFF",

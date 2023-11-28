@@ -1,7 +1,8 @@
-import React, { startTransition, useState } from 'react';
+import React, { startTransition, useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import { Button } from 'native-base';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { useSearchParams } from 'expo-router';
 
 const OrderNotification = ({ path }: { path: string }) => {
   const [transactionDetails, setTransactionDetails] = useState({
