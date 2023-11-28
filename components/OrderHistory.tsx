@@ -105,8 +105,7 @@ const OrderHistory = ({ path }: { path: string }) => {
                 <Text
                   style={[
                     styles.info,
-                    // item.orderStatus ? styles.statusSuccess : styles.statusFail,
-                    // convertOrderStatus(item.orderStatus).color
+                    { color: `${convertOrderStatus(item.orderStatus).color}` },
                   ]}
                 >
                   {convertOrderStatus(item.orderStatus).vietnamse}
