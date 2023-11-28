@@ -139,12 +139,12 @@ export default function MyChild({ path }: { path: string }) {
           extraData={selectedId}
         />
         {/* Second FlatList */}
-        <FlatList
+        {/* <FlatList
           data={AdditionalCourses}
           renderItem={renderCourseItem}
           keyExtractor={(item) => item.id}
           extraData={selectedId}
-        />
+        /> */}
       </View>
     </SafeAreaView>
   );

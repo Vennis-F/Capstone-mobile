@@ -121,9 +121,9 @@ function Login() {
             {errorText2 && <Text style={{ color: "red" }}>{errorText2}</Text>}
           </View>
         </View>
-        <View style={styles.text2}>
+        {/* <View style={styles.text2}>
           <Text style={styles.forgot}>Quên mật khẩu?</Text>
-        </View>
+        </View> */}
         {/* Button */}
         <View style={styles.buttonLogin}>
           <Button
@@ -137,7 +137,7 @@ function Login() {
         </View>
         <View style={styles.text4}>
           <Text style={styles.singupText}>Bạn chưa có tài khoản? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("Signup")}>
+          <TouchableOpacity onPress={() => navigation.navigate("signUp")}>
             <Text style={styles.singupText1}>Đăng ký</Text>
           </TouchableOpacity>
         </View>
