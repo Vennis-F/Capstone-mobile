@@ -18,7 +18,6 @@ import { getProfileUser } from '../apis/user/apis';
 import { formatCurrency } from '../libs/core/handle-price';
 import { useFocusEffect } from 'expo-router';
 
-
 const OrderNotification = ({ path }: { path: string }) => {
   const [userData, setuserData] = useState<UserFilterResponse>();
   const [status, setStatus] = useState(false);
@@ -152,6 +151,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFFFFF',
     padding: 16,
+    width: '100%',
   },
   headerImage: {
     width: 80,
@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
   transactionValue: {
     fontSize: 16,
     color: '#000',
+    minWidth: 100,
   },
   buttonDesgin: {
     backgroundColor: '#FB641B',

@@ -17,7 +17,14 @@ import { Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { getAccessToken } from '../libs/core/handle-token';
 
-import { addCartItem, checkCartIsValid, deleteAllCartItems, deleteCartItem, getCart, getCartTotalPrice } from '../apis/cart/apis';
+import {
+  addCartItem,
+  checkCartIsValid,
+  deleteAllCartItems,
+  deleteCartItem,
+  getCart,
+  getCartTotalPrice,
+} from '../apis/cart/apis';
 
 import { Cart, CartTotalPrice } from '../apis/cart/types';
 import { createOrder, createPaymentURL } from '../apis/order/api';
@@ -27,8 +34,6 @@ import { formatCurrency } from '../libs/core/handle-price';
 import * as Link from 'expo-linking';
 
 import { getImage } from '../apis/image/components/apis';
-
-
 
 export default function CartScreen({ path }: { path: string }) {
   const navigation = useNavigation();
@@ -40,12 +45,11 @@ export default function CartScreen({ path }: { path: string }) {
   console.log('[Detail cart]', cart);
 
   const handleGetCart = async () => {
-
-    const dataResponse = await getCart()
-    const priceRes = await getCartTotalPrice()
-    setCartTotalPrice(priceRes)
-    setCart(dataResponse)
-  }
+    const dataResponse = await getCart();
+    const priceRes = await getCartTotalPrice();
+    setCartTotalPrice(priceRes);
+    setCart(dataResponse);
+  };
 
   useFocusEffect(
     React.useCallback(() => {
@@ -114,8 +118,8 @@ export default function CartScreen({ path }: { path: string }) {
           <Text style={styles.title}>Xác Nhận</Text>
         </View>
       </TouchableOpacity>
-    )
-  }
+    );
+  };
   const handleDeleteAllItems = async () => {
     Alert.alert(
       'Xác nhận xóa',
@@ -138,7 +142,6 @@ export default function CartScreen({ path }: { path: string }) {
         },
       ],
       { cancelable: false }
-
     );
   };
   const CartCard = ({ item }) => {
@@ -165,16 +168,23 @@ export default function CartScreen({ path }: { path: string }) {
     return (
       <View style={styles.CartCard}>
         <Image
-
-
           source={{
             uri: getImage(item.course.thumbnailUrl),
-          }} style={{ height: 80, width: 80 }} />
-        <View style={{ height: 100, marginLeft: 10, paddingVertical: 10, flex: 1 }}>
-          <Text style={{ fontWeight: "bold", fontSize: 16 }}>{item.course.title}</Text>
-          <Text style={{ fontSize: 16, color: '#908e8c' }}>{item.course.totalChapter} bài giảng</Text>
-          <Text style={{ fontSize: 17, fontWeight: "bold" }}>{formatCurrency(item.course.price)}VND</Text>
-
+          }}
+          style={{ height: 80, width: 80 }}
+        />
+        <View
+          style={{ height: 100, marginLeft: 10, paddingVertical: 10, flex: 1 }}
+        >
+          <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
+            {item.course.title}
+          </Text>
+          <Text style={{ fontSize: 16, color: '#908e8c' }}>
+            {item.course.totalChapter} bài giảng
+          </Text>
+          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>
+            {formatCurrency(item.course.price)}VND
+          </Text>
         </View>
         <View style={{ marginRight: 10, alignItems: 'center' }}>
           <Icon name="delete" size={30} onPress={handleDeleteCartItem} />
@@ -210,20 +220,23 @@ export default function CartScreen({ path }: { path: string }) {
               <View style={{ marginHorizontal: 30 }}>
                 <PrimaryButton title="Xác Nhận" />
               </View>
+
+              {cart && cart.cartItems.length > 1 && (
+                <TouchableOpacity
+                  style={styles.btnContainer1}
+                  onPress={handleDeleteAllItems}
+                >
+                  <Text
+                    style={{ fontSize: 20, fontWeight: 'bold', color: '#FFF' }}
+                  >
+                    Xóa tất cả sản phẩm
+                  </Text>
+                </TouchableOpacity>
+              )}
             </View>
-
-            {cart && cart.cartItems.length > 1 && <TouchableOpacity
-              style={styles.btnContainer1}
-              onPress={handleDeleteAllItems}
-            >
-              <Text style={{ fontSize: 20, fontWeight: "bold", color: "#FFF" }}>
-                Xóa tất cả sản phẩm
-              </Text>
-            </TouchableOpacity>}
-          </View>
-        )}
-      />) : (
-
+          )}
+        />
+      ) : (
         <View>
           <View>
             <Icon
@@ -303,7 +316,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginHorizontal: 20,
-    marginTop: 20
+    marginTop: 20,
   },
   title: {
     color: '#FFF',
