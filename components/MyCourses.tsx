@@ -21,6 +21,7 @@ import { getCourseByCustomer } from '../apis/courses/api';
 import { getCourseForLearnerSearchByUser } from '../apis/learner/api';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { getImage } from '../apis/image/components/apis';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => {
   const navigation = useNavigation();
@@ -36,7 +37,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => {
           <Image
             style={styles.tinyLogo}
             source={{
-              uri: item.thumbnailUrl,
+              uri: getImage(item.thumbnailUrl),
             }}
             alt="Course Thumbnail"
           />
