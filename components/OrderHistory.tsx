@@ -50,7 +50,7 @@ const OrderHistory = ({ path }: { path: string }) => {
                   <Text style={styles.title}>
                     {item.orderDetails.length > 1
                       ? `${item.orderDetails.length} Khóa học đã mua`
-                      : item.orderDetails[0].course.title}
+                      : item.orderDetails[0]?.course?.title}
                   </Text>
                 </View>
                 {item.orderDetails.length > 1 ? (
@@ -77,7 +77,7 @@ const OrderHistory = ({ path }: { path: string }) => {
                   renderItem={({ item }) => (
                     <View style={styles.subjectDetail}>
                       <Text style={styles.subjectTitle}>
-                        {item.course.title} :
+                        {item?.course?.title} :
                       </Text>
                       <Text style={styles.subjectPrice}>
                         {formatCurrency(item.priceAfterPromotion)} vnđ
