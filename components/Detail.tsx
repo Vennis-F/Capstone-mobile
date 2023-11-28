@@ -58,8 +58,8 @@ const Detail = ({}) => {
   const [selectedId, setSelectedId] = useState();
   const [course, setCourse] = useState<GetCourseDetailResponse>();
   const [chapterLectures, setChapterLectures] = useState<ChapterLecture[]>([]);
-  const route = useRoute();
   const [notification, setNotification] = useState(null);
+  const route = useRoute();
   const id = route.params?.id as string;
   const [isOwned, setIsOwned] = useState(false);
   console.log('[Detail id]', id);

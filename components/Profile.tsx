@@ -92,10 +92,6 @@ export default function Profile({ path }: { path: String }) {
 
   console.log('[Profile login]', userLogin);
 
-  // useEffect(() => {
-  //     handleCheckIsLogin()
-  // }, [])
-
   const getUserProfile = async () => {
     setuserData(await getProfileUser());
   };
@@ -410,13 +406,10 @@ export default function Profile({ path }: { path: String }) {
                     </Text>
                   </Button>
                   <Button
-                    //   onPress={handleSubmit}
                     style={styles.buttonUpdate}
                     borderRadius={8}
                     paddingBottom={3}
-                    onPress={() => {
-                      handleUpdate;
-                    }}
+                    onPress={handleUpdate}
                   >
                     <Text style={{ color: '#fff', fontWeight: 'bold' }}>
                       Cập nhật
