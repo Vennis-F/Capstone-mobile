@@ -22,6 +22,7 @@ import { getCourseForLearnerSearchByUser } from '../apis/learner/api';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { getImage } from '../apis/image/components/apis';
+import { useFocusEffect } from 'expo-router';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => {
   const navigation = useNavigation();
@@ -75,19 +76,26 @@ export default function MyCourses({ path }: { path: string }) {
   >([]);
 
   const getCourses = async () => {
-    const userRole = await getUserRole();
-    if (!userRole)
-      showErrorAlert('Hãy đăng nhập và tôi sẽ cho trả về khóa học của bạn ạ');
+    // const userRole = await getUserRole();
+    // if (!userRole)
+    //   showErrorAlert('Hãy đăng nhập và tôi sẽ cho trả về khóa học của bạn ạ');
 
-    console.log('[userROle]', userRole);
-    if (userRole === UserRole.CUSTOMER) setCourses(await getCourseByCustomer());
-    else if (userRole === UserRole.LEARNER)
-      setCourses((await getCourseForLearnerSearchByUser('')).data);
+    // console.log('[userROle]', userRole);
+    // if (userRole === UserRole.CUSTOMER)
+    setCourses(await getCourseByCustomer());
+    // else if (userRole === UserRole.LEARNER)
+    // setCourses((await getCourseForLearnerSearchByUser('')).data);
   };
 
-  useEffect(() => {
-    getCourses();
-  }, []);
+  // useEffect(() => {
+  //   getCourses();
+  // }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getCourses();
+    }, [])
+  );
 
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? '#050514' : '#CECADA';
@@ -102,6 +110,7 @@ export default function MyCourses({ path }: { path: string }) {
       />
     );
   };
+  console.log(courses);
 
   return (
     <SafeAreaView style={styles.container}>
