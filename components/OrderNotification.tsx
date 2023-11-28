@@ -123,8 +123,8 @@ const OrderNotification = ({ path }: { path: string }) => {
         <Text style={styles.transactionType}>Ngân hàng:</Text>
         <Text style={styles.transactionValue}>{vnpBankCode}</Text>
 
-        <Text style={styles.transactionType}>Email:</Text>
-        <Text style={styles.transactionValue}>{'userData?.email'}</Text>
+        {/* <Text style={styles.transactionType}>Email:</Text>
+        <Text style={styles.transactionValue}>{'userData?.email'}</Text> */}
 
         <Text style={styles.transactionType}>Số tiền:</Text>
         <Text style={styles.transactionValue}>
@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     padding: 16,
     width: '100%',
+    alignItems: 'center',
   },
   headerImage: {
     width: 80,
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0, 0, 0, 0.3)',
     borderRadius: 24,
     marginBottom: 20,
-    width: '90%',
+    width: '80%',
     padding: 12,
   },
   transactionType: {

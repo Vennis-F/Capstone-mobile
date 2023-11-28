@@ -38,7 +38,7 @@ const DetailOrder = ({ path }: { path: string }) => {
     status = convertOrderStatus(orderDetail?.orderStatus);
   const color = { color: status.color };
 
-  console.log(orderDetail);
+  console.log('orderl detail: ', orderDetail);
 
   let tranStatus = { color: '#000', vietnamse: 'Unknow' };
   if (orderDetail?.transaction?.status)

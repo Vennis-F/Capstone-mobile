@@ -3,7 +3,7 @@ import { Button } from 'native-base';
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { findOrdersByUser } from '../apis/order/api';
-import { Order } from '../apis/order/types';
+import { Order, convertOrderStatus } from '../apis/order/types';
 import { formatCurrency } from '../libs/core/handle-price';
 import { formatStringtoDate } from '../libs/core/handle-time';
 import { useFocusEffect, useNavigation } from 'expo-router';
@@ -105,10 +105,12 @@ const OrderHistory = ({ path }: { path: string }) => {
                 <Text
                   style={[
                     styles.info,
-                    item.orderStatus ? styles.statusSuccess : styles.statusFail,
+                    // item.orderStatus ? styles.statusSuccess : styles.statusFail,
+                    // convertOrderStatus(item.orderStatus).color
                   ]}
                 >
-                  {item.orderStatus ? 'Thành công' : 'Không thành công'}
+                  {convertOrderStatus(item.orderStatus).vietnamse}
+                  {/* {item.orderStatus ? 'Thành công' : 'Không thành công'} */}
                 </Text>
               </View>
 
