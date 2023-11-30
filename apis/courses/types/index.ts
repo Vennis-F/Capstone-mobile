@@ -1,32 +1,32 @@
 export type Category = {
-  id: string
-  name: string
-  active: boolean
-  totalCourses: number
-}
+  id: string;
+  name: string;
+  active: boolean;
+  totalCourses: number;
+};
 export type Level = {
-  id: string
-  name: string
-  active: boolean
-}
+  id: string;
+  name: string;
+  active: boolean;
+};
 export enum OrderType {
   ASC = 'ASC',
   DESC = 'DESC',
 }
 export type PageOptions = {
-  take: number
-  page: number
-  order: OrderType
-}
-export type PageResponse<T> = { data: T[]; meta: PageMetaResponse }
+  take: number;
+  page: number;
+  order: OrderType;
+};
+export type PageResponse<T> = { data: T[]; meta: PageMetaResponse; };
 export type PageMetaResponse = {
-  page: number
-  take: number
-  itemCount: number
-  pageCount: number
-  hasPreviousPage: boolean
-  hasNextPage: boolean
-}
+  page: number;
+  take: number;
+  itemCount: number;
+  pageCount: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+};
 
 export enum CourseStatus {
   CREATED = 'Created',
@@ -37,40 +37,41 @@ export enum CourseStatus {
 }
 
 export type CourseFullInfor = {
-  id: string
-  title: string
-  description: string | null
-  price: number | null
-  shortDescription: string | null
-  prepareMaterial: string | null
-  status: CourseStatus
-  totalChapter: number | null
-  publishedDate: string
-  totalBought: number | null
-  thumbnailUrl: string | null
-  active: boolean
-  category: Category
-  level: Level
-}
+  id: string;
+  title: string;
+  description: string | null;
+  price: number | null;
+  shortDescription: string | null;
+  prepareMaterial: string | null;
+  status: CourseStatus;
+  totalChapter: number | null;
+  publishedDate: string;
+  totalBought: number | null;
+  thumbnailUrl: string | null;
+  active: boolean;
+  category: Category;
+  level: Level;
+};
 
 export type CourseFilterResponse = {
-  id: string
-  title: string
-  description: string
-  price: number
-  shortDescription: string
-  prepareMaterial: string
-  status: string
-  totalChapter: number
-  publishedDate: string
-  totalBought: number
-  thumbnailUrl: string
-  active: boolean
-}
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  shortDescription: string;
+  prepareMaterial: string;
+  status: string;
+  totalChapter: number;
+  publishedDate: string;
+  totalBought: number;
+  thumbnailUrl: string;
+  active: boolean;
+  author: string;
+};
 
 export type CourseLearnerFilterResponse = {
-  completedPercent: number
-} & CourseFilterResponse
+  completedPercent: number;
+} & CourseFilterResponse;
 
 // Components
 export enum SortCourseBy {
@@ -83,45 +84,45 @@ export enum SortCourseBy {
 
 // API
 export type GetCoursesBySearchRequest = {
-  levels: string[]
-  categories: string[]
-  search?: string
-  sortField?: SortFieldCourse
-  pageOptions: PageOptions
-}
+  levels: string[];
+  categories: string[];
+  search?: string;
+  sortField?: SortFieldCourse;
+  pageOptions: PageOptions;
+};
 
 export type GetCoursesBySearchResponse = {
-  data: Course[]
-  meta: PageMetaResponse
-}
+  data: Course[];
+  meta: PageMetaResponse;
+};
 
 export type Course = {
-  id: string
-  title: string
-  description: string | null
-  price: number
-  discount: number
-  discountPrice: number
-  promotionCourseByStaffId: string | null
-  ratedStar: number
-  author: string
-  totalLength: number
-  shortDescription: string | null
-  prepareMaterial: string | null
-  status: CourseStatus
-  totalChapter: number
-  publishedDate: string
-  totalBought: number
-  thumbnailUrl: string
-  active: boolean
-  level: string
-}
+  id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  discount: number;
+  discountPrice: number;
+  promotionCourseByStaffId: string | null;
+  ratedStar: number;
+  author: string;
+  totalLength: number;
+  shortDescription: string | null;
+  prepareMaterial: string | null;
+  status: CourseStatus;
+  totalChapter: number;
+  publishedDate: string;
+  totalBought: number;
+  thumbnailUrl: string;
+  active: boolean;
+  level: string;
+};
 
 export type GetCourseDetailResponse = {
-  authorId: string
-  categoryId: string
-  category: string
-} & Course
+  authorId: string;
+  categoryId: string;
+  category: string;
+} & Course;
 
 export enum SortFieldCourse {
   PRICE = 'price',

@@ -1,6 +1,6 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Link, Tabs } from 'expo-router';
-import { Pressable, useColorScheme } from 'react-native';
+import { Pressable, StatusBar, useColorScheme } from 'react-native';
 
 import Colors from '../../constants/Colors';
 import { UserRole, getUserRole } from '../../libs/core/handle-token';
@@ -9,6 +9,7 @@ import {
   background,
   color,
 } from 'native-base/lib/typescript/theme/styled-system';
+import { AntDesign, Octicons } from '@expo/vector-icons';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -37,12 +38,21 @@ export default function TabLayout() {
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         tabBarInactiveTintColor: '#fff',
-        headerStyle: { backgroundColor: '#ef4444' },
+        headerShown: false,
         headerTitleStyle: { color: '#fff', fontWeight: 'bold', fontSize: 20 },
-        tabBarStyle: { backgroundColor: '#ef4444', paddingBottom: 4 },
+        tabBarStyle: { backgroundColor: '#FF724C', paddingBottom: 4 },
         tabBarShowLabel: false,
       }}
     >
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: 'Trang chính',
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="home" size={28} color={color} />
+          ),
+        }}
+      />
       <Tabs.Screen
         name="index"
         options={{
