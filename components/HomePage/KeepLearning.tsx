@@ -81,7 +81,9 @@ const KeepLearning = ({
   ownList: CourseFilterResponse[];
 }) => {
   const navigation = useNavigation();
-
+  const ownListId = ownList.map((course) => {
+    return course.id;
+  });
   return (
     <SafeAreaView style={styles.container}>
       {ownList.slice(-2).map((item, index) => (
@@ -89,7 +91,7 @@ const KeepLearning = ({
           item={item}
           key={index}
           onPress={() => {
-            navigation.navigate('eight', { id: item.id });
+            navigation.navigate('eight', { id: item.id, ownListId: ownListId });
           }}
         />
       ))}

@@ -87,7 +87,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="five"
         options={
-          userRole
+          userRole === 'Customer'
             ? {
                 title: 'Giỏ hàng',
                 tabBarIcon: ({ color }) => (
@@ -214,7 +214,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="orderHistory"
         options={
-          userRole
+          userRole === 'Customer'
             ? {
                 title: 'Lịch sử đơn hàng',
                 tabBarIcon: ({ color }) => (

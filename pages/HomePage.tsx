@@ -9,36 +9,55 @@ import { getCourseByCustomer } from '../apis/courses/api';
 import { useNavigation } from '@react-navigation/native';
 import { COLORS } from '../libs/const/color';
 import HomeHeader from '../components/HomePage/HomeHeader';
-import { getAccessToken } from '../libs/core/handle-token';
+import { getAccessToken, getUserRole } from '../libs/core/handle-token';
 import { Image } from 'native-base';
 import KeepLearning from '../components/HomePage/KeepLearning';
 import { getAllInstructors } from '../apis/instructor/api';
 import { useFocusEffect } from 'expo-router';
+import { UserRole } from '../apis/auth/types';
+import { getCourseForLearnerSearchByUser } from '../apis/learner/api';
 
 export default function HomePage({ path }: { path: string }) {
-  const [token, setToken] = useState<string | null>();
+  const [userRole, setUserRole] = useState<UserRole | null>();
+  // const [token, setToken] = useState<string | null>();
   const [ownList, setOwnList] = useState<CourseFilterResponse[]>([]);
 
-  const getToken = async () => {
-    const responeToken = await getAccessToken();
-    setToken(responeToken);
+  const handleGetUserRole = async () => {
+    try {
+      setUserRole(await getUserRole());
+    } catch (error) {
+      console.log('[HomePage - user role error] ', error);
+    }
   };
 
+  // const getToken = async () => {
+  //   const responeToken = await getAccessToken();
+  //   setToken(responeToken);
+  // };
+
   const getUserCourse = async () => {
-    if (!token) {
-      setOwnList([]);
-    } else setOwnList(await getCourseByCustomer());
+    try {
+      if (!userRole) {
+        setOwnList([]);
+      } else if (userRole === 'Customer')
+        setOwnList(await getCourseByCustomer());
+      else if (userRole === 'Learner')
+        setOwnList((await getCourseForLearnerSearchByUser('')).data);
+    } catch (error) {
+      console.log('[HomePage - get user course error] ', error);
+    }
   };
 
   useFocusEffect(
     useCallback(() => {
-      getToken();
+      // getToken();
+      handleGetUserRole();
     }, [])
   );
 
   useEffect(() => {
     getUserCourse();
-  }, [token]);
+  }, [userRole]);
 
   return (
     <ScrollView

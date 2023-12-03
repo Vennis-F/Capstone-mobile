@@ -36,8 +36,12 @@ const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
 
   const handleGetCategories = async () => {
-    const catesRes = await getCategories('true');
-    setCategories(catesRes);
+    try {
+      const catesRes = await getCategories('true');
+      setCategories(catesRes);
+    } catch (error) {
+      console.log('[Categories - categories error] ', error);
+    }
   };
 
   useEffect(() => {

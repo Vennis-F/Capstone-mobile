@@ -25,7 +25,7 @@ import {
   getCoursesBySearch,
   getCoursesDetailById,
 } from '../apis/courses/api';
-import { getAccessToken } from '../libs/core/handle-token';
+import { getAccessToken, getUserRole } from '../libs/core/handle-token';
 import { addCartItem } from '../apis/cart/apis';
 import { useNavigation } from '@react-navigation/native';
 import { getChapterLecturesByCourseId } from '../apis/chapter-lecture/api';
@@ -38,6 +38,7 @@ import FlashMessage, { showMessage } from 'react-native-flash-message';
 import Notification from './Notification';
 import { getImage } from '../apis/image/components/apis';
 import HTML from 'react-native-render-html';
+import { UserRole } from '../apis/auth/types';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity onPress={onPress}>
@@ -55,14 +56,24 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const Detail = ({}) => {
   const navigation = useNavigation();
+  const [userRole, setUserRole] = useState<UserRole | null>();
   const [selectedId, setSelectedId] = useState();
   const [course, setCourse] = useState<GetCourseDetailResponse>();
   const [chapterLectures, setChapterLectures] = useState<ChapterLecture[]>([]);
   const [notification, setNotification] = useState(null);
   const route = useRoute();
   const id = route.params?.id as string;
+  const ownListId = route.params?.ownListId;
   const [isOwned, setIsOwned] = useState(false);
   console.log('[Detail id]', id);
+
+  const handleGetUserRole = async () => {
+    try {
+      setUserRole(await getUserRole());
+    } catch (error) {
+      console.log('[Detail - user role error] ', error);
+    }
+  };
 
   const getCourse = async () => {
     const bodyRequest: GetCoursesBySearchRequest = {
@@ -84,7 +95,7 @@ const Detail = ({}) => {
 
   const handleAddCartItem = async () => {
     const token = await getAccessToken();
-    if (token) {
+    if (token && userRole === 'Customer') {
       try {
         await addCartItem({
           promotionCourseId: null,
@@ -109,13 +120,18 @@ const Detail = ({}) => {
   };
 
   const handleCheckCourseIsOwned = async () => {
-    if (!(await getAccessToken())) return;
-    const response = await checkCourseIsOwnedByCourseId(id);
-    setIsOwned(response.status);
+    if (!userRole) return;
+    if (userRole === 'Customer') {
+      const response = await checkCourseIsOwnedByCourseId(id);
+      setIsOwned(response.status);
+    } else if (userRole === 'Learner' && ownListId) {
+      setIsOwned(ownListId.includes(course.id));
+    }
   };
 
   useEffect(() => {
     getCourse();
+    handleGetUserRole();
   }, [id]);
 
   useEffect(() => {
@@ -165,14 +181,18 @@ const Detail = ({}) => {
                   style={styles.icons}
                 />
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => navigation.navigate('five')}>
-                <Ionicons
-                  name="md-cart-outline"
-                  size={32}
-                  color={'white'}
-                  style={styles.icons}
-                />
-              </TouchableOpacity>
+              {userRole === 'Customer' ? (
+                <TouchableOpacity onPress={() => navigation.navigate('five')}>
+                  <Ionicons
+                    name="md-cart-outline"
+                    size={32}
+                    color={'white'}
+                    style={styles.icons}
+                  />
+                </TouchableOpacity>
+              ) : (
+                ''
+              )}
             </View>
 
             <View style={{ alignItems: 'flex-end' }}>
@@ -188,14 +208,24 @@ const Detail = ({}) => {
                   </Text>
                 </View>
               ) : (
-                <View style={styles.addCartBtn}>
-                  <Text
-                    style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
-                    onPress={handleAddCartItem}
-                  >
-                    Thêm vào giỏ hàng
-                  </Text>
-                </View>
+                <>
+                  {userRole === 'Customer' ? (
+                    <View style={styles.addCartBtn}>
+                      <Text
+                        style={{
+                          color: '#fff',
+                          fontSize: 16,
+                          fontWeight: 'bold',
+                        }}
+                        onPress={handleAddCartItem}
+                      >
+                        Thêm vào giỏ hàng
+                      </Text>
+                    </View>
+                  ) : (
+                    ''
+                  )}
+                </>
               )}
             </View>
           </ImageBackground>
@@ -221,38 +251,42 @@ const Detail = ({}) => {
                 >
                   {course.title}
                 </Text>
-                <View style={{ maxWidth: '38%', flexDirection: 'column' }}>
-                  <View style={styles.priceTag}>
-                    <Text
-                      style={{
-                        marginLeft: 15,
-                        color: '#fff',
-                        fontWeight: 'bold',
-                        fontSize: 16,
-                      }}
-                    >
-                      {formatCurrency(
-                        course.discount ? course.discountPrice : course.price
-                      )}
-                      VND
-                    </Text>
+                {userRole === 'Customer' ? (
+                  <View style={{ maxWidth: '38%', flexDirection: 'column' }}>
+                    <View style={styles.priceTag}>
+                      <Text
+                        style={{
+                          marginLeft: 15,
+                          color: '#fff',
+                          fontWeight: 'bold',
+                          fontSize: 16,
+                        }}
+                      >
+                        {formatCurrency(
+                          course.discount ? course.discountPrice : course.price
+                        )}
+                        VND
+                      </Text>
+                    </View>
+                    {course.discount ? (
+                      <Text
+                        style={{
+                          marginLeft: 15,
+                          color: '#000',
+                          fontWeight: '600',
+                          fontSize: 16,
+                          textDecorationLine: 'line-through',
+                        }}
+                      >
+                        {formatCurrency(course.price)} VND
+                      </Text>
+                    ) : (
+                      ''
+                    )}
                   </View>
-                  {course.discount ? (
-                    <Text
-                      style={{
-                        marginLeft: 15,
-                        color: '#000',
-                        fontWeight: '600',
-                        fontSize: 16,
-                        textDecorationLine: 'line-through',
-                      }}
-                    >
-                      {formatCurrency(course.price)} VND
-                    </Text>
-                  ) : (
-                    ''
-                  )}
-                </View>
+                ) : (
+                  ''
+                )}
               </View>
               <View
                 style={{
@@ -391,7 +425,7 @@ const Detail = ({}) => {
 const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 20,
-    marginTop: 12,
+    paddingTop: 40,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },

@@ -41,8 +41,10 @@ import { Button, Input } from 'native-base';
 import Notification from './Notification';
 import { showMessage } from 'react-native-flash-message';
 import * as ImagePicker from 'expo-image-picker';
+import { UserRole } from '../apis/auth/types';
 
 export default function Profile({ path }: { path: String }) {
+  const [userRole, setUserRole] = useState<UserRole | null>();
   const [userData, setuserData] = useState<UserFilterResponse>();
   const navigation = useNavigation();
   const [userLogin, setuserLogin] = useState(false);
@@ -72,6 +74,10 @@ export default function Profile({ path }: { path: String }) {
     });
   };
 
+  const handleGetUserRole = async () => {
+    setUserRole(await getUserRole());
+  };
+
   const handleCheckIsLogin = async () => {
     const token = await getAccessToken();
     if (token) setuserLogin(true);
@@ -86,7 +92,7 @@ export default function Profile({ path }: { path: String }) {
       removeAccessToken();
       setuserLogin(false);
       showSuccessMessage();
-      navigation.navigate('index');
+      navigation.navigate('home');
     } else console.log('[error]', 'You are not allowed to log out');
   };
 
@@ -97,10 +103,11 @@ export default function Profile({ path }: { path: String }) {
   };
 
   useEffect(() => {
-    if (userLogin) {
+    if (userLogin && userRole === 'Customer') {
       getUserProfile();
     }
   }, [userLogin]);
+
   const closeNotification = () => {
     setNotification(null);
   };
@@ -108,6 +115,7 @@ export default function Profile({ path }: { path: String }) {
   useFocusEffect(
     React.useCallback(() => {
       handleCheckIsLogin();
+      handleGetUserRole();
     }, [])
   );
 
@@ -220,144 +228,171 @@ export default function Profile({ path }: { path: String }) {
             style={styles.profile}
           />
         ) : (
-          ''
+          <Image
+            source={require('../assets/images/avatar.png')}
+            style={styles.profile}
+          />
         )}
       </ImageBackground>
       <ScrollView>
-        <View style={styles.profileContainer}>
-          <Text style={styles.name}>
-            {userLogin === true && userData?.firstName
-              ? fullname
-              : 'Xin hãy đăng nhập trước'}
-          </Text>
-          {userLogin === false ? (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate('seven');
-              }}
-            >
-              <View style={styles.loginBtn}>
-                <Text style={styles.menuText}>ĐĂNG NHẬP</Text>
-              </View>
-            </TouchableOpacity>
-          ) : (
-            <View style={styles.loginBtn}>
-              <Text style={styles.menuText}>{userData?.email}</Text>
-            </View>
-          )}
-
-          {userLogin === false ? (
-            <View></View>
-          ) : (
-            <View style={styles.menuWrapper}>
+        {userRole === 'Customer' ? (
+          <View style={styles.profileContainer}>
+            <Text style={styles.name}>
+              {userLogin === true && userData?.firstName
+                ? fullname
+                : 'Xin hãy đăng nhập trước'}
+            </Text>
+            {userLogin === false ? (
               <TouchableOpacity
                 onPress={() => {
-                  setPressDetail(!pressDetail);
+                  navigation.navigate('seven');
                 }}
               >
-                <View style={styles.menuItem}>
-                  <Icon
-                    name="library-books"
-                    size={24}
-                    style={{ marginRight: 30 }}
-                    color={'#eab308'}
-                  />
-                  <Text style={styles.menuTextSub}>Hồ sơ</Text>
+                <View style={styles.loginBtn}>
+                  <Text style={styles.menuText}>ĐĂNG NHẬP</Text>
                 </View>
               </TouchableOpacity>
-              <View
-                style={[
-                  styles.userInfo,
-                  pressDetail ? styles.show : styles.hidden,
-                ]}
-              >
-                <View style={styles.infoContainer}>
-                  <Text style={styles.label}>
-                    <Text style={{ backgroundColor: '#ffffff97' }}>Email</Text>
-                  </Text>
-                  <Input
-                    value={email}
-                    variant="filled"
-                    placeholder="Nhập Email ở đây"
-                    isReadOnly={true}
-                    borderRadius={10}
-                    paddingLeft={4}
-                  />
-                  {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-                </View>
-                <View style={styles.infoContainer}>
-                  <Text style={styles.label}>
-                    <Text style={{ backgroundColor: '#ffffff97' }}>
-                      Tên đăng nhập
-                    </Text>
-                  </Text>
-                  <Input
-                    value={username}
-                    onChangeText={(text) => setUsername(text)}
-                    variant="filled"
-                    placeholder="Nhập Tên đăng nhập ở đây"
-                    borderRadius={10}
-                    paddingLeft={4}
-                  />
-                  {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-                </View>
+            ) : (
+              <View style={styles.loginBtn}>
+                <Text style={styles.menuText}>{userData?.email}</Text>
+              </View>
+            )}
 
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignSelf: 'center',
-                    width: '80%',
-                    justifyContent: 'space-between',
-                    padding: 4,
+            {userLogin === false ? (
+              <View></View>
+            ) : (
+              <View style={styles.menuWrapper}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setPressDetail(!pressDetail);
                   }}
                 >
-                  <View style={styles.nameContainer}>
-                    <Text style={styles.label}>
-                      <Text style={{ backgroundColor: '#ffffff97' }}>Tên</Text>
-                    </Text>
-                    <Input
-                      value={firstname}
-                      onChangeText={(text) => setFirstname(text)}
-                      variant="filled"
-                      placeholder="Tên"
-                      borderRadius={10}
-                      paddingLeft={4}
+                  <View style={styles.menuItem}>
+                    <Icon
+                      name="library-books"
+                      size={24}
+                      style={{ marginRight: 30 }}
+                      color={'#eab308'}
                     />
-                    {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
+                    <Text style={styles.menuTextSub}>Hồ sơ</Text>
                   </View>
-                  <View style={styles.nameContainer}>
+                </TouchableOpacity>
+                <View
+                  style={[
+                    styles.userInfo,
+                    pressDetail ? styles.show : styles.hidden,
+                  ]}
+                >
+                  <View style={styles.infoContainer}>
                     <Text style={styles.label}>
                       <Text style={{ backgroundColor: '#ffffff97' }}>
-                        Tên đệm
+                        Email
                       </Text>
                     </Text>
                     <Input
-                      value={middlename}
-                      onChangeText={(text) => setMiddlename(text)}
+                      value={email}
                       variant="filled"
-                      placeholder="Tên đệm"
-                      paddingLeft={4}
+                      placeholder="Nhập Email ở đây"
+                      isReadOnly={true}
                       borderRadius={10}
+                      paddingLeft={4}
                     />
                     {/* {errorText1 && (
                   <Text style={{ color: 'red' }}>{errorText1}</Text>
                 )} */}
                   </View>
-                  <View style={styles.nameContainer}>
+                  <View style={styles.infoContainer}>
                     <Text style={styles.label}>
-                      <Text style={{ backgroundColor: '#ffffff97' }}>Họ</Text>
+                      <Text style={{ backgroundColor: '#ffffff97' }}>
+                        Tên đăng nhập
+                      </Text>
                     </Text>
                     <Input
-                      value={lastname}
-                      onChangeText={(text) => setLastname(text)}
+                      value={username}
+                      onChangeText={(text) => setUsername(text)}
                       variant="filled"
-                      placeholder="Họ"
+                      placeholder="Nhập Tên đăng nhập ở đây"
+                      borderRadius={10}
+                      paddingLeft={4}
+                    />
+                    {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignSelf: 'center',
+                      width: '80%',
+                      justifyContent: 'space-between',
+                      padding: 4,
+                    }}
+                  >
+                    <View style={styles.nameContainer}>
+                      <Text style={styles.label}>
+                        <Text style={{ backgroundColor: '#ffffff97' }}>
+                          Tên
+                        </Text>
+                      </Text>
+                      <Input
+                        value={firstname}
+                        onChangeText={(text) => setFirstname(text)}
+                        variant="filled"
+                        placeholder="Tên"
+                        borderRadius={10}
+                        paddingLeft={4}
+                      />
+                      {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                    </View>
+                    <View style={styles.nameContainer}>
+                      <Text style={styles.label}>
+                        <Text style={{ backgroundColor: '#ffffff97' }}>
+                          Tên đệm
+                        </Text>
+                      </Text>
+                      <Input
+                        value={middlename}
+                        onChangeText={(text) => setMiddlename(text)}
+                        variant="filled"
+                        placeholder="Tên đệm"
+                        paddingLeft={4}
+                        borderRadius={10}
+                      />
+                      {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                    </View>
+                    <View style={styles.nameContainer}>
+                      <Text style={styles.label}>
+                        <Text style={{ backgroundColor: '#ffffff97' }}>Họ</Text>
+                      </Text>
+                      <Input
+                        value={lastname}
+                        onChangeText={(text) => setLastname(text)}
+                        variant="filled"
+                        placeholder="Họ"
+                        paddingLeft={4}
+                        borderRadius={10}
+                      />
+                      {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                    </View>
+                  </View>
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.label}>
+                      <Text style={{ backgroundColor: '#ffffff97' }}>
+                        Số điện thoại
+                      </Text>
+                    </Text>
+                    <Input
+                      value={phone}
+                      onChangeText={(text) => setPhone(text)}
+                      variant="filled"
+                      placeholder="Nhập Số điện thoại ở đây"
                       paddingLeft={4}
                       borderRadius={10}
                     />
@@ -365,255 +400,281 @@ export default function Profile({ path }: { path: String }) {
                   <Text style={{ color: 'red' }}>{errorText1}</Text>
                 )} */}
                   </View>
-                </View>
-                <View style={styles.infoContainer}>
-                  <Text style={styles.label}>
-                    <Text style={{ backgroundColor: '#ffffff97' }}>
-                      Số điện thoại
-                    </Text>
-                  </Text>
-                  <Input
-                    value={phone}
-                    onChangeText={(text) => setPhone(text)}
-                    variant="filled"
-                    placeholder="Nhập Số điện thoại ở đây"
-                    paddingLeft={4}
-                    borderRadius={10}
-                  />
-                  {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    width: '80%',
-                    alignSelf: 'center',
-                    marginVertical: 8,
-                  }}
-                >
-                  <Button
-                    //   onPress={handleSubmit}
-                    style={styles.buttonReset}
-                    borderRadius={10}
-                    paddingBottom={3}
-                    onPress={handleReset}
-                  >
-                    <Text style={{ color: '#ef4444', fontWeight: 'bold' }}>
-                      Đặt lại
-                    </Text>
-                  </Button>
-                  <Button
-                    style={styles.buttonUpdate}
-                    borderRadius={8}
-                    paddingBottom={3}
-                    onPress={handleUpdate}
-                  >
-                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                      Cập nhật
-                    </Text>
-                  </Button>
-                </View>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setPressPassword(!pressPassword);
-                }}
-              >
-                <View style={styles.menuItem}>
-                  <Icon
-                    name="security"
-                    size={24}
-                    style={{ marginRight: 30 }}
-                    color={'#eab308'}
-                  />
-                  <Text style={styles.menuTextSub}>Bảo mật tài khoản</Text>
-                </View>
-              </TouchableOpacity>
-              <View
-                style={[
-                  styles.userInfo,
-                  pressPassword ? styles.show : styles.hidden,
-                ]}
-              >
-                <View style={styles.infoContainer}>
-                  <Text style={styles.label}>
-                    <Text style={{ backgroundColor: '#ffffff97' }}>
-                      Mật khẩu hiện tại
-                    </Text>
-                  </Text>
-                  <Input
-                    value={oldPassword}
-                    onChangeText={(text) => setOldpassword(text)}
-                    type="password"
-                    variant="filled"
-                    placeholder="Nhập Mật khẩu hiện tại ở đây"
-                    borderRadius={10}
-                    paddingLeft={4}
-                  />
-                  {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-                </View>
-                <View style={styles.infoContainer}>
-                  <Text style={styles.label}>
-                    <Text style={{ backgroundColor: '#ffffff97' }}>
-                      Mật khẩu mới
-                    </Text>
-                  </Text>
-                  <Input
-                    value={newPassword}
-                    onChangeText={(text) => setNewPassword(text)}
-                    type="password"
-                    variant="filled"
-                    placeholder="Nhập Mật khẩu mới ở đây"
-                    borderRadius={10}
-                    paddingLeft={4}
-                  />
-                  {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-                </View>
-
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignSelf: 'center',
-                    width: '80%',
-                    justifyContent: 'space-between',
-                    padding: 4,
-                  }}
-                ></View>
-                <View style={styles.infoContainer}>
-                  <Text style={styles.label}>
-                    <Text style={{ backgroundColor: '#ffffff97' }}>
-                      Xác nhận mật khẩu mới
-                    </Text>
-                  </Text>
-                  <Input
-                    value={confirmPassword}
-                    onChangeText={(text) => setConfirmPassword(text)}
-                    type="password"
-                    variant="filled"
-                    placeholder="Xác nhận mật khẩu mới  "
-                    paddingLeft={4}
-                    borderRadius={10}
-                  />
-                  {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    width: '80%',
-                    alignSelf: 'center',
-                    marginVertical: 8,
-                  }}
-                >
-                  <Button
-                    //   onPress={handleSubmit}
-                    style={styles.buttonPassword}
-                    borderRadius={8}
-                    paddingBottom={3}
-                    onPress={() => {
-                      handleUpdatePassword(
-                        oldPassword,
-                        newPassword,
-                        confirmPassword
-                      );
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      width: '80%',
+                      alignSelf: 'center',
+                      marginVertical: 8,
                     }}
                   >
-                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                      Đổi mật khẩu
-                    </Text>
-                  </Button>
+                    <Button
+                      //   onPress={handleSubmit}
+                      style={styles.buttonReset}
+                      borderRadius={10}
+                      paddingBottom={3}
+                      onPress={handleReset}
+                    >
+                      <Text style={{ color: '#ef4444', fontWeight: 'bold' }}>
+                        Đặt lại
+                      </Text>
+                    </Button>
+                    <Button
+                      style={styles.buttonUpdate}
+                      borderRadius={8}
+                      paddingBottom={3}
+                      onPress={handleUpdate}
+                    >
+                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                        Cập nhật
+                      </Text>
+                    </Button>
+                  </View>
                 </View>
-              </View>
-              <TouchableOpacity
-                onPress={() => {
-                  setPressAvatar(!pressAvatar);
-                }}
-              >
-                <View style={styles.menuItem}>
-                  <Icon
-                    name="tag-faces"
-                    size={24}
-                    style={{ marginRight: 30 }}
-                    color={'#eab308'}
-                  />
-                  <Text style={styles.menuTextSub}>Ảnh đại diện</Text>
-                </View>
-              </TouchableOpacity>
-              <View
-                style={[
-                  styles.userInfo,
-                  pressAvatar ? styles.show : styles.hidden,
-                ]}
-              >
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-around',
-                    width: '80%',
-                    alignSelf: 'center',
-                    marginVertical: 8,
+                <TouchableOpacity
+                  onPress={() => {
+                    setPressPassword(!pressPassword);
                   }}
                 >
-                  <Button
-                    //   onPress={handleSubmit}
-                    style={styles.buttonAvatar}
-                    borderRadius={8}
-                    paddingBottom={3}
-                    onPress={pickImage}
-                  >
-                    <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                      Tải lên ảnh đại diện mới
-                    </Text>
-                  </Button>
-                </View>
-                {image && (
-                  <>
-                    <Image
-                      source={{ uri: image }}
-                      style={{
-                        width: 140,
-                        height: 140,
-                        alignSelf: 'center',
-                        borderRadius: 999,
-                        borderWidth: 4,
-                        borderColor: '#00568184',
-                        resizeMode: 'center',
-                      }}
+                  <View style={styles.menuItem}>
+                    <Icon
+                      name="security"
+                      size={24}
+                      style={{ marginRight: 30 }}
+                      color={'#eab308'}
                     />
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: 'space-around',
-                        width: '80%',
-                        alignSelf: 'center',
-                        marginVertical: 8,
+                    <Text style={styles.menuTextSub}>Bảo mật tài khoản</Text>
+                  </View>
+                </TouchableOpacity>
+                <View
+                  style={[
+                    styles.userInfo,
+                    pressPassword ? styles.show : styles.hidden,
+                  ]}
+                >
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.label}>
+                      <Text style={{ backgroundColor: '#ffffff97' }}>
+                        Mật khẩu hiện tại
+                      </Text>
+                    </Text>
+                    <Input
+                      value={oldPassword}
+                      onChangeText={(text) => setOldpassword(text)}
+                      type="password"
+                      variant="filled"
+                      placeholder="Nhập Mật khẩu hiện tại ở đây"
+                      borderRadius={10}
+                      paddingLeft={4}
+                    />
+                    {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                  </View>
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.label}>
+                      <Text style={{ backgroundColor: '#ffffff97' }}>
+                        Mật khẩu mới
+                      </Text>
+                    </Text>
+                    <Input
+                      value={newPassword}
+                      onChangeText={(text) => setNewPassword(text)}
+                      type="password"
+                      variant="filled"
+                      placeholder="Nhập Mật khẩu mới ở đây"
+                      borderRadius={10}
+                      paddingLeft={4}
+                    />
+                    {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignSelf: 'center',
+                      width: '80%',
+                      justifyContent: 'space-between',
+                      padding: 4,
+                    }}
+                  ></View>
+                  <View style={styles.infoContainer}>
+                    <Text style={styles.label}>
+                      <Text style={{ backgroundColor: '#ffffff97' }}>
+                        Xác nhận mật khẩu mới
+                      </Text>
+                    </Text>
+                    <Input
+                      value={confirmPassword}
+                      onChangeText={(text) => setConfirmPassword(text)}
+                      type="password"
+                      variant="filled"
+                      placeholder="Xác nhận mật khẩu mới  "
+                      paddingLeft={4}
+                      borderRadius={10}
+                    />
+                    {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      width: '80%',
+                      alignSelf: 'center',
+                      marginVertical: 8,
+                    }}
+                  >
+                    <Button
+                      //   onPress={handleSubmit}
+                      style={styles.buttonPassword}
+                      borderRadius={8}
+                      paddingBottom={3}
+                      onPress={() => {
+                        handleUpdatePassword(
+                          oldPassword,
+                          newPassword,
+                          confirmPassword
+                        );
                       }}
                     >
-                      <Button
-                        //   onPress={handleSubmit}
-                        style={styles.buttonAvatarConfirm}
-                        borderRadius={8}
-                        paddingBottom={3}
-                        onPress={() => {
-                          handleUpdateAvatar(image);
+                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                        Đổi mật khẩu
+                      </Text>
+                    </Button>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    setPressAvatar(!pressAvatar);
+                  }}
+                >
+                  <View style={styles.menuItem}>
+                    <Icon
+                      name="tag-faces"
+                      size={24}
+                      style={{ marginRight: 30 }}
+                      color={'#eab308'}
+                    />
+                    <Text style={styles.menuTextSub}>Ảnh đại diện</Text>
+                  </View>
+                </TouchableOpacity>
+                <View
+                  style={[
+                    styles.userInfo,
+                    pressAvatar ? styles.show : styles.hidden,
+                  ]}
+                >
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      width: '80%',
+                      alignSelf: 'center',
+                      marginVertical: 8,
+                    }}
+                  >
+                    <Button
+                      //   onPress={handleSubmit}
+                      style={styles.buttonAvatar}
+                      borderRadius={8}
+                      paddingBottom={3}
+                      onPress={pickImage}
+                    >
+                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                        Tải lên ảnh đại diện mới
+                      </Text>
+                    </Button>
+                  </View>
+                  {image && (
+                    <>
+                      <Image
+                        source={{ uri: image }}
+                        style={{
+                          width: 140,
+                          height: 140,
+                          alignSelf: 'center',
+                          borderRadius: 999,
+                          borderWidth: 4,
+                          borderColor: '#00568184',
+                          resizeMode: 'center',
+                        }}
+                      />
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'space-around',
+                          width: '80%',
+                          alignSelf: 'center',
+                          marginVertical: 8,
                         }}
                       >
-                        <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                          Xác nhận
-                        </Text>
-                      </Button>
-                    </View>
-                  </>
-                )}
+                        <Button
+                          //   onPress={handleSubmit}
+                          style={styles.buttonAvatarConfirm}
+                          borderRadius={8}
+                          paddingBottom={3}
+                          onPress={() => {
+                            handleUpdateAvatar(image);
+                          }}
+                        >
+                          <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                            Xác nhận
+                          </Text>
+                        </Button>
+                      </View>
+                    </>
+                  )}
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('three');
+                  }}
+                >
+                  <View style={styles.menuItem}>
+                    <Icon
+                      name="tv"
+                      size={24}
+                      style={{ marginRight: 30 }}
+                      color={'#eab308'}
+                    />
+                    <Text style={styles.menuTextSub}>Khóa học đã sở hữu</Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => {}}>
+                  <View style={styles.menuItem}>
+                    <Icon
+                      name="transfer-within-a-station"
+                      size={24}
+                      style={{ marginRight: 30 }}
+                      color={'#eab308'}
+                    />
+                    <Text style={styles.menuTextSub}>
+                      Quản lý tài khoản trẻ em
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleLogout}>
+                  <View style={styles.menuItem}>
+                    <Icon
+                      name="logout"
+                      size={24}
+                      style={{ marginRight: 30 }}
+                      color={'#eab308'}
+                    />
+                    <Text style={styles.menuTextSub}>Đăng xuất</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
+            )}
+          </View>
+        ) : (
+          <View style={styles.profileContainer}>
+            <View style={[styles.menuWrapper]}>
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('three');
@@ -626,24 +687,11 @@ export default function Profile({ path }: { path: String }) {
                     style={{ marginRight: 30 }}
                     color={'#eab308'}
                   />
-                  <Text style={styles.menuTextSub}>Khóa học đã sở hữu</Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={() => { }}>
-                <View style={styles.menuItem}>
-                  <Icon
-                    name="transfer-within-a-station"
-                    size={24}
-                    style={{ marginRight: 30 }}
-                    color={'#eab308'}
-                  />
-                  <Text style={styles.menuTextSub}>
-                    Quản lý tài khoản trẻ em
-                  </Text>
+                  <Text style={styles.menuTextSub}>Khóa học của bé</Text>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity onPress={handleLogout}>
-                <View style={styles.menuItem}>
+                <View style={[styles.menuItem]}>
                   <Icon
                     name="logout"
                     size={24}
@@ -654,8 +702,8 @@ export default function Profile({ path }: { path: String }) {
                 </View>
               </TouchableOpacity>
             </View>
-          )}
-        </View>
+          </View>
+        )}
       </ScrollView>
       {notification && (
         <Notification
@@ -672,6 +720,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: '#f8f6f0',
+    paddingTop: 32,
   },
   cover: {
     height: 200,

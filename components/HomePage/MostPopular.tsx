@@ -115,8 +115,12 @@ const MostPopular = ({ ownList = [] }: { ownList: CourseFilterResponse[] }) => {
         take: 4,
       },
     };
-    const dataResponse = await getCoursesBySearch(bodyRequest);
-    setListCourses([...dataResponse.data]);
+    try {
+      const dataResponse = await getCoursesBySearch(bodyRequest);
+      setListCourses([...dataResponse.data]);
+    } catch (error) {
+      console.log('[MostPopular - get course error] ', error);
+    }
   };
 
   useEffect(() => {
@@ -136,7 +140,7 @@ const MostPopular = ({ ownList = [] }: { ownList: CourseFilterResponse[] }) => {
         item={item}
         onPress={() => {
           setSelectedId(item.id);
-          navigation.navigate('eight', { id: item.id });
+          navigation.navigate('eight', { id: item.id, ownListId: ownListId });
         }}
         backgroundColor={backgroundColor}
         textColor={color}
