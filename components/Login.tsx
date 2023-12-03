@@ -4,50 +4,50 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
-} from "react-native";
-import React, { useState, useEffect } from "react";
-import { Input, NativeBaseProvider, Button, Icon } from "native-base";
-import { FontAwesome5 } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
-import { guestSignIn } from "../apis/auth/api";
-import { getAccessToken, setAccessToken } from "../libs/core/handle-token";
-import FlashMessage, { showMessage } from "react-native-flash-message";
+} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Input, NativeBaseProvider, Button, Icon } from 'native-base';
+import { FontAwesome5 } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { guestSignIn } from '../apis/auth/api';
+import { getAccessToken, setAccessToken } from '../libs/core/handle-token';
+import FlashMessage, { showMessage } from 'react-native-flash-message';
 function Login() {
   const navigation = useNavigation();
   useEffect(() => {
     // Xử lý sau khi navigate
     showMessage({
-      message: "Đăng nhập thành công",
-      type: "success",
+      message: 'Đăng nhập thành công',
+      type: 'success',
       duration: 3000,
     });
   }, [navigation]);
-  const [inputValue1, setInputValue1] = useState("");
-  const [inputValue2, setInputValue2] = useState("");
-  const [errorText1, setErrorText1] = useState("");
-  const [errorText2, setErrorText2] = useState("");
+  const [inputValue1, setInputValue1] = useState('');
+  const [inputValue2, setInputValue2] = useState('');
+  const [errorText1, setErrorText1] = useState('');
+  const [errorText2, setErrorText2] = useState('');
   const showSuccessMessage = () => {
     // Hiển thị thông báo khi đăng nhập thành công
     showMessage({
-      message: "Đăng nhập thành công",
-      type: "success",
+      message: 'Đăng nhập thành công',
+      type: 'success',
       duration: 3000, // Thời gian hiển thị (3 giây)
     });
   };
   const handleSubmit = async () => {
-    if (inputValue1.trim() === "") {
-      setErrorText1("Vui lòng nhập dữ liệu");
+    if (inputValue1.trim() === '') {
+      setErrorText1('Vui lòng nhập dữ liệu');
     } else {
       // Xử lý khi có giá trị nhập vào Input
-      setErrorText1("");
+      setErrorText1('');
       // ... Thực hiện các xử lý khác ở đây
     }
-    if (inputValue2.trim() === "") {
-      setErrorText2("Vui lòng nhập dữ liệu");
+    if (inputValue2.trim() === '') {
+      setErrorText2('Vui lòng nhập dữ liệu');
     } else {
-      setErrorText2("");
+      setErrorText2('');
     }
-    if (inputValue1.trim() !== "" && inputValue2.trim() !== "") {
+    if (inputValue1.trim() !== '' && inputValue2.trim() !== '') {
       try {
         const token = await guestSignIn({
           emailOrUsername: inputValue1,
@@ -58,24 +58,21 @@ function Login() {
         // Hiển thị thông báo khi đăng nhập thành công
         showSuccessMessage();
 
-        navigation.navigate('index');
+        navigation.navigate('home');
         console.log(token);
       } catch (error) {
-        console.log("[error when login]", error.message);
+        console.log('[error when login]', error.message);
       }
     }
-
-
   };
   return (
     <SafeAreaView
       style={{
         flex: 1,
         paddingHorizontal: 70,
-        backgroundColor: "#fff",
+        backgroundColor: '#fff',
       }}
     >
-
       <View style={styles.container}>
         <View style={styles.Middle}>
           <Text style={styles.LoginText}>Xin Chào!</Text>
@@ -91,13 +88,13 @@ function Login() {
               placeholder="Nhập email "
               borderRadius={10}
               _light={{
-                placeholderTextColor: "blueGray.400",
+                placeholderTextColor: 'blueGray.400',
               }}
               _dark={{
-                placeholderTextColor: "blueGray.50",
+                placeholderTextColor: 'blueGray.50',
               }}
             />
-            {errorText1 && <Text style={{ color: "red" }}>{errorText1}</Text>}
+            {errorText1 && <Text style={{ color: 'red' }}>{errorText1}</Text>}
           </View>
         </View>
         {/* Password Input Field */}
@@ -112,13 +109,13 @@ function Login() {
               borderRadius={10}
               secureTextEntry={true}
               _light={{
-                placeholderTextColor: "blueGray.400",
+                placeholderTextColor: 'blueGray.400',
               }}
               _dark={{
-                placeholderTextColor: "blueGray.50",
+                placeholderTextColor: 'blueGray.50',
               }}
             />
-            {errorText2 && <Text style={{ color: "red" }}>{errorText2}</Text>}
+            {errorText2 && <Text style={{ color: 'red' }}>{errorText2}</Text>}
           </View>
         </View>
         {/* <View style={styles.text2}>
@@ -137,7 +134,7 @@ function Login() {
         </View>
         <View style={styles.text4}>
           <Text style={styles.singupText}>Bạn chưa có tài khoản? </Text>
-          <TouchableOpacity onPress={() => navigation.navigate("signUp")}>
+          <TouchableOpacity onPress={() => navigation.navigate('signUp')}>
             <Text style={styles.singupText1}>Đăng ký</Text>
           </TouchableOpacity>
         </View>
@@ -157,16 +154,16 @@ export default () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   LoginText: {
     marginTop: 100,
     fontSize: 30,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   Middle: {
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonStyle: {
     marginTop: 75,
@@ -174,62 +171,62 @@ const styles = StyleSheet.create({
   },
   emailInput: {
     fontSize: 17,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 2,
   },
   buttonStyle2: {
     marginBottom: 7,
   },
   text2: {
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
+    alignItems: 'flex-end',
+    justifyContent: 'flex-end',
     marginBottom: 20,
   },
   forgot: {
     fontSize: 17,
-    fontWeight: "500",
+    fontWeight: '500',
     marginBottom: 2,
   },
   buttonDesgin: {
-    backgroundColor: "#FB641B",
+    backgroundColor: '#FB641B',
   },
   lineStyle: {
-    flexDirection: "row",
+    flexDirection: 'row',
     marginTop: 30,
     marginLeft: 15,
     marginRight: 15,
     marginBottom: 30,
-    alignItems: "center",
+    alignItems: 'center',
   },
   text3: {
-    color: "black",
+    color: 'black',
     fontSize: 18,
-    fontWeight: "400",
-    flexDirection: "row",
-    justifyContent: "center",
+    fontWeight: '400',
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
 
   buttonDesgin2: {
-    backgroundColor: "#FB641B",
+    backgroundColor: '#FB641B',
   },
   buttonDesgin3: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
   },
   text4: {
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginTop: 140,
   },
   singupText: {
-    color: "black",
+    color: 'black',
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: '500',
   },
   singupText1: {
-    color: "#0000BB",
+    color: '#0000BB',
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: '500',
   },
 });
 //hoanganh@gmail.com

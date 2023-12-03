@@ -76,15 +76,18 @@ export default function MyCourses({ path }: { path: string }) {
   >([]);
 
   const getCourses = async () => {
-    // const userRole = await getUserRole();
+    const userRole = await getUserRole();
     // if (!userRole)
     //   showErrorAlert('Hãy đăng nhập và tôi sẽ cho trả về khóa học của bạn ạ');
 
-    // console.log('[userROle]', userRole);
-    // if (userRole === UserRole.CUSTOMER)
-    setCourses(await getCourseByCustomer());
-    // else if (userRole === UserRole.LEARNER)
-    // setCourses((await getCourseForLearnerSearchByUser('')).data);
+    try {
+      if (userRole === UserRole.CUSTOMER)
+        setCourses(await getCourseByCustomer());
+      else if (userRole === UserRole.LEARNER)
+        setCourses((await getCourseForLearnerSearchByUser('')).data);
+    } catch (error) {
+      console.log('another error ', error);
+    }
   };
 
   // useEffect(() => {
@@ -110,7 +113,6 @@ export default function MyCourses({ path }: { path: string }) {
       />
     );
   };
-  console.log(courses);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -130,6 +132,7 @@ const styles = StyleSheet.create({
     // height: 270,
     width: '100%',
     backgroundColor: '#f8f6f0',
+    paddingTop: 40,
   },
   item: {
     padding: 20,
