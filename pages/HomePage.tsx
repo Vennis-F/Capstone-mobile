@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Categories from '../components/HomePage/Categories';
@@ -13,6 +13,7 @@ import { getAccessToken } from '../libs/core/handle-token';
 import { Image } from 'native-base';
 import KeepLearning from '../components/HomePage/KeepLearning';
 import { getAllInstructors } from '../apis/instructor/api';
+import { useFocusEffect } from 'expo-router';
 
 export default function HomePage({ path }: { path: string }) {
   const [token, setToken] = useState<string | null>();
@@ -20,17 +21,20 @@ export default function HomePage({ path }: { path: string }) {
 
   const getToken = async () => {
     const responeToken = await getAccessToken();
-    if (responeToken) setToken(responeToken);
+    setToken(responeToken);
   };
 
   const getUserCourse = async () => {
-    if (!token) return;
-    setOwnList(await getCourseByCustomer());
+    if (!token) {
+      setOwnList([]);
+    } else setOwnList(await getCourseByCustomer());
   };
 
-  useEffect(() => {
-    getToken();
-  });
+  useFocusEffect(
+    useCallback(() => {
+      getToken();
+    }, [])
+  );
 
   useEffect(() => {
     getUserCourse();
@@ -41,6 +45,7 @@ export default function HomePage({ path }: { path: string }) {
       style={{
         flex: 1,
         width: '100%',
+        backgroundColor: '#fff',
       }}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}

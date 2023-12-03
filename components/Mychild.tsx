@@ -1,197 +1,261 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
-  FlatList,
-  Image,
-  SafeAreaView,
-  StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
-} from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
-import ProgressBar from "./ProgressBar";
-import { getLearnersByUser } from "../apis/learner/api";
-import { LearnerFilterResponse } from "../apis/learner/types";
+  TouchableOpacity,
+  ImageBackground,
+  SafeAreaView,
+} from 'react-native';
 
-const Courses = [
-  {
-    id: "1",
-    title: "Lộc",
-    provider: "Google",
-    level: "Beginner",
-    percent: "25",
-  },
-  {
-    id: "2",
-    title: "Anh",
-    provider: "Google",
-    level: "Beginner",
-    percent: "50",
-  },
-  {
-    id: "3",
-    title: "Thọ",
-    provider: "Google",
-    level: "Beginner",
-    percent: "80",
-  },
-];
-const AdditionalCourses = [
-  {
-    id: "1",
-    title: "Google UX Design ",
-    provider: "Google",
-    level: "Beginner",
-    percent: "25",
-  },
-  {
-    id: "2",
-    title: "Font-end Development ",
-    provider: "Google",
-    level: "Beginner",
-    percent: "50",
-  },
-  {
-    id: "3",
-    title: "Introduction To UI Design",
-    provider: "Google",
-    level: "Beginner",
-    percent: "80",
-  },
-];
+import { CourseFilterResponse } from '../apis/courses/types';
+import { useFocusEffect } from 'expo-router';
+import { Foundation, MaterialIcons } from '@expo/vector-icons';
+import { getCourseByCustomer } from '../apis/courses/api';
+import { ScrollView, Select } from 'native-base';
+import { getImage } from '../apis/image/components/apis';
+import { COLORS } from '../libs/const/color';
+import {
+  LearnerFilterResponse,
+  UpdateLearnerCourseBodyRequest,
+} from '../apis/learner/types';
+import {
+  getLearnerIsLearningCourseByCourseId,
+  getLearnersByUser,
+  updateLearnerCourse,
+} from '../apis/learner/api';
+import Notification from './Notification';
 
-const Item = ({ item, onPress, backgroundColor, textColor }) => (
+const Item = ({ item, children, setNotification, notification }) => {
+  const progressChapter = Math.round(item.totalChapter / 1.5);
+  const progressPercent = (progressChapter / item.totalChapter) * 100;
+  const [selectedChild, setSelectedChild] = useState<string>('');
 
-  <View>
-    <Text style={styles.child} >{item.title}</Text>
-  </View>
+  const getChildrenFromCourse = async () => {
+    setSelectedChild(
+      (await getLearnerIsLearningCourseByCourseId(item.id)).learnerId
+    );
+  };
 
-);
-
-export default function MyChild({ path }: { path: string }) {
-  const [selectedId, setSelectedId] = useState();
-  const [learners, setLearners] = useState<LearnerFilterResponse[]>([])
-
-  const handleGetLearners = async () => {
-    const learnersFilterResponse = await getLearnersByUser()
-    setLearners(learnersFilterResponse)
-  }
+  const handleChildAssign = async (newChildId: string) => {
+    const body: UpdateLearnerCourseBodyRequest = {
+      courseId: item.id,
+      currentLearnerId: selectedChild,
+      newLearnerId: newChildId,
+    };
+    try {
+      await updateLearnerCourse(body);
+      setNotification({
+        message: 'Đã cập nhật khóa học cho bé',
+        type: 'success',
+      });
+      getChildrenFromCourse();
+    } catch (error) {
+      setNotification({
+        message: 'Cập nhật khóa học không thành công',
+        type: 'danger',
+      });
+    }
+  };
 
   useEffect(() => {
-    handleGetLearners()
-  }, [])
-
-  const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#ECECEC" : "#ECECEC";
-    const color = item.id === selectedId ? "black" : "black";
-
-    return (
-      <Item
-        item={item}
-        onPress={() => setSelectedId(item.id)}
-        backgroundColor={backgroundColor}
-        textColor={color}
-      />
-    );
-  };
-
-  const renderCourseItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#ECECEC" : "#ECECEC";
-    const color = item.id === selectedId ? "black" : "black";
-
-    return (
-      <TouchableOpacity
-        onPress={() => setSelectedId(item.id)}
-        style={[styles.item, { backgroundColor }]}
-      >
-        <View style={styles.little}>
-          <View>
-            <Image
-              style={styles.tinyLogo}
-              source={{
-                uri: "https://reactnative.dev/img/tiny_logo.png",
-              }}
-            />
-          </View>
-          <View style={{ marginTop: 5, width: 245 }}>
-            <Text style={[styles.title]}>{item.title}</Text>
-            <Text style={[styles.provider]}>
-              {item.provider}
-            </Text>
-            <View style={styles.container}>
-              <ProgressBar percent={item.percent} />
-            </View>
-          </View>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+    getChildrenFromCourse();
+  });
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "flex-start", marginTop: 10 }}>
-        {/* First FlatList */}
-        <FlatList
-          data={learners}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-          extraData={selectedId}
-        />
-        {/* Second FlatList */}
-        {/* <FlatList
-          data={AdditionalCourses}
-          renderItem={renderCourseItem}
-          keyExtractor={(item) => item.id}
-          extraData={selectedId}
-        /> */}
+    <TouchableOpacity style={[styles.item]}>
+      <View style={styles.little}>
+        <ImageBackground
+          style={styles.imgContainer}
+          imageStyle={{
+            borderRadius: 20,
+            borderColor: '#0000006c',
+            borderWidth: 1,
+          }}
+          source={{
+            uri: getImage(item.thumbnailUrl),
+          }}
+          alt="Course Thumbnail"
+        ></ImageBackground>
+        <View style={styles.infoContainer}>
+          <Text style={[styles.title]}>{item.title}</Text>
+          <View style={{ flexDirection: 'row', gap: 6 }}>
+            <Foundation name="graph-bar" size={24} color="#919090" />
+            <Text style={[styles.provider]}>Tiến trình của bé</Text>
+          </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={styles.progressBar}>
+              <View
+                style={[styles.progress, { width: `${progressPercent}%` }]}
+              ></View>
+            </View>
+            <Text>
+              {progressChapter}/{item.totalChapter}
+            </Text>
+          </View>
+          <Select
+            selectedValue={selectedChild || ''}
+            accessibilityLabel="Khóa học dành cho bé"
+            placeholder="Khóa học dành cho bé"
+            width={'90%'}
+            _selectedItem={{
+              bg: COLORS.MAINPINK,
+            }}
+            onValueChange={(changedValue) => handleChildAssign(changedValue)}
+          >
+            {children.map((child) => (
+              <Select.Item
+                label={`${child.lastName} ${child.middleName} ${child.firstName}`}
+                value={child.id}
+              />
+            ))}
+          </Select>
+        </View>
       </View>
-    </SafeAreaView>
+    </TouchableOpacity>
   );
 };
-const styles = StyleSheet.create({
-  child: {
 
-    fontWeight: "600",
-    fontSize: 18,
-    marginBottom: 120
-  },
+export default function MyChild({ path }: { path: string }) {
+  const [courses, setCourses] = useState<CourseFilterResponse[]>([]);
+  const [children, setChildren] = useState<LearnerFilterResponse[]>([]);
+  const [notification, setNotification] = useState(null);
+
+  const closeNotification = () => {
+    setNotification(null);
+  };
+
+  const getMyCourses = async () => {
+    setCourses(await getCourseByCustomer());
+  };
+
+  const getMyChildren = async () => {
+    setChildren(await getLearnersByUser());
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      getMyCourses();
+      getMyChildren();
+    }, [])
+  );
+
+  console.log(children);
+  return (
+    <ScrollView style={styles.container}>
+      {courses.map((item, index) => (
+        <Item
+          item={item}
+          key={index}
+          children={children}
+          notification={notification}
+          setNotification={setNotification}
+        />
+      ))}
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
+    </ScrollView>
+  );
+}
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // height: 270,
     width: '100%',
-
-
+    paddingTop: 40,
+    paddingHorizontal: 12,
   },
   item: {
-    paddingTop: 4,
-    paddingLeft: 4,
-    paddingRight: 4,
-    // marginVertical: 8,
-    // marginHorizontal: 16,
-    marginBottom: 10,
-    borderRadius: 15,
+    marginVertical: 8,
+    marginRight: 24,
+    width: '100%',
+    borderWidth: 2,
+    borderColor: '#00000032',
+    borderRadius: 20,
+    padding: 8,
+  },
+  little: {
+    flexDirection: 'row',
+    width: '100%',
+    gap: 12,
+    height: 184,
+  },
+  imgContainer: {
+    height: 144,
+    width: 144,
+    flexDirection: 'row',
+    alignSelf: 'center',
   },
   title: {
     fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5
+    fontWeight: 'bold',
+    marginVertical: 2,
+    textTransform: 'capitalize',
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginVertical: 2,
+  },
+  tinyLogo: {},
+  iconS: {
+    backgroundColor: '#CADACE',
+  },
+  infoContainer: {
+    paddingVertical: 8,
+    width: '60%',
+    flexDirection: 'column',
+    justifyContent: 'space-around',
   },
   provider: {
-    // color: "#DCDCDE",
-    marginBottom: 5
+    fontSize: 16,
+    marginBottom: 4,
   },
-  little: {
-    flexDirection: "row",
-    justifyContent: "flex-start",
-    marginBottom: 5
+  stars: {
+    backgroundColor: '#fff',
+    margin: 12,
+    padding: 6,
+    borderWidth: 1,
+    borderColor: '#0000002a',
+    borderRadius: 12,
   },
-  tinyLogo: {
-    width: 90,
-    height: 100,
-    borderRadius: 15,
-    marginRight: 15
+  playIt: {
+    backgroundColor: '#fff',
+    margin: 12,
+    borderWidth: 1,
+    borderColor: '#0000002a',
+    width: 36,
+    height: 36,
+    alignItems: 'center',
+    padding: 4,
+    borderRadius: 12,
+  },
+  learning: {
+    fontSize: 14,
+    color: '#F4C002',
+    backgroundColor: '#ffbf002f',
+    width: 80,
+    padding: 4,
+    textAlign: 'center',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#ffffff6e',
+  },
+  progressBar: {
+    width: '70%',
+    backgroundColor: '#e2e2e2',
+    height: 10,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#00000022',
+  },
+  progress: {
+    height: '100%',
+    borderRadius: 16,
+    backgroundColor: COLORS.BLUE,
   },
 });
-
-

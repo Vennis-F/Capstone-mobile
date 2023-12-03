@@ -33,7 +33,6 @@ import { COLORS } from '../../libs/const/color';
 import { getAccessToken } from '../../libs/core/handle-token';
 
 const Item = ({ item, onPress }) => {
-  console.log(item.author);
   const progressChapter = Math.round(item.totalChapter / 1.5);
   const progressPercent = (progressChapter / item.totalChapter) * 100;
   return (

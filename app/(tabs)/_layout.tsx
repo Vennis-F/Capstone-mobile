@@ -9,7 +9,12 @@ import {
   background,
   color,
 } from 'native-base/lib/typescript/theme/styled-system';
-import { AntDesign, Octicons } from '@expo/vector-icons';
+import {
+  AntDesign,
+  MaterialCommunityIcons,
+  MaterialIcons,
+  Octicons,
+} from '@expo/vector-icons';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -58,6 +63,7 @@ export default function TabLayout() {
         options={{
           title: 'Trang chủ',
           tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
+          href: null,
         }}
       />
       {/* chi tiet khoa hoc */}
@@ -79,6 +85,19 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="five"
+        options={
+          userRole
+            ? {
+                title: 'Giỏ hàng',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="shopping-cart" color={color} />
+                ),
+              }
+            : { title: 'Giỏ hàng', href: null }
+        }
+      />
+      <Tabs.Screen
         name="three"
         options={
           userRole
@@ -94,28 +113,33 @@ export default function TabLayout() {
       <Tabs.Screen
         name="four"
         options={
-          // userRole
-          //   ? {
-          //       title: 'Tài khoản của con',
-          //       tabBarIcon: ({ color }) => (
-          //         <TabBarIcon name="child" color={color} />
-          //       ),
-          //     }
-          //   :
-          { title: 'Tài khoản của con', href: null }
+          userRole === 'Customer'
+            ? {
+                title: 'Khóa học của con',
+                tabBarIcon: ({ color }) => (
+                  <MaterialIcons
+                    name="assignment-ind"
+                    size={32}
+                    color={color}
+                    style={{ marginBottom: -3 }}
+                  />
+                ),
+              }
+            : { title: 'Khóa học của con', href: null }
         }
       />
       <Tabs.Screen
-        name="five"
+        name="eleven"
         options={
-          userRole
-            ? {
-                title: 'Giỏ hàng',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="shopping-cart" color={color} />
-                ),
-              }
-            : { title: 'Giỏ hàng', href: null }
+          // userRole
+          //   ? {
+          //       title: 'Bài giảng',
+          //       tabBarIcon: ({ color }) => (
+          //         <TabBarIcon name="youtube" color={color} />
+          //       ),
+          //     }
+          //   :
+          { title: 'Bài giảng', href: null }
         }
       />
       <Tabs.Screen
@@ -142,19 +166,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
         }}
       /> */}
-      <Tabs.Screen
-        name="eleven"
-        options={
-          userRole
-            ? {
-                title: 'Bài giảng',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="youtube" color={color} />
-                ),
-              }
-            : { title: 'Bài giảng', href: null }
-        }
-      />
+
       <Tabs.Screen
         name="seven"
         options={
@@ -169,6 +181,36 @@ export default function TabLayout() {
         }
       />
       <Tabs.Screen name="signUp" options={{ title: 'Đăng ký', href: null }} />
+
+      <Tabs.Screen
+        name="orderDetail"
+        options={{ title: 'Chi tiết đơn hàng', href: null }}
+      />
+      {/* <Tabs.Screen
+        name="changePassword"
+        options={{
+          title: 'Đổi mật khẩu',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      /> */}
+      <Tabs.Screen
+        name="children"
+        options={
+          userRole === 'Customer'
+            ? {
+                title: 'Tài khoản của con',
+                tabBarIcon: ({ color }) => (
+                  <MaterialCommunityIcons
+                    name="account-child"
+                    size={34}
+                    style={{ marginBottom: -3 }}
+                    color={color}
+                  />
+                ),
+              }
+            : { title: 'Tài khoản của con', href: null }
+        }
+      />
       <Tabs.Screen
         name="orderHistory"
         options={
@@ -182,24 +224,6 @@ export default function TabLayout() {
             : { title: 'Lịch sử đơn hàng', href: null }
         }
       />
-      <Tabs.Screen
-        name="orderDetail"
-        options={{ title: 'Chi tiết đơn hàng', href: null }}
-      />
-      {/* <Tabs.Screen
-        name="changePassword"
-        options={{
-          title: 'Đổi mật khẩu',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-        }}
-      /> */}
-      {/* <Tabs.Screen
-        name="children"
-        options={{
-          title: 'Con của tôi',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-        }}
-      /> */}
       <Tabs.Screen
         name="courses"
         options={
