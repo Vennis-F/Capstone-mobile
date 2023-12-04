@@ -69,8 +69,6 @@ export default function HomePage({ path }: { path: string }) {
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
     >
-      <StatusBar animated={true} backgroundColor="#FF724C" />
-
       <HomeHeader />
 
       <Image

@@ -15,6 +15,7 @@ import {
   MaterialIcons,
   Octicons,
 } from '@expo/vector-icons';
+import { COLORS } from '../../libs/const/color';
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -41,12 +42,17 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        tabBarInactiveTintColor: '#fff',
+        tabBarActiveTintColor: Colors.light.tint,
+        tabBarInactiveTintColor: '#ffffff',
         headerShown: false,
-        headerTitleStyle: { color: '#fff', fontWeight: 'bold', fontSize: 20 },
-        tabBarStyle: { backgroundColor: '#FF724C', paddingBottom: 4 },
+        tabBarStyle: {
+          backgroundColor: COLORS.MAINPINK,
+          height: '8%',
+          borderRadius: 20,
+          marginTop: -10,
+        },
         tabBarShowLabel: false,
+        tabBarHideOnKeyboard: true,
       }}
     >
       <Tabs.Screen
@@ -237,6 +243,10 @@ export default function TabLayout() {
           //   :
           { title: 'Khóa học của tôi', href: null }
         }
+      />
+      <Tabs.Screen
+        name="confirmOTP"
+        options={{ title: 'Xác thực OTP', href: null }}
       />
     </Tabs>
   );

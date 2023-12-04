@@ -11,5 +11,6 @@ export enum COLORS {
     MAINPINK = '#FF724C',
     SELECTYELLOW = "#FFBF00",
     GREY = "#e7e5e5",
+    GREYICON = "#fff",
     BLUE = "#2A60DD"
 }

@@ -190,7 +190,7 @@ const styles = StyleSheet.create({
     width: '85%',
     padding: 4,
     marginTop: 16,
-    backgroundColor: '#f8f6f0',
+    backgroundColor: '#ffffff',
   },
   detail: {
     padding: 12,

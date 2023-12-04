@@ -162,7 +162,7 @@ const Detail = ({}) => {
 
   return (
     <SafeAreaView
-      style={{ flex: 1, backgroundColor: '#f8f6f0', width: '100%' }}
+      style={{ flex: 1, backgroundColor: '#ffffff', width: '100%' }}
     >
       {course && (
         <>
