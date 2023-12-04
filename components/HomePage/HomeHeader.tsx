@@ -7,11 +7,29 @@ import {
   StyleSheet,
 } from 'react-native';
 import { COLORS } from '../../libs/const/color';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import SearchBar from './SearchBar';
+import { getProfileUser } from '../../apis/user/apis';
+import { UserFilterResponse } from '../../apis/user/types';
+import { useFocusEffect } from 'expo-router';
 
 export default function HomeHeader({}) {
   const [isClicked, setIsClicked] = useState(false);
+  const [user, setUser] = useState<UserFilterResponse | null>();
+
+  const getUser = async () => {
+    try {
+      setUser(await getProfileUser());
+    } catch (error) {
+      setUser(null);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      getUser();
+    }, [])
+  );
 
   return (
     <TouchableOpacity
@@ -32,11 +50,17 @@ export default function HomeHeader({}) {
         }}
       >
         <View style={{ maxWidth: '70%' }}>
-          <Text style={styles.greetingText}>Xin Chào Thiện Nguyên</Text>
+          <Text style={styles.greetingText}>
+            Xin Chào{user ? ` ${user.middleName} ${user.firstName}` : '!'}
+          </Text>
           <Text style={styles.underGreetingText}>Cùng nhau học nào</Text>
         </View>
         <View>
-          <Ionicons style={styles.cartHeader} name="cart" size={32} />
+          {user ? (
+            <Ionicons style={styles.cartHeader} name="cart" size={32} />
+          ) : (
+            ''
+          )}
         </View>
       </View>
       <SearchBar isClicked={isClicked} setIsClicked={setIsClicked} />

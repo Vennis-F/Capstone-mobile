@@ -92,7 +92,7 @@ export default function Profile({ path }: { path: String }) {
       removeAccessToken();
       setuserLogin(false);
       showSuccessMessage();
-      navigation.navigate('home');
+      navigation.navigate('index');
     } else console.log('[error]', 'You are not allowed to log out');
   };
 

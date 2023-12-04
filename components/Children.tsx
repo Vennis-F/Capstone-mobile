@@ -14,14 +14,20 @@ import { Checkbox, HStack, Input, Button } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { COLORS } from '../libs/const/color';
 import DividerCustom from './DividerCustom';
-import { getLearnersByUser, updateLearner } from '../apis/learner/api';
+import {
+  createLearner,
+  getLearnersByUser,
+  updateLearner,
+} from '../apis/learner/api';
 import { useCallback, useEffect, useState } from 'react';
 import {
+  CreateLearnerBodyRequest,
   LearnerFilterResponse,
   UpdateLearnerBodyRequest,
 } from '../apis/learner/types';
 import { useFocusEffect, useNavigation } from 'expo-router';
 import Notification from './Notification';
+import { Ionicons } from '@expo/vector-icons';
 
 const Item = ({ item, setIsChanged, isChanged }) => {
   const fullname = `${item.lastName} ${item.middleName} ${item.firstName}`;
@@ -36,6 +42,7 @@ export default function Children({ path }: { path: string }) {
   const [firstname, setFirstname] = useState<string>('');
   const [middlename, setMiddlename] = useState<string>('');
   const [lastname, setLastname] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
 
   const getMyChildren = async () => {
     const myChildren = await getLearnersByUser();
@@ -44,6 +51,32 @@ export default function Children({ path }: { path: string }) {
 
   const closeNotification = () => {
     setNotification(null);
+  };
+
+  const handleCreate = async () => {
+    const body: CreateLearnerBodyRequest = {
+      userName: username,
+      firstName: firstname,
+      lastName: lastname,
+      middleName: middlename,
+      password: password,
+    };
+    try {
+      await createLearner(body);
+      setNotification({
+        message: 'Tạo tài khoản của bé thành công ',
+        type: 'success',
+      });
+      getMyChildren();
+    } catch (error) {
+      console.log(error);
+      setNotification({
+        message: 'Không thể tạo tài khoản',
+        type: 'danger',
+      });
+    }
+    setPressedChild('');
+    setPassword('');
   };
 
   const handleUpdate = async () => {
@@ -93,6 +126,7 @@ export default function Children({ path }: { path: string }) {
         {children.map((child, index) => {
           return (
             <TouchableOpacity
+              key={index}
               onPress={() => {
                 setPressedChild(child.id);
                 setId(child.id);
@@ -108,9 +142,7 @@ export default function Children({ path }: { path: string }) {
                 <View>
                   <Image
                     style={styles.tinyLogo}
-                    source={{
-                      uri: 'https://reactnative.dev/img/tiny_logo.png',
-                    }}
+                    source={require('../assets/images/avatar.png')}
                   />
                 </View>
                 <View>
@@ -130,6 +162,41 @@ export default function Children({ path }: { path: string }) {
             </TouchableOpacity>
           );
         })}
+        {children.length < 3 ? (
+          <TouchableOpacity
+            onPress={() => {
+              setPressedChild('empty');
+              setId('');
+              setFirstname('');
+              setMiddlename('');
+              setLastname('');
+              setUsername('');
+            }}
+          >
+            <View
+              style={{ flexDirection: 'row', justifyContent: 'flex-start' }}
+            >
+              <View>
+                <Ionicons
+                  name="person-circle"
+                  size={40}
+                  color={COLORS.MAINPINK}
+                />
+              </View>
+              <View>
+                <Text style={{ fontSize: 20, marginLeft: 10, marginTop: 5 }}>
+                  Thêm tài khoản cho bé
+                </Text>
+              </View>
+              <View style={{ marginLeft: 'auto' }}>
+                <Icon name="add" size={32} style={{ marginTop: 10 }} />
+              </View>
+            </View>
+            <DividerCustom />
+          </TouchableOpacity>
+        ) : (
+          ''
+        )}
         <View
           style={[styles.userInfo, pressedChild ? styles.show : styles.hidden]}
         >
@@ -140,6 +207,7 @@ export default function Children({ path }: { path: string }) {
               </Text>
             </Text>
             <Input
+              isDisabled={pressedChild === 'empty' ? false : true}
               value={username}
               onChangeText={(text) => setUsername(text)}
               variant="filled"
@@ -151,6 +219,27 @@ export default function Children({ path }: { path: string }) {
                   <Text style={{ color: 'red' }}>{errorText1}</Text>
                 )} */}
           </View>
+          {pressedChild === 'empty' ? (
+            <View style={styles.infoContainer}>
+              <Text style={styles.label}>
+                <Text style={{ backgroundColor: '#ffffff97' }}>Mật khẩu</Text>
+              </Text>
+              <Input
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                variant="filled"
+                placeholder="Nhập Tên mật khẩu ở đây"
+                borderRadius={10}
+                paddingLeft={4}
+                secureTextEntry={true}
+              />
+              {/* {errorText1 && (
+                  <Text style={{ color: 'red' }}>{errorText1}</Text>
+                )} */}
+            </View>
+          ) : (
+            ''
+          )}
 
           <View
             style={{
@@ -230,16 +319,29 @@ export default function Children({ path }: { path: string }) {
                 Đặt lại
               </Text>
             </Button>
-            <Button
-              style={styles.buttonUpdate}
-              borderRadius={8}
-              paddingBottom={3}
-              onPress={handleUpdate}
-            >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                Cập nhật
-              </Text>
-            </Button>
+            {pressedChild === 'empty' ? (
+              <Button
+                style={styles.buttonUpdate}
+                borderRadius={8}
+                paddingBottom={3}
+                onPress={handleCreate}
+              >
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                  Tạo mới
+                </Text>
+              </Button>
+            ) : (
+              <Button
+                style={styles.buttonUpdate}
+                borderRadius={8}
+                paddingBottom={3}
+                onPress={handleUpdate}
+              >
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                  Cập nhật
+                </Text>
+              </Button>
+            )}
           </View>
         </View>
         {notification && (

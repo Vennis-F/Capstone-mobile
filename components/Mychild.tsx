@@ -103,10 +103,11 @@ const Item = ({ item, children, setNotification, notification }) => {
             }}
             onValueChange={(changedValue) => handleChildAssign(changedValue)}
           >
-            {children.map((child) => (
+            {children.map((child, index) => (
               <Select.Item
                 label={`${child.lastName} ${child.middleName} ${child.firstName}`}
                 value={child.id}
+                key={index}
               />
             ))}
           </Select>

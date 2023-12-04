@@ -58,7 +58,7 @@ function Login() {
         // Hiển thị thông báo khi đăng nhập thành công
         showSuccessMessage();
 
-        navigation.navigate('home');
+        navigation.navigate('index');
         console.log(token);
       } catch (error) {
         console.log('[error when login]', error.message);

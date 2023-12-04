@@ -56,20 +56,12 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="home"
+        name="index"
         options={{
           title: 'Trang chính',
           tabBarIcon: ({ color }) => (
             <AntDesign name="home" size={28} color={color} />
           ),
-        }}
-      />
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Trang chủ',
-          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
-          href: null,
         }}
       />
       {/* chi tiet khoa hoc */}
