@@ -4,6 +4,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  ImageBackground,
+  Image,
 } from 'react-native';
 import React, { useState } from 'react';
 
@@ -13,287 +15,365 @@ import {
   Button,
   Icon,
   Box,
-  Image,
   AspectRatio,
+  ScrollView,
 } from 'native-base';
 import { FontAwesome5 } from '@expo/vector-icons';
 
 import { useNavigation } from '@react-navigation/native';
+import { customerSignUp } from '../apis/auth/api';
+import { CustomerSignupRequest } from '../apis/auth/types';
+import { COLORS } from '../libs/const/color';
 
-function Signup() {
+const Signup = () => {
   const navigation = useNavigation();
-  const [inputValue1, setInputValue1] = useState('');
-  const [inputValue2, setInputValue2] = useState('');
-  const [inputValue3, setInputValue3] = useState('');
-  const [inputValue4, setInputValue4] = useState('');
-  const [errorText1, setErrorText1] = useState('');
-  const [errorText2, setErrorText2] = useState('');
-  const [errorText3, setErrorText3] = useState('');
-  const [errorText4, setErrorText4] = useState('');
+  const [firstname, setFirstname] = useState('');
+  const [middlename, setMiddlename] = useState('');
+  const [lastname, setLastname] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = () => {
-    if (inputValue1.trim() === '') {
-      // Nếu Input trống, hiển thị thông báo
-      setErrorText1('Vui lòng nhập dữ liệu');
-    } else {
-      // Xử lý khi có giá trị nhập vào Input
-      setErrorText1('');
-      // ... Thực hiện các xử lý khác ở đây
-    }
-    if (inputValue2.trim() === '') {
-      setErrorText2('Vui lòng nhập dữ liệu');
-    } else {
-      setErrorText2('');
-    }
-    if (inputValue3.trim() === '') {
-      setErrorText3('Vui lòng nhập dữ liệu');
-    } else {
-      setErrorText3('');
-    }
-    if (inputValue4.trim() === '') {
-      setErrorText4('Vui lòng nhập dữ liệu');
-    } else {
-      setErrorText4('');
-    }
-    if (
-      inputValue1.trim() !== '' &&
-      inputValue2.trim() !== '' &&
-      inputValue4.trim() !== '' &&
-      inputValue4.trim() !== ''
-    ) {
-      // Xử lý khi cả hai trường đều có giá trị
-      // ... Thực hiện các xử lý khác ở đây
-    }
+  const handleReset = () => {
+    setFirstname(''),
+      setMiddlename(''),
+      setLastname(''),
+      setPhoneNumber(''),
+      setEmail(''),
+      setPassword(''),
+      setLoading(false);
   };
+
+  const handleSubmit = async () => {
+    const body: CustomerSignupRequest = {
+      email: email.trim(),
+      firstName: firstname.trim(),
+      lastName: lastname.trim(),
+      middleName: middlename.trim(),
+      password: password.trim(),
+      phoneNumber: phoneNumber.trim(),
+      role: 'Customer',
+    };
+    setLoading(true);
+    try {
+      console.log('[Signup - api] ', await customerSignUp(body));
+      console.log('navigate');
+      handleReset();
+      navigation.navigate('confirmOTP', { email: email });
+    } catch (error) {
+      setLoading(false);
+      console.log('[Signup - error] ', error);
+    }
+    // if (inputValue1.trim() === '') {
+    //   // Nếu Input trống, hiển thị thông báo
+    //   setErrorText1('Vui lòng nhập dữ liệu');
+    // } else {
+    //   // Xử lý khi có giá trị nhập vào Input
+    //   setErrorText1('');
+    //   // ... Thực hiện các xử lý khác ở đây
+    // }
+    // if (inputValue2.trim() === '') {
+    //   setErrorText2('Vui lòng nhập dữ liệu');
+    // } else {
+    //   setErrorText2('');
+    // }
+    // if (inputValue3.trim() === '') {
+    //   setErrorText3('Vui lòng nhập dữ liệu');
+    // } else {
+    //   setErrorText3('');
+    // }
+    // if (inputValue4.trim() === '') {
+    //   setErrorText4('Vui lòng nhập dữ liệu');
+    // } else {
+    //   setErrorText4('');
+    // }
+    // if (
+    //   inputValue1.trim() !== '' &&
+    //   inputValue2.trim() !== '' &&
+    //   inputValue4.trim() !== '' &&
+    //   inputValue4.trim() !== ''
+    // ) {
+    //   // Xử lý khi cả hai trường đều có giá trị
+    //   // ... Thực hiện các xử lý khác ở đây
+    // }
+  };
+
   return (
     <SafeAreaView
       style={{
         flex: 1,
-        paddingHorizontal: 20,
-        backgroundColor: '#fff',
-        width: 330,
-        marginTop: -65,
+        backgroundColor: '#f8f6f0',
+        width: '100%',
+        paddingTop: 30,
       }}
     >
-      <View style={styles.container}>
-        <View style={styles.Middle}>
-          <Text style={styles.SignupText}>Đăng ký</Text>
-        </View>
-
-        {/* Name input field */}
-        <View style={styles.buttonStyle}>
-          <View>
-            <Text style={styles.emailInput}>Tên</Text>
-            <Input
-              value={inputValue1}
-              onChangeText={(text) => setInputValue1(text)}
-              variant="outline"
-              placeholder="Tên"
-              borderRadius={10}
-              _light={{
-                placeholderTextColor: 'blueGray.400',
-              }}
-              _dark={{
-                placeholderTextColor: 'blueGray.50',
-              }}
+      <ScrollView>
+        <ImageBackground
+          source={require('../assets/images/wallpaper.png')}
+          alt="Poster"
+          style={styles.imgWallpaper}
+        >
+          <View style={styles.iconContainer}>
+            <Image
+              source={require('../assets/images/favicon.png')}
+              alt="Icon"
+              style={styles.icon}
             />
-            {errorText1 && (
+          </View>
+        </ImageBackground>
+        <View style={styles.container}>
+          <View style={styles.Middle}>
+            <Text style={styles.SignupText}>Đăng ký</Text>
+          </View>
+
+          {/* Name input field */}
+          <View style={styles.buttonStyle}>
+            <View>
+              <Text style={styles.emailInput}>Tên</Text>
+              <Input
+                isDisabled={loading}
+                value={firstname}
+                onChangeText={(text) => setFirstname(text)}
+                variant="outline"
+                placeholder="Tên"
+                borderRadius={10}
+                _light={{
+                  placeholderTextColor: 'blueGray.400',
+                }}
+                _dark={{
+                  placeholderTextColor: 'blueGray.50',
+                }}
+              />
+              {/* {errorText1 && (
               <Text style={{ color: 'red', fontSize: 10 }}>{errorText1}</Text>
-            )}
+            )} */}
+            </View>
           </View>
-        </View>
 
-        {/* Username or email input field */}
-        <View style={styles.buttonStyle2}>
-          <View>
-            <Text style={styles.emailInput}>Họ</Text>
+          {/* Username or email input field */}
+          <View style={styles.buttonStyle2}>
+            <View>
+              <Text style={styles.emailInput}>Tên đệm</Text>
+              <Input
+                isDisabled={loading}
+                value={middlename}
+                onChangeText={(text) => setMiddlename(text)}
+                variant="outline"
+                placeholder="Nhập Tên đệm"
+                borderRadius={10}
+                _light={{
+                  placeholderTextColor: 'blueGray.400',
+                }}
+                _dark={{
+                  placeholderTextColor: 'blueGray.50',
+                }}
+              />
 
-            <Input
-              value={inputValue2}
-              onChangeText={(text) => setInputValue2(text)}
-              variant="outline"
-              placeholder="Nhập Họ"
-              borderRadius={10}
-              _light={{
-                placeholderTextColor: 'blueGray.400',
-              }}
-              _dark={{
-                placeholderTextColor: 'blueGray.50',
-              }}
-            />
-
-            {errorText2 && (
+              {/* {errorText2 && (
               <Text style={{ color: 'red', fontSize: 10 }}>{errorText2}</Text>
-            )}
+            )} */}
+            </View>
           </View>
-        </View>
 
-        <View style={styles.buttonStyle2}>
-          <View>
-            <Text style={styles.emailInput}>Tên đệm</Text>
+          <View style={styles.buttonStyle2}>
+            <View>
+              <Text style={styles.emailInput}>Họ</Text>
 
-            <Input
-              value={inputValue2}
-              onChangeText={(text) => setInputValue2(text)}
-              variant="outline"
-              placeholder="Nhập tên đệm"
-              borderRadius={10}
-              _light={{
-                placeholderTextColor: 'blueGray.400',
-              }}
-              _dark={{
-                placeholderTextColor: 'blueGray.50',
-              }}
-            />
+              <Input
+                isDisabled={loading}
+                value={lastname}
+                onChangeText={(text) => setLastname(text)}
+                variant="outline"
+                placeholder="Nhập tên họ"
+                borderRadius={10}
+                _light={{
+                  placeholderTextColor: 'blueGray.400',
+                }}
+                _dark={{
+                  placeholderTextColor: 'blueGray.50',
+                }}
+              />
 
-            {errorText2 && (
+              {/* {errorText2 && (
               <Text style={{ color: 'red', fontSize: 10 }}>{errorText2}</Text>
-            )}
+            )} */}
+            </View>
           </View>
-        </View>
 
-        <View style={styles.buttonStyle2}>
-          <View>
-            <Text style={styles.emailInput}>Số điện thoại</Text>
+          <View style={styles.buttonStyle2}>
+            <View>
+              <Text style={styles.emailInput}>Số điện thoại</Text>
 
-            <Input
-              value={inputValue2}
-              onChangeText={(text) => setInputValue2(text)}
-              variant="outline"
-              placeholder="Nhập số điện thoại"
-              borderRadius={10}
-              _light={{
-                placeholderTextColor: 'blueGray.400',
-              }}
-              _dark={{
-                placeholderTextColor: 'blueGray.50',
-              }}
-            />
+              <Input
+                isDisabled={loading}
+                value={phoneNumber}
+                onChangeText={(text) => setPhoneNumber(text)}
+                variant="outline"
+                placeholder="Nhập số điện thoại"
+                borderRadius={10}
+                _light={{
+                  placeholderTextColor: 'blueGray.400',
+                }}
+                _dark={{
+                  placeholderTextColor: 'blueGray.50',
+                }}
+              />
 
-            {errorText2 && (
+              {/* {errorText2 && (
               <Text style={{ color: 'red', fontSize: 10 }}>{errorText2}</Text>
-            )}
+            )} */}
+            </View>
           </View>
-        </View>
-        <View style={styles.buttonStyle2}>
-          <View>
-            <Text style={styles.emailInput}>Email</Text>
+          <View style={styles.buttonStyle2}>
+            <View>
+              <Text style={styles.emailInput}>Email</Text>
 
-            <Input
-              value={inputValue2}
-              onChangeText={(text) => setInputValue2(text)}
-              variant="outline"
-              placeholder="Nhập Email"
-              borderRadius={10}
-              _light={{
-                placeholderTextColor: 'blueGray.400',
-              }}
-              _dark={{
-                placeholderTextColor: 'blueGray.50',
-              }}
-            />
+              <Input
+                isDisabled={loading}
+                value={email}
+                onChangeText={(text) => setEmail(text)}
+                variant="outline"
+                placeholder="Nhập Email"
+                borderRadius={10}
+                _light={{
+                  placeholderTextColor: 'blueGray.400',
+                }}
+                _dark={{
+                  placeholderTextColor: 'blueGray.50',
+                }}
+              />
 
-            {errorText2 && (
+              {/* {errorText2 && (
               <Text style={{ color: 'red', fontSize: 10 }}>{errorText2}</Text>
-            )}
+            )} */}
+            </View>
           </View>
-        </View>
-        {/* Password Input Field */}
-        <View style={styles.buttonStyle2}>
-          <View>
-            <Text style={styles.emailInput}>Mật khẩu</Text>
-            <Input
-              value={inputValue3}
-              onChangeText={(text) => setInputValue3(text)}
-              variant="outline"
-              placeholder="Nhập mật khẩu"
-              borderRadius={10}
-              secureTextEntry={true}
-              _light={{
-                placeholderTextColor: 'blueGray.400',
-              }}
-              _dark={{
-                placeholderTextColor: 'blueGray.50',
-              }}
-            />
-            {errorText3 && (
+          {/* Password Input Field */}
+          <View style={styles.buttonStyle2}>
+            <View>
+              <Text style={styles.emailInput}>Mật khẩu</Text>
+              <Input
+                isDisabled={loading}
+                value={password}
+                onChangeText={(text) => setPassword(text)}
+                variant="outline"
+                placeholder="Nhập mật khẩu"
+                borderRadius={10}
+                secureTextEntry={true}
+                _light={{
+                  placeholderTextColor: 'blueGray.400',
+                }}
+                _dark={{
+                  placeholderTextColor: 'blueGray.50',
+                }}
+              />
+              {/* {errorText3 && (
               <Text style={{ color: 'red', fontSize: 10 }}>{errorText3}</Text>
-            )}
+            )} */}
+            </View>
           </View>
-        </View>
 
-        {/* Button Create an account */}
-        <View style={styles.buttonSigup}>
-          <Button
-            onPress={handleSubmit}
-            style={styles.buttonDesgin}
-            borderRadius={10}
-            paddingBottom={3}
-          >
-            <Text style={styles.text3}>Đăng Ký</Text>
-          </Button>
-        </View>
-        <View style={styles.buttonGoogle}>
-          <View style={styles.text4}>
-            <Text style={styles.loginText}>Bạn đã có tài khoản? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate('seven')}>
-              <Text style={styles.loginText1}>Đăng nhập</Text>
-            </TouchableOpacity>
+          {/* Button Create an account */}
+          <View style={styles.buttonSigup}>
+            <Button
+              onPress={handleSubmit}
+              style={styles.buttonDesgin}
+              borderRadius={10}
+              paddingBottom={3}
+              isDisabled={loading}
+            >
+              <Text style={styles.text3}>Đăng Ký</Text>
+            </Button>
+          </View>
+          <View style={styles.buttonGoogle}>
+            <View style={styles.text4}>
+              <Text style={styles.loginText}>Bạn đã có tài khoản? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('seven')}>
+                <Text style={styles.loginText1}>Đăng nhập</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
-}
-export default () => {
-  return (
-    <NativeBaseProvider>
-      <Signup />
-    </NativeBaseProvider>
-  );
 };
+export default Signup;
+
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+  imgWallpaper: {
+    height: 400,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  SignupText: {
-    marginTop: 70,
-    fontSize: 30,
-    fontWeight: '500',
+  iconContainer: {
+    padding: 4,
+    backgroundColor: '#ffffffbc',
+    alignItems: 'center',
+    borderRadius: 32,
+  },
+  icon: {
+    width: 140,
+    height: 140,
+  },
+  container: {
+    backgroundColor: '#ffffff',
+    width: '90%',
+    alignSelf: 'center',
+    marginTop: -100,
+    padding: 20,
+    borderRadius: 30,
+    elevation: 12,
+    borderWidth: 1,
+    borderColor: '#00000036',
+    alignItems: 'center',
+    marginBottom: 40,
   },
   Middle: {
     alignItems: 'center',
     justifyContent: 'center',
+    width: '90%',
+    paddingBottom: 20,
+    borderBottomWidth: 2,
+    borderBottomColor: '#0000003b',
+    marginBottom: 12,
+  },
+  SignupText: {
+    fontSize: 30,
+    fontWeight: '600',
+    color: '#000000bc',
   },
   buttonStyle: {
-    marginTop: 5,
-    marginBottom: 7,
+    marginTop: 8,
+    marginBottom: 8,
+    width: '90%',
   },
   emailInput: {
-    fontSize: 17,
-    fontWeight: '500',
-    marginBottom: 2,
+    fontSize: 16,
   },
   buttonStyle2: {
-    marginBottom: 7,
+    marginBottom: 8,
+    width: '90%',
   },
   buttonStyle3: {
-    marginBottom: 5,
-    marginTop: 5,
+    marginBottom: 8,
+    width: '90%',
   },
   buttonDesgin: {
-    backgroundColor: '#FB641B',
+    backgroundColor: COLORS.MAINPINK,
   },
   text3: {
-    color: 'black',
-    fontSize: 18,
-    fontWeight: '400',
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '900',
     flexDirection: 'row',
     justifyContent: 'center',
   },
   buttonSigup: {
-    marginTop: 3,
+    marginTop: 12,
+    width: '90%',
   },
   lineStyle: {
     flexDirection: 'row',
@@ -313,7 +393,6 @@ const styles = StyleSheet.create({
   text4: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 0,
   },
   loginText: {
     color: 'black',
@@ -324,5 +403,8 @@ const styles = StyleSheet.create({
     color: '#0000BB',
     fontSize: 15,
     fontWeight: '500',
+  },
+  buttonGoogle: {
+    marginTop: 12,
   },
 });

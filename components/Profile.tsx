@@ -106,7 +106,7 @@ export default function Profile({ path }: { path: String }) {
     if (userLogin && userRole === 'Customer') {
       getUserProfile();
     }
-  }, [userLogin]);
+  }, [userLogin, userRole]);
 
   const closeNotification = () => {
     setNotification(null);
@@ -719,7 +719,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    backgroundColor: '#f8f6f0',
+    backgroundColor: '#ffffff',
     paddingTop: 32,
   },
   cover: {

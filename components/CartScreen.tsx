@@ -34,6 +34,7 @@ import { formatCurrency } from '../libs/core/handle-price';
 import * as Link from 'expo-linking';
 
 import { getImage } from '../apis/image/components/apis';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function CartScreen({ path }: { path: string }) {
   const navigation = useNavigation();
@@ -193,7 +194,7 @@ export default function CartScreen({ path }: { path: string }) {
     );
   };
   return (
-    <SafeAreaView style={{ backgroundColor: '#f8f6f0', flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, paddingTop: 30 }}>
       {cart && cart.cartItems.length > 0 ? (
         <FlatList
           showsHorizontalScrollIndicator={false}
@@ -238,12 +239,11 @@ export default function CartScreen({ path }: { path: string }) {
         />
       ) : (
         <View>
-          <View>
-            <Icon
-              name="remove-shopping-cart"
-              size={200}
-              color={'#6b7280'}
-              style={{ marginBottom: 15 }}
+          <View style={{ alignItems: 'center', marginTop: 32 }}>
+            <MaterialCommunityIcons
+              name="cart-heart"
+              size={120}
+              color="#6b7280"
             />
             <Text
               style={{
@@ -251,15 +251,16 @@ export default function CartScreen({ path }: { path: string }) {
                 fontWeight: 'bold',
                 paddingHorizontal: 20,
                 color: '#6b7280',
-                marginLeft: 10,
+                textAlign: 'center',
+                marginVertical: 12,
               }}
             >
-              Giỏ hàng trống!
+              Giỏ hàng của bạn đang trống, hãy đi mua sắm nào
             </Text>
             <TouchableOpacity
               style={{
                 paddingHorizontal: 30,
-                backgroundColor: COLORS.RED_450,
+                backgroundColor: COLORS.MAINPINK,
                 borderRadius: 10,
                 marginVertical: 20,
                 paddingBottom: 10,
@@ -267,7 +268,7 @@ export default function CartScreen({ path }: { path: string }) {
               }}
               onPress={() => navigation.navigate('index')}
             >
-              <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+              <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>
                 Quay lại trang chủ
               </Text>
             </TouchableOpacity>

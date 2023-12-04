@@ -1,3 +1,5 @@
+import { COLORS } from "../libs/const/color";
+
 const tintColorLight = '#fde047';
 const tintColorDark = '#fde047';
 
@@ -7,13 +9,13 @@ export default {
     background: '#fff',
     tint: tintColorLight,
     tabIconDefault: '#fff',
-    tabIconSelected: tintColorLight,
+    tabIconSelected: COLORS.MAINPINK,
   },
   dark: {
-    text: '#f8f6f0',
+    text: '#000',
     background: '##fff',
-    tint: "#fff",
+    tint: tintColorLight,
     tabIconDefault: '#fff',
-    tabIconSelected: "#fff",
+    tabIconSelected: COLORS.MAINPINK,
   },
 };
