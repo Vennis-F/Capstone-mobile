@@ -64,6 +64,23 @@ export default function TabLayout() {
           ),
         }}
       />
+
+      <Tabs.Screen
+        name="courseList"
+        options={{
+          title: 'Danh sách khóa học',
+          href: null,
+          tabBarStyle: { display: 'none' },
+        }}
+      />
+      <Tabs.Screen
+        name="filterTable"
+        options={{
+          title: 'Bộ lọc',
+          href: null,
+          tabBarStyle: { display: 'none' },
+        }}
+      />
       {/* chi tiet khoa hoc */}
       <Tabs.Screen
         name="courseDetail"

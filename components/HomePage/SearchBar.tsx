@@ -76,20 +76,6 @@ export default function SearchBar({ isClicked, setIsClicked }) {
             style={{ width: '80%' }}
           />
         </TouchableOpacity>
-
-        <View
-          style={{
-            backgroundColor: '#fff',
-            padding: 6,
-            width: 48,
-            height: 48,
-            borderRadius: 12,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Ionicons name="options-outline" size={28} color={COLORS.MAINPINK} />
-        </View>
       </View>
       {coursesSearch.length > 0 && isClicked ? (
         <View style={styles.dropdownArea}>

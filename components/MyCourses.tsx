@@ -116,6 +116,9 @@ export default function MyCourses({ path }: { path: string }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', padding: 20 }}>
+        Khóa học của tôi
+      </Text>
       <FlatList
         data={courses}
         renderItem={renderItem}

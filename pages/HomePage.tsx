@@ -21,6 +21,7 @@ export default function HomePage({ path }: { path: string }) {
   const [userRole, setUserRole] = useState<UserRole | null>();
   // const [token, setToken] = useState<string | null>();
   const [ownList, setOwnList] = useState<CourseFilterResponse[]>([]);
+  const navigation = useNavigation();
 
   const handleGetUserRole = async () => {
     try {
@@ -94,7 +95,11 @@ export default function HomePage({ path }: { path: string }) {
       <View style={styles.categories}>
         <View style={styles.containerHeaders}>
           <Text style={styles.headerTitles}>Thể Loại</Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('courseList');
+            }}
+          >
             <Text style={styles.seeAll}>Xem tất cả</Text>
           </TouchableOpacity>
         </View>
@@ -107,7 +112,11 @@ export default function HomePage({ path }: { path: string }) {
             Những Khóa học&nbsp;
             <Text style={{ color: '#dc2626' }}>mới</Text>
           </Text>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('courseList');
+            }}
+          >
             <Text style={styles.seeAll}>Xem tất cả</Text>
           </TouchableOpacity>
         </View>
@@ -118,7 +127,11 @@ export default function HomePage({ path }: { path: string }) {
         <View style={styles.courses}>
           <View style={styles.containerHeaders}>
             <Text style={styles.headerTitles}>Tiếp tục với những bài học</Text>
-            <TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('three');
+              }}
+            >
               <Text style={styles.seeAll}>Xem tất cả</Text>
             </TouchableOpacity>
           </View>
