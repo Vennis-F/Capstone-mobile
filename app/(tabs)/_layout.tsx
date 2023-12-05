@@ -11,6 +11,7 @@ import {
 } from 'native-base/lib/typescript/theme/styled-system';
 import {
   AntDesign,
+  FontAwesome5,
   MaterialCommunityIcons,
   MaterialIcons,
   Octicons,
@@ -100,19 +101,7 @@ export default function TabLayout() {
           href: null,
         }}
       />
-      <Tabs.Screen
-        name="five"
-        options={
-          userRole === 'Customer'
-            ? {
-                title: 'Giỏ hàng',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="shopping-cart" color={color} />
-                ),
-              }
-            : { title: 'Giỏ hàng', href: null }
-        }
-      />
+
       <Tabs.Screen
         name="three"
         options={
@@ -120,7 +109,12 @@ export default function TabLayout() {
             ? {
                 title: 'Khóa học của tôi',
                 tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="tv" color={color} />
+                  <FontAwesome5
+                    name="chalkboard-teacher"
+                    size={26}
+                    color={color}
+                    style={{ marginBottom: -3 }}
+                  />
                 ),
               }
             : { title: 'Khóa học của tôi', href: null }
@@ -128,21 +122,7 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name="four"
-        options={
-          userRole === 'Customer'
-            ? {
-                title: 'Khóa học của con',
-                tabBarIcon: ({ color }) => (
-                  <MaterialIcons
-                    name="assignment-ind"
-                    size={32}
-                    color={color}
-                    style={{ marginBottom: -3 }}
-                  />
-                ),
-              }
-            : { title: 'Khóa học của con', href: null }
-        }
+        options={{ title: 'Khóa học của con', href: null }}
       />
       <Tabs.Screen
         name="eleven"
@@ -171,6 +151,20 @@ export default function TabLayout() {
             : { title: 'Hồ sơ của tôi', href: null }
         }
       />
+
+      <Tabs.Screen
+        name="five"
+        options={
+          userRole === 'Customer'
+            ? {
+                title: 'Giỏ hàng',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="shopping-cart" color={color} />
+                ),
+              }
+            : { title: 'Giỏ hàng', href: null }
+        }
+      />
       <Tabs.Screen
         name="orderNotification"
         options={{ title: 'Tình trạng đơn hàng', href: null }}
@@ -190,7 +184,12 @@ export default function TabLayout() {
             ? {
                 title: 'Đăng nhập',
                 tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="user" color={color} />
+                  <FontAwesome5
+                    name="sign-in-alt"
+                    size={26}
+                    color={color}
+                    style={{ marginBottom: -3 }}
+                  />
                 ),
               }
             : { title: 'Đăng nhập', href: null }
@@ -211,21 +210,7 @@ export default function TabLayout() {
       /> */}
       <Tabs.Screen
         name="children"
-        options={
-          userRole === 'Customer'
-            ? {
-                title: 'Tài khoản của con',
-                tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons
-                    name="account-child"
-                    size={34}
-                    style={{ marginBottom: -3 }}
-                    color={color}
-                  />
-                ),
-              }
-            : { title: 'Tài khoản của con', href: null }
-        }
+        options={{ title: 'Tài khoản của con', href: null }}
       />
       <Tabs.Screen
         name="orderHistory"

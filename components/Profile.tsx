@@ -105,6 +105,8 @@ export default function Profile({ path }: { path: String }) {
   useEffect(() => {
     if (userLogin && userRole === 'Customer') {
       getUserProfile();
+    } else {
+      setuserData(null);
     }
   }, [userLogin, userRole]);
 
@@ -632,7 +634,7 @@ export default function Profile({ path }: { path: String }) {
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('three');
+                    navigation.navigate('four');
                   }}
                 >
                   <View style={styles.menuItem}>
@@ -642,10 +644,14 @@ export default function Profile({ path }: { path: String }) {
                       style={{ marginRight: 30 }}
                       color={'#eab308'}
                     />
-                    <Text style={styles.menuTextSub}>Khóa học đã sở hữu</Text>
+                    <Text style={styles.menuTextSub}>Khóa học của bé</Text>
                   </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => {}}>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('children');
+                  }}
+                >
                   <View style={styles.menuItem}>
                     <Icon
                       name="transfer-within-a-station"
@@ -654,7 +660,7 @@ export default function Profile({ path }: { path: String }) {
                       color={'#eab308'}
                     />
                     <Text style={styles.menuTextSub}>
-                      Quản lý tài khoản trẻ em
+                      Quản lý tài khoản của bé
                     </Text>
                   </View>
                 </TouchableOpacity>

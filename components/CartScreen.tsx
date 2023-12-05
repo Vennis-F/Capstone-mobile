@@ -195,6 +195,9 @@ export default function CartScreen({ path }: { path: string }) {
   };
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: 30 }}>
+      <Text style={{ fontSize: 22, fontWeight: 'bold', padding: 20 }}>
+        Giỏ hàng của tôi
+      </Text>
       {cart && cart.cartItems.length > 0 ? (
         <FlatList
           showsHorizontalScrollIndicator={false}

@@ -11,11 +11,12 @@ import { useCallback, useState } from 'react';
 import SearchBar from './SearchBar';
 import { getProfileUser } from '../../apis/user/apis';
 import { UserFilterResponse } from '../../apis/user/types';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useNavigation } from 'expo-router';
 
 export default function HomeHeader({}) {
   const [isClicked, setIsClicked] = useState(false);
   const [user, setUser] = useState<UserFilterResponse | null>();
+  const navigation = useNavigation();
 
   const getUser = async () => {
     try {
@@ -55,13 +56,17 @@ export default function HomeHeader({}) {
           </Text>
           <Text style={styles.underGreetingText}>Cùng nhau học nào</Text>
         </View>
-        <View>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.navigate('five');
+          }}
+        >
           {user ? (
             <Ionicons style={styles.cartHeader} name="cart" size={32} />
           ) : (
             ''
           )}
-        </View>
+        </TouchableOpacity>
       </View>
       <SearchBar isClicked={isClicked} setIsClicked={setIsClicked} />
     </TouchableOpacity>

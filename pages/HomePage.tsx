@@ -19,26 +19,31 @@ import { getCourseForLearnerSearchByUser } from '../apis/learner/api';
 
 export default function HomePage({ path }: { path: string }) {
   const [userRole, setUserRole] = useState<UserRole | null>();
+  const [userLogin, setuserLogin] = useState(false);
+
   // const [token, setToken] = useState<string | null>();
   const [ownList, setOwnList] = useState<CourseFilterResponse[]>([]);
   const navigation = useNavigation();
 
   const handleGetUserRole = async () => {
-    try {
-      setUserRole(await getUserRole());
-    } catch (error) {
-      console.log('[HomePage - user role error] ', error);
-    }
+    const role = await getUserRole();
+    console.log('[HomePage - role] ', role);
+    setUserRole(role);
   };
 
-  // const getToken = async () => {
-  //   const responeToken = await getAccessToken();
-  //   setToken(responeToken);
-  // };
+  const handleCheckIsLogin = async () => {
+    const token = await getAccessToken();
+    console.log('[HomePage - token] ', token);
+    if (token) {
+      setuserLogin(true);
+      await handleGetUserRole();
+    } else setuserLogin(false);
+  };
 
   const getUserCourse = async () => {
+    console.log('role in course ', userRole);
     try {
-      if (!userRole) {
+      if (!userLogin) {
         setOwnList([]);
       } else if (userRole === 'Customer')
         setOwnList(await getCourseByCustomer());
@@ -51,14 +56,14 @@ export default function HomePage({ path }: { path: string }) {
 
   useFocusEffect(
     useCallback(() => {
-      // getToken();
-      handleGetUserRole();
+      setUserRole(null);
+      handleCheckIsLogin();
     }, [])
   );
 
   useEffect(() => {
     getUserCourse();
-  }, [userRole]);
+  }, [userRole, userLogin]);
 
   return (
     <ScrollView
