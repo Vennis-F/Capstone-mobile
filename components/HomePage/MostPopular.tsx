@@ -140,7 +140,10 @@ const MostPopular = ({ ownList = [] }: { ownList: CourseFilterResponse[] }) => {
         item={item}
         onPress={() => {
           setSelectedId(item.id);
-          navigation.navigate('eight', { id: item.id, ownListId: ownListId });
+          navigation.navigate('courseDetail', {
+            id: item.id,
+            ownListId: ownListId,
+          });
         }}
         backgroundColor={backgroundColor}
         textColor={color}

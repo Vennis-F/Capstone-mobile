@@ -91,7 +91,10 @@ const KeepLearning = ({
           item={item}
           key={index}
           onPress={() => {
-            navigation.navigate('eight', { id: item.id, ownListId: ownListId });
+            navigation.navigate('courseDetail', {
+              id: item.id,
+              ownListId: ownListId,
+            });
           }}
         />
       ))}

@@ -97,7 +97,7 @@ export default function SearchBar({ isClicked, setIsClicked }) {
             <TouchableOpacity
               style={styles.coursesItem}
               onPress={() => {
-                navigation.navigate('eight', { id: item.id });
+                navigation.navigate('courseDetail', { id: item.id });
               }}
               key={index}
             >

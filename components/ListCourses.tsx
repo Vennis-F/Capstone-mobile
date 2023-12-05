@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -8,18 +8,23 @@ import {
   Text,
   TouchableOpacity,
   View,
-} from "react-native";
-import { useNavigation } from "@react-navigation/native";
+} from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
-import Icon from "react-native-vector-icons/FontAwesome";
-import { Course, GetCoursesBySearchRequest, OrderType, SortCourseBy, SortFieldCourse } from "../apis/courses/types";
-import { getCoursesBySearch } from "../apis/courses/api";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {
+  Course,
+  GetCoursesBySearchRequest,
+  OrderType,
+  SortCourseBy,
+  SortFieldCourse,
+} from '../apis/courses/types';
+import { getCoursesBySearch } from '../apis/courses/api';
 
 const Item = ({ item, onPress, backgroundColor, textColor }) => (
   <TouchableOpacity
     onPress={onPress}
-    style={[styles.item, { backgroundColor }]
-}
+    style={[styles.item, { backgroundColor }]}
   >
     <View style={styles.little}>
       <View>
@@ -40,7 +45,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
         <Image
           style={styles.tinyLogo}
           source={{
-            uri: "https://reactnative.dev/img/tiny_logo.png",
+            uri: 'https://reactnative.dev/img/tiny_logo.png',
           }}
         />
       </View>
@@ -50,38 +55,38 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => (
 
 const ListCourses = () => {
   const [selectedId, setSelectedId] = useState();
-  const [listCourses, setListCourses] = useState<Course[]>([])
+  const [listCourses, setListCourses] = useState<Course[]>([]);
   const navigation = useNavigation();
   const getCourse = async () => {
     const bodyRequest: GetCoursesBySearchRequest = {
-      categories:[],
+      categories: [],
       levels: [],
-      search: "",
-      sortField:SortFieldCourse.PUBLISHED_DATE,
+      search: '',
+      sortField: SortFieldCourse.PUBLISHED_DATE,
       pageOptions: {
         order: OrderType.DESC,
         page: 1,
         take: 15,
       },
-    }
-    const dataResponse = await getCoursesBySearch(bodyRequest)
-    setListCourses([...dataResponse.data])
-  }
+    };
+    const dataResponse = await getCoursesBySearch(bodyRequest);
+    setListCourses([...dataResponse.data]);
+  };
 
-  useEffect(()=>{
-    getCourse()
-  },[])
+  useEffect(() => {
+    getCourse();
+  }, []);
 
   const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#050514" : "#CECADA";
-    const color = item.id === selectedId ? "white" : "black";
+    const backgroundColor = item.id === selectedId ? '#050514' : '#CECADA';
+    const color = item.id === selectedId ? 'white' : 'black';
 
     return (
       <Item
         item={item}
         onPress={() => {
-          setSelectedId(item.id)
-          navigation.navigate('eight',{id:item.id});
+          setSelectedId(item.id);
+          navigation.navigate('courseDetail', { id: item.id });
         }}
         backgroundColor={backgroundColor}
         textColor={color}
@@ -116,19 +121,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   provider: {
-    color: "#DCDCDE",
+    color: '#DCDCDE',
   },
   little: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   tinyLogo: {
     width: 80,
     height: 80,
-    marginLeft:30
+    marginLeft: 30,
   },
 });
 

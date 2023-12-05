@@ -93,7 +93,7 @@ const Careers = () => {
         item={item}
         onPress={() => {
           setSelectedId(item.id);
-          navigation.navigate('eight', { id: item.id });
+          navigation.navigate('courseDetail', { id: item.id });
         }}
         backgroundColor={backgroundColor}
         textColor={color}

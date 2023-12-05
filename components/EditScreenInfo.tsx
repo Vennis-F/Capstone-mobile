@@ -148,7 +148,7 @@ export default function EditScreenInfo({ path }: { path: string }) {
                 <TouchableOpacity
                   style={styles.coursesItem}
                   onPress={() => {
-                    navigation.navigate('eight', { id: item.id });
+                    navigation.navigate('courseDetail', { id: item.id });
                   }}
                 >
                   <Text>{item.title}</Text>

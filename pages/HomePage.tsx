@@ -69,7 +69,7 @@ export default function HomePage({ path }: { path: string }) {
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
     >
-      <HomeHeader userRole={userRole} />
+      <HomeHeader />
 
       <Image
         source={require('../assets/images/poster.png')}

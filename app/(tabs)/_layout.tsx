@@ -66,10 +66,11 @@ export default function TabLayout() {
       />
       {/* chi tiet khoa hoc */}
       <Tabs.Screen
-        name="eight"
+        name="courseDetail"
         options={{
           title: 'Chi tiết khóa học',
           href: null,
+          tabBarStyle: { display: 'none' },
         }}
       />
       <Tabs.Screen

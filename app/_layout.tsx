@@ -66,7 +66,7 @@ function RootLayoutNav() {
             name="(tabs)"
             options={{
               headerShown: false,
-              navigationBarColor: '#FF724C',
+              navigationBarColor: '#ffffff10',
               statusBarColor: COLORS.MAINPINK,
             }}
           />
