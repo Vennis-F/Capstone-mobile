@@ -63,7 +63,7 @@ const Item = ({ item, onPress, ownListId }) => {
             </Text>
           </View>
           <Text style={[styles.price, { color: '#2A60DD' }]}>
-            {formatCurrency(item.discount ? item.discountPrice : item.price)}VNĐ
+            {formatCurrency(item.price)}VNĐ
           </Text>
         </View>
         <View>

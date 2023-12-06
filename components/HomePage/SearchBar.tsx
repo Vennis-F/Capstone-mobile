@@ -39,8 +39,12 @@ export default function SearchBar({ isClicked, setIsClicked }) {
         take: 5,
       },
     };
-    const dataResponse = await getCoursesBySearch(bodyRequest);
-    setCoursesSearch([...dataResponse.data]);
+    try {
+      const dataResponse = await getCoursesBySearch(bodyRequest);
+      setCoursesSearch([...dataResponse.data]);
+    } catch (error) {
+      console.log('[SearchBar - get course error] ', error);
+    }
   };
 
   useEffect(() => {

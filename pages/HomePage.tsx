@@ -26,22 +26,27 @@ export default function HomePage({ path }: { path: string }) {
   const navigation = useNavigation();
 
   const handleGetUserRole = async () => {
-    const role = await getUserRole();
-    console.log('[HomePage - role] ', role);
-    setUserRole(role);
+    try {
+      const role = await getUserRole();
+      setUserRole(role);
+    } catch (error) {
+      console.log('[HomePage - role errorr] ', error);
+      setUserRole(null);
+    }
   };
 
   const handleCheckIsLogin = async () => {
-    const token = await getAccessToken();
-    console.log('[HomePage - token] ', token);
-    if (token) {
-      setuserLogin(true);
-      await handleGetUserRole();
-    } else setuserLogin(false);
+    try {
+      const token = await getAccessToken();
+      if (token) {
+        setuserLogin(true);
+      } else setuserLogin(false);
+    } catch (error) {
+      console.log('[HomePage - login error] ', error);
+    }
   };
 
   const getUserCourse = async () => {
-    console.log('role in course ', userRole);
     try {
       if (!userLogin) {
         setOwnList([]);
@@ -58,12 +63,14 @@ export default function HomePage({ path }: { path: string }) {
     useCallback(() => {
       setUserRole(null);
       handleCheckIsLogin();
+      handleGetUserRole();
     }, [])
   );
 
   useEffect(() => {
-    getUserCourse();
-  }, [userRole, userLogin]);
+    if (userRole) getUserCourse();
+    if (!userRole) setOwnList([]);
+  }, [userLogin, userRole]);
 
   return (
     <ScrollView

@@ -244,23 +244,6 @@ const Detail = ({}) => {
               <Text style={styles.price}>
                 {formatCurrency(course?.price)} VNĐ
               </Text>
-              {course.discount ? (
-                <Text
-                  style={{
-                    marginLeft: 12,
-                    color: '#006aff',
-                    fontSize: 16,
-                    textDecorationLine: 'line-through',
-                  }}
-                >
-                  {formatCurrency(
-                    course.discount ? course.discountPrice : course.price
-                  )}
-                  VNĐ
-                </Text>
-              ) : (
-                ''
-              )}
             </View>
           )}
           <Button style={styles.buyButton} onPress={handleAddCartItem}>

@@ -101,9 +101,9 @@ export type Course = {
   title: string;
   description: string | null;
   price: number;
-  discount: number;
-  discountPrice: number;
-  promotionCourseByStaffId: string | null;
+  // discount: number;
+  // discountPrice: number;
+  // promotionCourseByStaffId: string | null;
   ratedStar: number;
   author: string;
   totalLength: number;

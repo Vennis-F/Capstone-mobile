@@ -75,31 +75,48 @@ export default function Profile({ path }: { path: String }) {
   };
 
   const handleGetUserRole = async () => {
-    setUserRole(await getUserRole());
+    try {
+      setUserRole(await getUserRole());
+    } catch (error) {
+      console.log('[Profile - get role error] ', error);
+    }
   };
 
   const handleCheckIsLogin = async () => {
-    const token = await getAccessToken();
-    if (token) setuserLogin(true);
-    else setuserLogin(false);
+    try {
+      const token = await getAccessToken();
+      if (token) setuserLogin(true);
+      else setuserLogin(false);
+    } catch (error) {
+      console.log('[Profile - check login error] ', error);
+    }
   };
 
   const handleLogout = async () => {
-    const token = await getAccessToken();
+    try {
+      const token = await getAccessToken();
 
-    if (token) {
-      await guestSignOut(token);
-      removeAccessToken();
-      setuserLogin(false);
-      showSuccessMessage();
-      navigation.navigate('index');
-    } else console.log('[error]', 'You are not allowed to log out');
+      if (token) {
+        await guestSignOut(token);
+        removeAccessToken();
+        setuserLogin(false);
+        showSuccessMessage();
+        setUserRole(null);
+        navigation.navigate('index');
+      } else console.log('[error]', 'You are not allowed to log out');
+    } catch (error) {
+      console.log('[Profile - log out error] ', error);
+    }
   };
 
   console.log('[Profile login]', userLogin);
 
   const getUserProfile = async () => {
-    setuserData(await getProfileUser());
+    try {
+      setuserData(await getProfileUser());
+    } catch (error) {
+      console.log('[Profile - get profile error] ', error);
+    }
   };
 
   useEffect(() => {

@@ -7,30 +7,59 @@ import {
   StyleSheet,
 } from 'react-native';
 import { COLORS } from '../../libs/const/color';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import { getProfileUser } from '../../apis/user/apis';
 import { UserFilterResponse } from '../../apis/user/types';
 import { useFocusEffect, useNavigation } from 'expo-router';
+import { getLearnersByUser } from '../../apis/learner/api';
+import { getUserRole } from '../../libs/core/handle-token';
+import { UserRole } from '../../apis/auth/types';
 
-export default function HomeHeader({}) {
+export default function HomeHeader() {
   const [isClicked, setIsClicked] = useState(false);
   const [user, setUser] = useState<UserFilterResponse | null>();
+  const [userRole, setUserRole] = useState<UserRole | null>();
   const navigation = useNavigation();
+
+  const handleGetUserRole = async () => {
+    try {
+      const role = await getUserRole();
+      setUserRole(role);
+    } catch (error) {
+      console.log('[HomeHeader - role errorr] ', error);
+      setUserRole(null);
+    }
+  };
 
   const getUser = async () => {
     try {
-      setUser(await getProfileUser());
+      if (userRole === 'Customer') {
+        setUser(await getProfileUser());
+      } else setUser(null);
     } catch (error) {
       setUser(null);
+      console.log('[HomeHeader - get user error] ', error);
     }
   };
 
   useFocusEffect(
     useCallback(() => {
-      getUser();
+      try {
+        handleGetUserRole();
+      } catch (error) {
+        console.log('[HomeHeader - focus error] ', erro);
+      }
     }, [])
   );
+
+  useEffect(() => {
+    try {
+      getUser();
+    } catch (error) {
+      console.log('[HomeHeader - effect error] ', error);
+    }
+  }, [userRole]);
 
   return (
     <TouchableOpacity

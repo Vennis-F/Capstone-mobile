@@ -91,7 +91,7 @@ const Item = ({
 
           {/* <StarRating rating={item.ratedStar} /> */}
           <Text style={[styles.price, { color: '#2A60DD' }]}>
-            {formatCurrency(item.discount ? item.discountPrice : item.price)}VNĐ
+            {formatCurrency(item.price)}VNĐ
           </Text>
         </View>
       </View>
