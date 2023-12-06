@@ -1,7 +1,8 @@
 
 
 import makeApi from '../../../libs/core/configureAxios';
-import { CreatePaymentURLBody, Order, OrderDetail, UpdateOrderBodyRequest } from '../types';
+import { PageResponse } from '../../../libs/types';
+import { CreatePaymentURLBody, FindOrdersByUserBodyRequest, Order, OrderDetail, UpdateOrderBodyRequest } from '../types';
 
 const api = makeApi(`${process.env.EXPO_PUBLIC_API_URL}`);
 
@@ -14,7 +15,7 @@ export const createOrder = (): Promise<Order> => api.post(`${ORDER_BASE_URL}/cre
 export const updateOrder = (body: UpdateOrderBodyRequest): Promise<Order> =>
   api.patch(`${ORDER_BASE_URL}/update`, body);
 
-export const findOrdersByUser = (): Promise<Order[]> => api.get(`${ORDER_BASE_URL}/user`);
+export const findOrdersByUser = (body: FindOrdersByUserBodyRequest): Promise<PageResponse<Order>> => api.post(`${ORDER_BASE_URL}/user`, body);
 
 export const findOrderByOrderId = (orderId: string): Promise<Order> =>
   api.get(`${ORDER_BASE_URL}/user/${orderId}`);

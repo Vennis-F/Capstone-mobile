@@ -1,3 +1,4 @@
+import { PageOptions } from "../../../libs/types";
 import { PromotionCourse } from "../../cart/types";
 import { Course } from "../../courses/types";
 
@@ -69,3 +70,9 @@ export type CreatePaymentURLBody = {
 
   ip?: string;
 };
+
+export type FindOrdersByUserBodyRequest = {
+  orderStatus?: NameOrderStatus;
+  pageOptions: PageOptions;
+};
+

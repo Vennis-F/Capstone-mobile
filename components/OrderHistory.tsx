@@ -3,17 +3,35 @@ import { Button } from 'native-base';
 import React, { useState, useEffect } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { findOrdersByUser } from '../apis/order/api';
-import { Order, convertOrderStatus } from '../apis/order/types';
+import {
+  FindOrdersByUserBodyRequest,
+  NameOrderStatus,
+  Order,
+  convertOrderStatus,
+} from '../apis/order/types';
 import { formatCurrency } from '../libs/core/handle-price';
 import { formatStringtoDate } from '../libs/core/handle-time';
 import { useFocusEffect, useNavigation } from 'expo-router';
+import { OrderType } from '../apis/courses/types';
 
 const OrderHistory = ({ path }: { path: string }) => {
   const [dropdownPress, setdropdownPress] = useState<string[]>([]);
-  const [orders, setOrders] = useState<Order[]>();
+  const [orders, setOrders] = useState<Order[]>([]);
 
   const getOrder = async () => {
-    setOrders(await findOrdersByUser());
+    const bodyRequest: FindOrdersByUserBodyRequest = {
+      pageOptions: {
+        order: OrderType.DESC,
+        page: 1,
+        take: 6,
+      },
+      orderStatus: null,
+    };
+    try {
+      setOrders((await findOrdersByUser(bodyRequest)).data);
+    } catch (error) {
+      console.log('[OrderHistory - get orders] ', error);
+    }
   };
 
   useFocusEffect(
@@ -36,7 +54,6 @@ const OrderHistory = ({ path }: { path: string }) => {
       setdropdownPress([...dropdownPress, id]);
     }
   };
-  console.log('[orders] ', orders);
   return (
     <View style={styles.container}>
       {orders?.length >= 1 ? (

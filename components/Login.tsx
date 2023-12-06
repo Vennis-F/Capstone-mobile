@@ -59,7 +59,6 @@ function Login() {
         showSuccessMessage();
 
         navigation.navigate('index');
-        console.log(token);
       } catch (error) {
         console.log('[error when login]', error.message);
       }

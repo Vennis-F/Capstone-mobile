@@ -28,6 +28,7 @@ import Description from '../components/DetailPage/Description';
 import Content from '../components/DetailPage/Content';
 import { Button } from 'native-base';
 import { addCartItem } from '../apis/cart/apis';
+import Review from '../components/DetailPage/Review';
 
 const Detail = ({}) => {
   const [userRole, setUserRole] = useState<UserRole | null>();
@@ -94,6 +95,7 @@ const Detail = ({}) => {
   };
 
   useEffect(() => {
+    setPressedTab('description');
     getCourse();
     handleGetUserRole();
   }, [id]);
@@ -223,6 +225,11 @@ const Detail = ({}) => {
             )}
             {pressedTab === 'description' ? (
               <Description course={course} />
+            ) : (
+              ''
+            )}
+            {pressedTab === 'review' ? (
+              <Review course={course} id={course.id} />
             ) : (
               ''
             )}

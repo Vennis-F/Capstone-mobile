@@ -49,8 +49,9 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: COLORS.MAINPINK,
           height: '8%',
-          borderRadius: 20,
           marginTop: -10,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
         },
         tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,

@@ -109,8 +109,6 @@ export default function Profile({ path }: { path: String }) {
     }
   };
 
-  console.log('[Profile login]', userLogin);
-
   const getUserProfile = async () => {
     try {
       setuserData(await getProfileUser());
@@ -743,7 +741,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     backgroundColor: '#ffffff',
-    paddingTop: 32,
+    marginTop: 30,
   },
   cover: {
     height: 200,

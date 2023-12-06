@@ -4,8 +4,6 @@ import { secondsToMinutesString } from '../../libs/core/handle-time';
 import { Ionicons } from '@expo/vector-icons';
 
 const Content = ({ course, chapterLectures }) => {
-  const a = 1;
-
   return (
     <View>
       <View style={{ marginTop: 12 }}>
