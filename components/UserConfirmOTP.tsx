@@ -75,6 +75,7 @@ const ConfirmOTP = () => {
         <View style={styles.buttonStyle}>
           <View>
             <Input
+              keyboardType="number-pad"
               style={styles.input}
               isDisabled={loading}
               value={codeOTP}

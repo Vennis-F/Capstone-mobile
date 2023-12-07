@@ -6,6 +6,7 @@ import {
   SafeAreaView,
   ImageBackground,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import {
@@ -31,6 +32,7 @@ function Login() {
   const [inputValue2, setInputValue2] = useState('');
   const [errorText1, setErrorText1] = useState('');
   const [errorText2, setErrorText2] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [notification, setNotification] = useState(null);
   const closeNotification = () => {
@@ -70,6 +72,7 @@ function Login() {
 
     if (inputValue1.trim() !== '' && inputValue2.trim() !== '') {
       try {
+        setLoading(true);
         const token = await guestSignIn({
           emailOrUsername: inputValue1,
           password: inputValue2,
@@ -77,11 +80,13 @@ function Login() {
         try {
           await setAccessToken(token.accessToken);
           showSuccessMessage();
+          setLoading(false);
           navigation.navigate('home');
         } catch (error) {
           console.log('[Login - set token error] ', error);
         }
       } catch (error) {
+        setLoading(false);
         const errorResponse = error as ResponseError;
         const msgError =
           errorResponse?.response?.data?.message || 'Không thể đăng nhập';
@@ -121,12 +126,14 @@ function Login() {
           {/* Username or email input field */}
           <View style={styles.buttonStyle}>
             <View>
-              <Text style={styles.emailInput}>Email</Text>
+              <Text style={styles.emailInput}>Email hoặc Tên đăng nhập</Text>
               <Input
+                isDisabled={loading}
+                keyboardType="email-address"
                 value={inputValue1}
                 onChangeText={(text) => setInputValue1(text)}
                 variant="outline"
-                placeholder="Nhập email "
+                placeholder="Nhập email hoặc Tên đăng nhập"
                 borderRadius={10}
               />
               {errorText1 && <Text style={{ color: 'red' }}>{errorText1}</Text>}
@@ -137,6 +144,7 @@ function Login() {
             <View>
               <Text style={styles.emailInput}>Mật khẩu</Text>
               <Input
+                isDisabled={loading}
                 value={inputValue2}
                 onChangeText={(text) => setInputValue2(text)}
                 variant="outline"
@@ -157,8 +165,13 @@ function Login() {
               style={styles.buttonDesgin}
               borderRadius={10}
               paddingBottom={3}
+              isDisabled={loading}
             >
-              <Text style={styles.text3}>Đăng nhập</Text>
+              {loading ? (
+                <ActivityIndicator size={'large'} color={'#fff'} />
+              ) : (
+                <Text style={styles.text3}>Đăng nhập</Text>
+              )}
             </Button>
           </View>
           <View style={styles.text4}>
