@@ -33,8 +33,8 @@ import YoutubePlayer from '../../components/YoutubePlayer';
 import Profile from '../../components/Profile';
 import CartScreen from '../../components/CartScreen';
 import OrderNotification from '../../components/OrderNotification';
-import Login from '../../components/Login';
-import Signup from '../../components/Signup';
+import Login from '../../pages/Login';
+import Signup from '../../pages/Signup';
 import DetailOrder from '../../components/OrderDetail';
 import Children from '../../components/Children';
 import OrderHistory from '../../components/OrderHistory';
@@ -179,6 +179,7 @@ export default function TabLayout() {
                     style={{ marginBottom: -3 }}
                   />
                 ),
+                tabBarStyle: { display: 'none' },
               }
             : { title: 'Đăng nhập', tabBarButton: () => null }
         }
@@ -256,7 +257,11 @@ export default function TabLayout() {
 
       <Tab.Screen
         name="signUp"
-        options={{ title: 'Đăng ký', tabBarButton: () => null }}
+        options={{
+          title: 'Đăng ký',
+          tabBarButton: () => null,
+          tabBarStyle: { display: 'none' },
+        }}
         component={Signup}
       />
 

@@ -1,7 +1,7 @@
-import { SxProps, Theme } from '@mui/material'
+import { SxProps, Theme } from '@mui/material';
 
-export type StyleSxProps = Record<string, SxProps<Theme>>
-export type FormInputOptions = [string, any][] // eslint-disable-line
+export type StyleSxProps = Record<string, SxProps<Theme>>;
+export type FormInputOptions = [string, any][]; // eslint-disable-line
 export enum UserRole {
   CUSTOMER = 'Customer',
   ADMIN = 'Admin',
@@ -14,23 +14,32 @@ export enum OrderType {
   DESC = 'DESC',
 }
 export type PageOptions = {
-  take: number
-  page: number
-  order: OrderType
-}
-export type PageResponse<T> = { data: T[]; meta: PageMetaResponse }
+  take: number;
+  page: number;
+  order: OrderType;
+};
+export type PageResponse<T> = { data: T[]; meta: PageMetaResponse; };
 export type PageMetaResponse = {
-  page: number
-  take: number
-  itemCount: number
-  pageCount: number
-  hasPreviousPage: boolean
-  hasNextPage: boolean
-}
+  page: number;
+  take: number;
+  itemCount: number;
+  pageCount: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+};
 
 export type SortCriteria<T> = {
-  field: T
-  order: OrderType
-}
+  field: T;
+  order: OrderType;
+};
 
-export type UploadStatus = { status: boolean }
+export type UploadStatus = { status: boolean; };
+
+export type ResponseError = {
+  response?: {
+    data?: {
+      message?: string;
+    };
+    status?: number;
+  };
+};

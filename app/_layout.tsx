@@ -9,7 +9,7 @@ import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-import Login from '../components/Login';
+import Login from '../pages/Login';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';

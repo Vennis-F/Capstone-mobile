@@ -17,8 +17,9 @@ import {
   Box,
   AspectRatio,
   ScrollView,
+  KeyboardAvoidingView,
 } from 'native-base';
-import { FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
 
 import { useNavigation } from '@react-navigation/native';
 import { customerSignUp } from '../apis/auth/api';
@@ -35,6 +36,9 @@ const Signup = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
+  const [firstnameError, setFirstnameError] = useState('');
+  const [middlenameError, setMiddlenameError] = useState('');
+
   const handleReset = () => {
     setFirstname(''),
       setMiddlename(''),
@@ -46,38 +50,18 @@ const Signup = () => {
   };
 
   const handleSubmit = async () => {
-    const body: CustomerSignupRequest = {
-      email: email.trim(),
-      firstName: firstname.trim(),
-      lastName: lastname.trim(),
-      middleName: middlename.trim(),
-      password: password.trim(),
-      phoneNumber: phoneNumber.trim(),
-      role: 'Customer',
-    };
-    setLoading(true);
-    try {
-      console.log('[Signup - api] ', await customerSignUp(body));
-      console.log('navigate');
-      handleReset();
-      navigation.navigate('confirmOTP', { email: email });
-    } catch (error) {
-      setLoading(false);
-      console.log('[Signup - error] ', error);
-    }
-    // if (inputValue1.trim() === '') {
-    //   // Nếu Input trống, hiển thị thông báo
-    //   setErrorText1('Vui lòng nhập dữ liệu');
+    // if (firstname.trim() === '') {
+    //   setFirstnameError('Vui lòng nhập Tên của bạn');
     // } else {
-    //   // Xử lý khi có giá trị nhập vào Input
-    //   setErrorText1('');
-    //   // ... Thực hiện các xử lý khác ở đây
+    //   setFirstnameError('');
     // }
-    // if (inputValue2.trim() === '') {
-    //   setErrorText2('Vui lòng nhập dữ liệu');
+
+    // if (middlename.trim() === '') {
+    //   setMiddlenameError('Vui lòng nhập Tên đệm của bạn');
     // } else {
-    //   setErrorText2('');
+    //   setMiddlenameError('');
     // }
+
     // if (inputValue3.trim() === '') {
     //   setErrorText3('Vui lòng nhập dữ liệu');
     // } else {
@@ -97,26 +81,61 @@ const Signup = () => {
     //   // Xử lý khi cả hai trường đều có giá trị
     //   // ... Thực hiện các xử lý khác ở đây
     // }
+
+    const body: CustomerSignupRequest = {
+      email: email.trim(),
+      firstName: firstname.trim(),
+      lastName: lastname.trim(),
+      middleName: middlename.trim(),
+      password: password.trim(),
+      phoneNumber: phoneNumber.trim(),
+      role: 'Customer',
+    };
+    setLoading(true);
+    try {
+      console.log('[Signup - api] ', await customerSignUp(body));
+      console.log('navigate');
+      handleReset();
+      navigation.navigate('confirmOTP', { email: email });
+    } catch (error) {
+      setLoading(false);
+      const errorResponse = error as ResponseError;
+      const msgError =
+        errorResponse?.response?.data?.message || 'Không thể đăng nhập';
+      console.log('[Signup - error] ', msgError);
+    }
   };
 
   return (
-    <SafeAreaView
+    <KeyboardAvoidingView
       style={{
         flex: 1,
         backgroundColor: '#f8f6f0',
         width: '100%',
         paddingTop: 30,
       }}
+      behavior="height"
     >
-      <ScrollView>
+      <ScrollView
+        automaticallyAdjustKeyboardInsets={true}
+        showsVerticalScrollIndicator={false}
+      >
         <ImageBackground
           source={require('../assets/images/wallpaper.png')}
           alt="Poster"
           style={styles.imgWallpaper}
         >
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('home');
+            }}
+            style={styles.backIcon}
+          >
+            <AntDesign name="leftcircle" size={36} color="#ffffffd9" />
+          </TouchableOpacity>
           <View style={styles.iconContainer}>
             <Image
-              source={require('../assets/images/favicon.png')}
+              source={require('../assets/images/singupLogo.png')}
               alt="Icon"
               style={styles.icon}
             />
@@ -296,7 +315,7 @@ const Signup = () => {
           </View>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 export default Signup;
@@ -305,14 +324,19 @@ const styles = StyleSheet.create({
   imgWallpaper: {
     height: 400,
     width: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  backIcon: {
+    marginTop: 24,
+    marginBottom: 24,
+    marginLeft: 20,
   },
   iconContainer: {
-    padding: 4,
+    width: 150,
+    padding: 8,
     backgroundColor: '#ffffffbc',
+    alignSelf: 'center',
     alignItems: 'center',
-    borderRadius: 32,
+    borderRadius: 99,
   },
   icon: {
     width: 140,
