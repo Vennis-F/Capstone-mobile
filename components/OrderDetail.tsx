@@ -10,7 +10,7 @@ import { formatCurrency } from '../libs/core/handle-price';
 import { getImage } from '../apis/image/components/apis';
 import { Ionicons } from '@expo/vector-icons';
 
-const DetailOrder = ({ path }: { path: string }) => {
+const DetailOrder = () => {
   const navigation = useNavigation();
 
   const [orderDetail, setOrderDetail] = useState<Order>();

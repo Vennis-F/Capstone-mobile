@@ -33,7 +33,7 @@ const Item = ({ item, setIsChanged, isChanged }) => {
   const fullname = `${item.lastName} ${item.middleName} ${item.firstName}`;
   return <></>;
 };
-export default function Children({ path }: { path: string }) {
+export default function Children() {
   const [notification, setNotification] = useState(null);
   const [children, setChildren] = useState<LearnerFilterResponse[]>([]);
   const [pressedChild, setPressedChild] = useState('');

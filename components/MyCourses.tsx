@@ -30,7 +30,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => {
     <TouchableOpacity
       style={[styles.item]}
       onPress={() => {
-        navigation.navigate('eleven', { id: item.id });
+        navigation.navigate('youtubePlayer', { id: item.id });
       }}
     >
       <View style={styles.little}>
@@ -69,7 +69,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }) => {
   );
 };
 
-export default function MyCourses({ path }: { path: string }) {
+export default function MyCourses() {
   const [selectedId, setSelectedId] = useState();
   const [courses, setCourses] = useState<
     CourseLearnerFilterResponse[] | CourseFilterResponse[]

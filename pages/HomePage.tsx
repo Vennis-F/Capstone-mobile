@@ -17,7 +17,7 @@ import { useFocusEffect } from 'expo-router';
 import { UserRole } from '../apis/auth/types';
 import { getCourseForLearnerSearchByUser } from '../apis/learner/api';
 
-export default function HomePage({ path }: { path: string }) {
+export default function HomePage() {
   const [userRole, setUserRole] = useState<UserRole | null>();
   const [userLogin, setuserLogin] = useState(false);
 

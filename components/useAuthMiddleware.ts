@@ -12,8 +12,8 @@ export const useAuthMiddleware = () => {
             const token = await getAccessToken();
             if (!token) {
                 // Nếu không có token, chuyển hướng đến màn hình đăng nhập
-                navigation.navigate('seven');
-                console.log(token)
+                navigation.navigate('login');
+                console.log(token);
             }
         };
 

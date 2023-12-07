@@ -36,7 +36,7 @@ import * as Link from 'expo-linking';
 import { getImage } from '../apis/image/components/apis';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export default function CartScreen({ path }: { path: string }) {
+export default function CartScreen() {
   const navigation = useNavigation();
   const [cart, setCart] = useState<Cart>();
   const [cartTotalPrice, setCartTotalPrice] = useState<CartTotalPrice | null>(
@@ -269,7 +269,7 @@ export default function CartScreen({ path }: { path: string }) {
                 paddingBottom: 10,
                 paddingTop: 10,
               }}
-              onPress={() => navigation.navigate('index')}
+              onPress={() => navigation.navigate('home')}
             >
               <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#fff' }}>
                 Quay lại trang chủ

@@ -14,7 +14,7 @@ import { formatStringtoDate } from '../libs/core/handle-time';
 import { useFocusEffect, useNavigation } from 'expo-router';
 import { OrderType } from '../apis/courses/types';
 
-const OrderHistory = ({ path }: { path: string }) => {
+const OrderHistory = () => {
   const [dropdownPress, setdropdownPress] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
 
@@ -42,7 +42,7 @@ const OrderHistory = ({ path }: { path: string }) => {
 
   const navigation = useNavigation();
   const backToHome = () => {
-    navigation.navigate('index');
+    navigation.navigate('home');
   };
 
   const dropdownHandle = (id: string) => {

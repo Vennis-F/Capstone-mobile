@@ -53,14 +53,16 @@ function Login() {
           emailOrUsername: inputValue1,
           password: inputValue2,
         });
-        await setAccessToken(token.accessToken);
-
-        // Hiển thị thông báo khi đăng nhập thành công
-        showSuccessMessage();
-
-        navigation.navigate('index');
+        try {
+          await setAccessToken(token.accessToken);
+          showSuccessMessage();
+          navigation.navigate('home');
+        } catch (error) {
+          // Hiển thị thông báo khi đăng nhập thành công
+          console.log('[Login - set token error] ', error);
+        }
       } catch (error) {
-        console.log('[error when login]', error.message);
+        console.log('[Login - sign in error] ', error);
       }
     }
   };

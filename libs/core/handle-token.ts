@@ -21,7 +21,7 @@ export type UserInfor = {
 };
 
 export const decodeToken = (accessToken: string): UserInfor =>
-  JWT.decode(accessToken, JWT_SECRET) as UserInfor;
+  JWT.decode(accessToken, JWT_SECRET, { timeSkew: 30 }) as UserInfor;
 
 export const getAccessToken = async (): Promise<string | null> => {
   try {
@@ -55,5 +55,11 @@ export const removeAccessToken = async (): Promise<void> => {
 export const getUserRole = async () => {
   const token = await getAccessToken();
   if (!token) return null;
-  return decodeToken(token).role;
+  try {
+    const decoded = decodeToken(token);
+    return decoded.role;
+  } catch (error) {
+    console.log('[handle-token - getuserrole decode error] ', error);
+  }
+
 };

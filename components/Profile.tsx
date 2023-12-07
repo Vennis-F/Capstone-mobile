@@ -43,7 +43,7 @@ import { showMessage } from 'react-native-flash-message';
 import * as ImagePicker from 'expo-image-picker';
 import { UserRole } from '../apis/auth/types';
 
-export default function Profile({ path }: { path: String }) {
+export default function Profile() {
   const [userRole, setUserRole] = useState<UserRole | null>();
   const [userData, setuserData] = useState<UserFilterResponse>();
   const navigation = useNavigation();
@@ -102,7 +102,7 @@ export default function Profile({ path }: { path: String }) {
         setuserLogin(false);
         showSuccessMessage();
         setUserRole(null);
-        navigation.navigate('index');
+        navigation.navigate('home');
       } else console.log('[error]', 'You are not allowed to log out');
     } catch (error) {
       console.log('[Profile - log out error] ', error);
@@ -262,7 +262,7 @@ export default function Profile({ path }: { path: String }) {
             {userLogin === false ? (
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('seven');
+                  navigation.navigate('login');
                 }}
               >
                 <View style={styles.loginBtn}>
@@ -649,7 +649,7 @@ export default function Profile({ path }: { path: String }) {
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    navigation.navigate('four');
+                    navigation.navigate('myChildCourses');
                   }}
                 >
                   <View style={styles.menuItem}>

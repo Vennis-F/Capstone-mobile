@@ -87,7 +87,7 @@ export default function HomeHeader() {
         </View>
         <TouchableOpacity
           onPress={() => {
-            navigation.navigate('five');
+            navigation.navigate('cart');
           }}
         >
           {user ? (

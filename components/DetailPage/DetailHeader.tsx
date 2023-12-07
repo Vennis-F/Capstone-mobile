@@ -35,7 +35,7 @@ const DetailHeader = ({ isOwned, userRole, course, id }) => {
         {userRole === 'Customer' ? (
           <TouchableOpacity
             style={styles.icons}
-            onPress={() => navigation.navigate('five')}
+            onPress={() => navigation.navigate('cart')}
           >
             <Ionicons name="md-cart-outline" size={28} color={'#000'} />
           </TouchableOpacity>
@@ -50,7 +50,7 @@ const DetailHeader = ({ isOwned, userRole, course, id }) => {
             <Text
               style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
               onPress={() => {
-                navigation.navigate('eleven', { id: id });
+                navigation.navigate('youtubePlayer', { id: id });
               }}
             >
               Chuyển đến khóa học

@@ -46,7 +46,7 @@ const ConfirmOTP = () => {
       console.log('[UserConfirmOTP - api] ', await customerConfirm(body));
       console.log('navigate');
       handelReset();
-      navigation.navigate('seven');
+      navigation.navigate('login');
     } catch (error) {
       setLoading(false);
       console.log('[confirmOTP - error] ', error);

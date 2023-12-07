@@ -289,7 +289,7 @@ const Signup = () => {
           <View style={styles.buttonGoogle}>
             <View style={styles.text4}>
               <Text style={styles.loginText}>Bạn đã có tài khoản? </Text>
-              <TouchableOpacity onPress={() => navigation.navigate('seven')}>
+              <TouchableOpacity onPress={() => navigation.navigate('login')}>
                 <Text style={styles.loginText1}>Đăng nhập</Text>
               </TouchableOpacity>
             </View>

@@ -117,7 +117,7 @@ const Item = ({ item, children, setNotification, notification }) => {
   );
 };
 
-export default function MyChild({ path }: { path: string }) {
+export default function MyChild() {
   const [courses, setCourses] = useState<CourseFilterResponse[]>([]);
   const [children, setChildren] = useState<LearnerFilterResponse[]>([]);
   const [notification, setNotification] = useState(null);

@@ -1,9 +1,13 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Link, Tabs } from 'expo-router';
+import { Link } from 'expo-router';
 import { Pressable, StatusBar, useColorScheme } from 'react-native';
-
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Colors from '../../constants/Colors';
-import { UserRole, getUserRole } from '../../libs/core/handle-token';
+import {
+  UserRole,
+  getAccessToken,
+  getUserRole,
+} from '../../libs/core/handle-token';
 import { useEffect, useState } from 'react';
 import {
   background,
@@ -17,10 +21,25 @@ import {
   Octicons,
 } from '@expo/vector-icons';
 import { COLORS } from '../../libs/const/color';
+import { NavigationContainer } from '@react-navigation/native';
+import WelcomePage from '../../pages/WelcomePage';
+import HomePage from '../../pages/HomePage';
+import CourseList from '../../pages/CourseList';
+import FilterTable from '../../components/CourseList/FilterTable';
+import Detail from '../../pages/Detail';
+import MyCourses from '../../components/MyCourses';
+import MyChild from '../../components/Mychild';
+import YoutubePlayer from '../../components/YoutubePlayer';
+import Profile from '../../components/Profile';
+import CartScreen from '../../components/CartScreen';
+import OrderNotification from '../../components/OrderNotification';
+import Login from '../../components/Login';
+import Signup from '../../components/Signup';
+import DetailOrder from '../../components/OrderDetail';
+import Children from '../../components/Children';
+import OrderHistory from '../../components/OrderHistory';
+import ConfirmOTP from '../../components/UserConfirmOTP';
 
-/**
- * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
- */
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
@@ -29,6 +48,7 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+  const Tab = createBottomTabNavigator();
   const colorScheme = useColorScheme();
   const [userRole, setUserRole] = useState<UserRole | null>(null);
 
@@ -41,7 +61,7 @@ export default function TabLayout() {
   });
 
   return (
-    <Tabs
+    <Tab.Navigator
       screenOptions={{
         tabBarActiveTintColor: Colors.light.tint,
         tabBarInactiveTintColor: '#ffffff',
@@ -57,54 +77,31 @@ export default function TabLayout() {
         tabBarHideOnKeyboard: true,
       }}
     >
-      <Tabs.Screen
-        name="index"
+      {!userRole && (
+        <Tab.Screen
+          name="welcome"
+          options={{
+            title: 'Trang bìa',
+            tabBarStyle: { display: 'none' },
+            tabBarButton: () => null,
+          }}
+          component={WelcomePage}
+        />
+      )}
+
+      <Tab.Screen
+        name="home"
         options={{
           title: 'Trang chính',
           tabBarIcon: ({ color }) => (
             <AntDesign name="home" size={28} color={color} />
           ),
         }}
+        component={HomePage}
       />
 
-      <Tabs.Screen
-        name="courseList"
-        options={{
-          title: 'Danh sách khóa học',
-          href: null,
-          tabBarStyle: { display: 'none' },
-        }}
-      />
-      <Tabs.Screen
-        name="filterTable"
-        options={{
-          title: 'Bộ lọc',
-          href: null,
-          tabBarStyle: { display: 'none' },
-        }}
-      />
-      {/* chi tiet khoa hoc */}
-      <Tabs.Screen
-        name="courseDetail"
-        options={{
-          title: 'Chi tiết khóa học',
-          href: null,
-          tabBarStyle: { display: 'none' },
-        }}
-      />
-      <Tabs.Screen
-        name="six"
-        options={{
-          title: 'Diễn đàn thi vẽ',
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="certificate" color={color} />
-          ),
-          href: null,
-        }}
-      />
-
-      <Tabs.Screen
-        name="three"
+      <Tab.Screen
+        name="myCourses"
         options={
           userRole
             ? {
@@ -118,29 +115,13 @@ export default function TabLayout() {
                   />
                 ),
               }
-            : { title: 'Khóa học của tôi', href: null }
+            : { title: 'Khóa học của tôi', tabBarButton: () => null }
         }
+        component={MyCourses}
       />
-      <Tabs.Screen
-        name="four"
-        options={{ title: 'Khóa học của con', href: null }}
-      />
-      <Tabs.Screen
-        name="eleven"
-        options={
-          // userRole
-          //   ? {
-          //       title: 'Bài giảng',
-          //       tabBarIcon: ({ color }) => (
-          //         <TabBarIcon name="youtube" color={color} />
-          //       ),
-          //     }
-          //   :
-          { title: 'Bài giảng', href: null }
-        }
-      />
-      <Tabs.Screen
-        name="two"
+
+      <Tab.Screen
+        name="profile"
         options={
           userRole
             ? {
@@ -149,12 +130,13 @@ export default function TabLayout() {
                   <TabBarIcon name="user" color={color} />
                 ),
               }
-            : { title: 'Hồ sơ của tôi', href: null }
+            : { title: 'Hồ sơ của tôi', tabBarButton: () => null }
         }
+        component={Profile}
       />
 
-      <Tabs.Screen
-        name="five"
+      <Tab.Screen
+        name="cart"
         options={
           userRole === 'Customer'
             ? {
@@ -163,23 +145,28 @@ export default function TabLayout() {
                   <TabBarIcon name="shopping-cart" color={color} />
                 ),
               }
-            : { title: 'Giỏ hàng', href: null }
+            : { title: 'Giỏ hàng', tabBarButton: () => null }
         }
+        component={CartScreen}
       />
-      <Tabs.Screen
-        name="orderNotification"
-        options={{ title: 'Tình trạng đơn hàng', href: null }}
-      />
-      {/* <Tabs.Screen
-        name="info"
-        options={{
-          title: 'Information',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
-        }}
-      /> */}
 
-      <Tabs.Screen
-        name="seven"
+      <Tab.Screen
+        name="orderHistory"
+        options={
+          userRole === 'Customer'
+            ? {
+                title: 'Lịch sử đơn hàng',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="certificate" color={color} />
+                ),
+              }
+            : { title: 'Lịch sử đơn hàng', tabBarButton: () => null }
+        }
+        component={OrderHistory}
+      />
+
+      <Tab.Screen
+        name="login"
         options={
           !userRole
             ? {
@@ -193,57 +180,103 @@ export default function TabLayout() {
                   />
                 ),
               }
-            : { title: 'Đăng nhập', href: null }
+            : { title: 'Đăng nhập', tabBarButton: () => null }
         }
+        component={Login}
       />
-      <Tabs.Screen name="signUp" options={{ title: 'Đăng ký', href: null }} />
-
-      <Tabs.Screen
-        name="orderDetail"
-        options={{ title: 'Chi tiết đơn hàng', href: null }}
-      />
-      {/* <Tabs.Screen
-        name="changePassword"
+      {/* Do not have tab button*/}
+      <Tab.Screen
+        name="courseList"
         options={{
-          title: 'Đổi mật khẩu',
-          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+          title: 'Danh sách khóa học',
+          tabBarButton: () => null,
+          tabBarStyle: { display: 'none' },
+        }}
+        component={CourseList}
+      />
+
+      <Tab.Screen
+        name="filterTable"
+        options={{
+          title: 'Bộ lọc',
+          tabBarButton: () => null,
+          tabBarStyle: { display: 'none' },
+        }}
+        component={FilterTable}
+      />
+
+      <Tab.Screen
+        name="courseDetail"
+        options={{
+          title: 'Chi tiết khóa học',
+          tabBarButton: () => null,
+          tabBarStyle: { display: 'none' },
+        }}
+        component={Detail}
+      />
+
+      {/* <Tab.Screen
+        name="six"
+        options={{
+          title: 'Diễn đàn thi vẽ',
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="certificate" color={color} />
+          ),
+          tabBarButton: () => null,
         }}
       /> */}
-      <Tabs.Screen
-        name="children"
-        options={{ title: 'Tài khoản của con', href: null }}
+
+      <Tab.Screen
+        name="myChildCourses"
+        options={{ title: 'Khóa học của con', tabBarButton: () => null }}
+        component={MyChild}
       />
-      <Tabs.Screen
-        name="orderHistory"
-        options={
-          userRole === 'Customer'
-            ? {
-                title: 'Lịch sử đơn hàng',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="certificate" color={color} />
-                ),
-              }
-            : { title: 'Lịch sử đơn hàng', href: null }
-        }
-      />
-      <Tabs.Screen
-        name="courses"
+
+      <Tab.Screen
+        name="youtubePlayer"
         options={
           // userRole
           //   ? {
-          //       title: 'Khóa học của tôi',
+          //       title: 'Bài giảng',
           //       tabBarIcon: ({ color }) => (
-          //         <TabBarIcon name="user" color={color} />
+          //         <TabBarIcon name="youtube" color={color} />
           //       ),
           //     }
           //   :
-          { title: 'Khóa học của tôi', href: null }
+          { title: 'Bài giảng', tabBarButton: () => null }
         }
+        component={YoutubePlayer}
       />
-      <Tabs.Screen
+
+      <Tab.Screen
+        name="orderNotification"
+        options={{ title: 'Tình trạng đơn hàng', tabBarButton: () => null }}
+        component={OrderNotification}
+      />
+
+      <Tab.Screen
+        name="signUp"
+        options={{ title: 'Đăng ký', tabBarButton: () => null }}
+        component={Signup}
+      />
+
+      <Tab.Screen
+        name="orderDetail"
+        options={{ title: 'Chi tiết đơn hàng', tabBarButton: () => null }}
+        component={DetailOrder}
+      />
+
+      <Tab.Screen
+        name="children"
+        options={{ title: 'Tài khoản của con', tabBarButton: () => null }}
+        component={Children}
+      />
+
+      <Tab.Screen
         name="confirmOTP"
-        options={{ title: 'Xác thực OTP', href: null }}
+        options={{ title: 'Xác thực OTP', tabBarButton: () => null }}
+        component={ConfirmOTP}
       />
-    </Tabs>
+    </Tab.Navigator>
   );
 }

@@ -18,7 +18,7 @@ import { getProfileUser } from '../apis/user/apis';
 import { formatCurrency } from '../libs/core/handle-price';
 import { useFocusEffect } from 'expo-router';
 
-const OrderNotification = ({ path }: { path: string }) => {
+const OrderNotification = () => {
   const [userData, setuserData] = useState<UserFilterResponse>();
   const [status, setStatus] = useState(false);
   const navigate = useNavigation();
@@ -40,7 +40,7 @@ const OrderNotification = ({ path }: { path: string }) => {
       vnpTxnRef && vnpAmount && vnpBankCode && vnpCardType && vnpResponseCode;
 
     if (!isValidToCheckPayment) {
-      navigation.navigate('index');
+      navigation.navigate('home');
       showMessage({
         message: 'Thanh toán không thành công',
         type: 'danger',
@@ -66,7 +66,7 @@ const OrderNotification = ({ path }: { path: string }) => {
       const response = await createTrasaction(transactionBody);
       console.log('[res status]', response.status);
       if (response.status !== TransactionStatus.Success) {
-        navigation.navigate('five');
+        navigation.navigate('cart');
         showMessage({
           message:
             'Thanh toán thất bại, vui lòng kiểm tra lại giỏ hàng và thanh toán lại',
@@ -79,7 +79,7 @@ const OrderNotification = ({ path }: { path: string }) => {
       }
     } catch (error) {
       console.log('error', error);
-      navigation.navigate('five');
+      navigation.navigate('cart');
       showMessage({
         message:
           'Thanh toán thất bại, vui lòng kiểm tra lại giỏ hàng và thanh toán lại',
@@ -106,7 +106,7 @@ const OrderNotification = ({ path }: { path: string }) => {
 
   const navigation = useNavigation();
   const handleReturn = () => {
-    navigation.navigate('index');
+    navigation.navigate('home');
   };
 
   return (

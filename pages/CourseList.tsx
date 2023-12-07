@@ -21,7 +21,7 @@ import { TextInput } from 'react-native-gesture-handler';
 import CourseListHeader from '../components/CourseList/CourseListHeader';
 import List from '../components/CourseList/List';
 
-export default function CourseList({ path }: { path: string }) {
+export default function CourseList() {
   const [userRole, setUserRole] = useState<UserRole | null>();
   const [ownList, setOwnList] = useState<CourseFilterResponse[]>([]);
   const [searchText, setSearchText] = useState<string>('');
