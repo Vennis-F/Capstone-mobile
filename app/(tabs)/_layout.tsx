@@ -38,7 +38,7 @@ import Signup from '../../pages/Signup';
 import DetailOrder from '../../components/OrderDetail';
 import Children from '../../components/Children';
 import OrderHistory from '../../components/OrderHistory';
-import ConfirmOTP from '../../components/UserConfirmOTP';
+import ConfirmOTP from '../../pages/UserConfirmOTP';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];

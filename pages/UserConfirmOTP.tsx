@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ImageBackground,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState } from 'react';
 
@@ -25,31 +26,63 @@ import {
   CustomerConfirmRequest,
   CustomerSignupRequest,
 } from '../apis/auth/types';
+import Notification from '../components/Notification';
+import { showMessage } from 'react-native-flash-message';
 
 const ConfirmOTP = () => {
   const navigation = useNavigation();
   const [codeOTP, setCodeOTP] = useState('');
+
+  const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [notification, setNotification] = useState(null);
+  const closeNotification = () => {
+    setNotification(null);
+  };
+
   const email = useRoute().params?.email;
 
   const handelReset = () => {
     setCodeOTP(''), setLoading(false);
   };
 
+  const showSuccessMessage = () => {
+    // Hiển thị thông báo khi đăng nhập thành công
+    showMessage({
+      message: 'Đăng nhập thành công',
+      type: 'success',
+      duration: 3000, // Thời gian hiển thị (3 giây)
+    });
+  };
+
   const handleSubmit = async () => {
+    if (codeOTP.trim().length !== 6) {
+      setErrorText('Vui lòng nhập mã số OTP gồm 6 chữ số');
+      setLoading(false);
+      return;
+    } else {
+      setErrorText('');
+    }
+
     const body: CustomerConfirmRequest = {
       email: email,
       otp: codeOTP,
     };
-    setLoading(true);
     try {
-      console.log('[UserConfirmOTP - api] ', await customerConfirm(body));
-      console.log('navigate');
+      setLoading(true);
+      await customerConfirm(body);
       handelReset();
+      setLoading(false);
+      setCodeOTP('');
+      showSuccessMessage();
       navigation.navigate('login');
     } catch (error) {
       setLoading(false);
-      console.log('[confirmOTP - error] ', error);
+      setNotification({
+        message: 'Mã OTP không chính xác, xin hãy thử lại',
+        type: 'danger',
+      });
     }
   };
   return (
@@ -58,6 +91,7 @@ const ConfirmOTP = () => {
         flex: 1,
         backgroundColor: '#fff',
         width: '100%',
+        marginTop: 30,
       }}
     >
       <ImageBackground
@@ -89,9 +123,9 @@ const ConfirmOTP = () => {
                 placeholderTextColor: 'blueGray.50',
               }}
             />
-            {/* {errorText1 && (
-              <Text style={{ color: 'red', fontSize: 10 }}>{errorText1}</Text>
-            )} */}
+            {errorText && (
+              <Text style={{ color: 'red', fontSize: 10 }}>{errorText}</Text>
+            )}
           </View>
         </View>
 
@@ -104,10 +138,21 @@ const ConfirmOTP = () => {
             paddingBottom={3}
             isDisabled={loading}
           >
-            <Text style={styles.text3}>Xác nhận</Text>
+            {loading ? (
+              <ActivityIndicator size={'large'} color={'#fff'} />
+            ) : (
+              <Text style={styles.text3}>Xác nhận</Text>
+            )}
           </Button>
         </View>
       </View>
+      {notification && (
+        <Notification
+          message={notification.message}
+          type={notification.type}
+          onClose={closeNotification}
+        />
+      )}
     </SafeAreaView>
   );
 };
