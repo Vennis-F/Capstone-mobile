@@ -26,7 +26,6 @@ import {
   CustomerConfirmRequest,
   CustomerSignupRequest,
 } from '../apis/auth/types';
-import Notification from '../components/Notification';
 import { showMessage } from 'react-native-flash-message';
 
 const ConfirmOTP = () => {
@@ -35,11 +34,6 @@ const ConfirmOTP = () => {
 
   const [errorText, setErrorText] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const [notification, setNotification] = useState(null);
-  const closeNotification = () => {
-    setNotification(null);
-  };
 
   const email = useRoute().params?.email;
 
@@ -50,7 +44,7 @@ const ConfirmOTP = () => {
   const showSuccessMessage = () => {
     // Hiển thị thông báo khi đăng nhập thành công
     showMessage({
-      message: 'Đăng nhập thành công',
+      message: 'Tài khoản đã được đăng ký',
       type: 'success',
       duration: 3000, // Thời gian hiển thị (3 giây)
     });
@@ -79,9 +73,10 @@ const ConfirmOTP = () => {
       navigation.navigate('login');
     } catch (error) {
       setLoading(false);
-      setNotification({
+      showMessage({
         message: 'Mã OTP không chính xác, xin hãy thử lại',
-        type: 'danger',
+        type: 'warning',
+        duration: 3000,
       });
     }
   };
@@ -146,13 +141,6 @@ const ConfirmOTP = () => {
           </Button>
         </View>
       </View>
-      {notification && (
-        <Notification
-          message={notification.message}
-          type={notification.type}
-          onClose={closeNotification}
-        />
-      )}
     </SafeAreaView>
   );
 };

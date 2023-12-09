@@ -3,26 +3,23 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   ImageBackground,
   Image,
   ActivityIndicator,
 } from 'react-native';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Input,
   NativeBaseProvider,
   Button,
-  Icon,
   KeyboardAvoidingView,
 } from 'native-base';
-import { AntDesign, FontAwesome5 } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { guestSignIn } from '../apis/auth/api';
-import { getAccessToken, setAccessToken } from '../libs/core/handle-token';
-import FlashMessage, { showMessage } from 'react-native-flash-message';
+import { setAccessToken } from '../libs/core/handle-token';
+import { showMessage } from 'react-native-flash-message';
 import { COLORS } from '../libs/const/color';
-import Notification from '../components/Notification';
 import { ResponseError } from '../libs/types';
 
 function Login() {
@@ -34,25 +31,19 @@ function Login() {
   const [errorText2, setErrorText2] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [notification, setNotification] = useState(null);
-  const closeNotification = () => {
-    setNotification(null);
-  };
-
-  useEffect(() => {
-    // Xử lý sau khi navigate
-    showMessage({
-      message: 'Đăng nhập thành công',
-      type: 'success',
-      duration: 3000,
-    });
-  }, [navigation]);
-
   const showSuccessMessage = () => {
     // Hiển thị thông báo khi đăng nhập thành công
     showMessage({
       message: 'Đăng nhập thành công',
       type: 'success',
+      duration: 3000, // Thời gian hiển thị (3 giây)
+    });
+  };
+
+  const showFailMessage = (errorMsg: string) => {
+    showMessage({
+      message: errorMsg || 'Đăng nhập thất bại',
+      type: 'warning',
       duration: 3000, // Thời gian hiển thị (3 giây)
     });
   };
@@ -79,8 +70,9 @@ function Login() {
         });
         try {
           await setAccessToken(token.accessToken);
-          showSuccessMessage();
+
           setLoading(false);
+          showSuccessMessage();
           navigation.navigate('home');
         } catch (error) {
           console.log('[Login - set token error] ', error);
@@ -90,10 +82,7 @@ function Login() {
         const errorResponse = error as ResponseError;
         const msgError =
           errorResponse?.response?.data?.message || 'Không thể đăng nhập';
-        setNotification({
-          message: msgError,
-          type: 'danger',
-        });
+        showFailMessage(msgError);
       }
     }
   };
@@ -155,10 +144,6 @@ function Login() {
               {errorText2 && <Text style={{ color: 'red' }}>{errorText2}</Text>}
             </View>
           </View>
-          {/* <View style={styles.text2}>
-          <Text style={styles.forgot}>Quên mật khẩu?</Text>
-        </View> */}
-          {/* Button */}
           <View style={styles.buttonLogin}>
             <Button
               onPress={handleSubmit}
@@ -182,13 +167,6 @@ function Login() {
           </View>
         </View>
       </KeyboardAvoidingView>
-      {notification && (
-        <Notification
-          message={notification.message}
-          type={notification.type}
-          onClose={closeNotification}
-        />
-      )}
     </ImageBackground>
   );
 }

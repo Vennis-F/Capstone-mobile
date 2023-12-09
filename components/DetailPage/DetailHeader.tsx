@@ -10,9 +10,9 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
 import { COLORS } from '../../libs/const/color';
 
-const DetailHeader = ({ isOwned, userRole, course, id }) => {
+const DetailHeader = ({ isOwned, userRole, course, id, prevPage }) => {
   const navigation = useNavigation();
-
+  console.log('prevpage', prevPage);
   return (
     <ImageBackground
       style={styles.thumbnail}
@@ -23,7 +23,7 @@ const DetailHeader = ({ isOwned, userRole, course, id }) => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.icons}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate(prevPage || 'courseList')}
         >
           <MaterialIcons
             name="arrow-back-ios"

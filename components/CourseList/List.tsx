@@ -31,6 +31,8 @@ import { getImage } from '../../apis/image/components/apis';
 import { formatCurrency } from '../../libs/core/handle-price';
 import { COLORS } from '../../libs/const/color';
 import { getAccessToken } from '../../libs/core/handle-token';
+import { PageMetaResponse } from '../../libs/types';
+import { Pagination } from 'react-native-snap-carousel';
 
 const Item = ({ item, onPress, ownListId }) => {
   const progressChapter = Math.round(item.totalChapter / 1.5);
@@ -98,6 +100,8 @@ const List = ({
 
   const navigation = useNavigation();
   const [coursesSearch, setCoursesSearch] = useState<Course[]>([]);
+  const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState<PageMetaResponse>();
 
   const ownListId = ownList.map((course) => {
     return course.id;
@@ -111,17 +115,22 @@ const List = ({
       sortField: sortField || SortFieldCourse.PUBLISHED_DATE,
       pageOptions: {
         order: order || OrderType.DESC,
-        page: 1,
-        take: 100,
+        page: page,
+        take: 4,
       },
     };
-    const dataResponse = await getCoursesBySearch(bodyRequest);
-    setCoursesSearch([...dataResponse.data]);
+    try {
+      const dataResponse = await getCoursesBySearch(bodyRequest);
+      setMeta(dataResponse.meta);
+      setCoursesSearch([...dataResponse.data]);
+    } catch (error) {
+      console.log('[List - search courses error] ', error);
+    }
   };
 
   useEffect(() => {
     getCourse();
-  }, [searchText]);
+  }, [searchText, page]);
 
   useEffect(() => {
     getCourse();
@@ -136,6 +145,7 @@ const List = ({
           ownListId={ownListId}
           onPress={() => {
             navigation.navigate('courseDetail', {
+              prevPage: 'courseList',
               id: item.id,
               ownListId: ownListId,
             });
@@ -147,6 +157,46 @@ const List = ({
           <Text style={{ fontSize: 18, textAlign: 'center', width: '70%' }}>
             Không có kết quả cho tìm kiếm hoặc bộ lọc của bạn
           </Text>
+        </View>
+      )}
+      {meta && meta.pageCount > 1 && (
+        <View style={styles.pagination}>
+          <TouchableOpacity
+            onPress={() => {
+              if (meta.hasPreviousPage) setPage(page - 1);
+            }}
+          >
+            <AntDesign
+              name="leftcircleo"
+              size={24}
+              color={
+                meta.hasPreviousPage ? COLORS.MAINPINK : COLORS.MAINPINKBLUR
+              }
+            />
+          </TouchableOpacity>
+          <Pagination
+            activeDotIndex={page - 1}
+            dotsLength={meta.pageCount || 0}
+            dotStyle={{
+              width: 12,
+              height: 12,
+              borderRadius: 50,
+              backgroundColor: COLORS.MAINPINK,
+            }}
+            inactiveDotOpacity={0.4}
+            inactiveDotScale={0.6}
+          />
+          <TouchableOpacity
+            onPress={() => {
+              if (meta.hasNextPage) setPage(page + 1);
+            }}
+          >
+            <AntDesign
+              name="rightcircleo"
+              size={24}
+              color={meta.hasNextPage ? COLORS.MAINPINK : COLORS.MAINPINKBLUR}
+            />
+          </TouchableOpacity>
         </View>
       )}
     </SafeAreaView>
@@ -244,6 +294,25 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 16,
     backgroundColor: COLORS.BLUE,
+  },
+  pagination: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 4,
+  },
+  pageBtn: {
+    borderWidth: 1,
+    borderColor: '#00000062',
+    borderRadius: 8,
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pageNumber: {
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
 

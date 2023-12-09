@@ -10,7 +10,7 @@ const CourseListHeader = ({ searchText, setSearchText }) => {
     <View style={styles.headerContainer}>
       <TouchableOpacity
         style={styles.icons}
-        onPress={() => navigation.goBack()}
+        onPress={() => navigation.navigate('home')}
       >
         <MaterialIcons
           name="arrow-back-ios"

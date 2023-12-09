@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { StatusBar, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Categories from '../components/HomePage/Categories';
-import Careers from '../components/Careers';
 import MostPopular from '../components/HomePage/MostPopular';
 import { CourseFilterResponse } from '../apis/courses/types';
 import { getCourseByCustomer } from '../apis/courses/api';
@@ -12,7 +11,6 @@ import HomeHeader from '../components/HomePage/HomeHeader';
 import { getAccessToken, getUserRole } from '../libs/core/handle-token';
 import { Image } from 'native-base';
 import KeepLearning from '../components/HomePage/KeepLearning';
-import { getAllInstructors } from '../apis/instructor/api';
 import { useFocusEffect } from 'expo-router';
 import { UserRole } from '../apis/auth/types';
 import { getCourseForLearnerSearchByUser } from '../apis/learner/api';
@@ -141,7 +139,7 @@ export default function HomePage() {
             <Text style={styles.headerTitles}>Tiếp tục với những bài học</Text>
             <TouchableOpacity
               onPress={() => {
-                navigation.navigate('three');
+                navigation.navigate('myCourses');
               }}
             >
               <Text style={styles.seeAll}>Xem tất cả</Text>

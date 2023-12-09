@@ -141,6 +141,7 @@ const MostPopular = ({ ownList = [] }: { ownList: CourseFilterResponse[] }) => {
         onPress={() => {
           setSelectedId(item.id);
           navigation.navigate('courseDetail', {
+            prevPage: 'home',
             id: item.id,
             ownListId: ownListId,
           });

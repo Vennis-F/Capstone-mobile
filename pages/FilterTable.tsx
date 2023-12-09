@@ -8,12 +8,12 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { getCategories } from '../../apis/category/api';
-import { Category } from '../../apis/category/types';
-import { COLORS } from '../../libs/const/color';
+import { getCategories } from '../apis/category/api';
+import { Category } from '../apis/category/types';
+import { COLORS } from '../libs/const/color';
 import { Button, Checkbox, Select } from 'native-base';
-import { Level } from '../../apis/level/types';
-import { getLevels } from '../../apis/level/api';
+import { Level } from '../apis/level/types';
+import { getLevels } from '../apis/level/api';
 
 const FilterTable = () => {
   const navigation = useNavigation();
@@ -32,11 +32,19 @@ const FilterTable = () => {
   const [sort, setSort] = useState(DATE_ASC);
 
   const handleGetCategories = async () => {
-    setCategories(await getCategories('true'));
+    try {
+      setCategories(await getCategories('true'));
+    } catch (error) {
+      console.log('[FilterTable - get categories error] ', error);
+    }
   };
 
   const handleGetLevels = async () => {
-    setLevels(await getLevels('true'));
+    try {
+      setLevels(await getLevels('true'));
+    } catch (error) {
+      console.log('[FilterTable - get level error] ', error);
+    }
   };
 
   const handlePressCategory = (id: string) => {
@@ -75,7 +83,7 @@ const FilterTable = () => {
       <View style={styles.header}>
         <TouchableOpacity
           style={styles.icons}
-          onPress={() => navigation.goBack()}
+          onPress={() => navigation.navigate('courseList')}
         >
           <MaterialIcons
             name="arrow-back-ios"
@@ -93,59 +101,63 @@ const FilterTable = () => {
       <View style={styles.categoryContainer}>
         <Text style={styles.title}>Thể loại</Text>
         <View style={styles.categories}>
-          <FlatList
-            data={categories}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-                key={index}
-                activeOpacity={1}
-                style={[styles.category]}
-                onPress={() => {
-                  handlePressCategory(item.id);
-                }}
-              >
-                <Text numberOfLines={2} style={[styles.categoryName]}>
-                  {item.name}
-                </Text>
-                <Checkbox
-                  isChecked={selectedCategories.includes(item.id)}
-                  isReadOnly={true}
-                  value="test"
-                  aria-label="test"
-                  colorScheme="blue"
-                />
-              </TouchableOpacity>
-            )}
-          />
+          {categories.length >= 1 && (
+            <FlatList
+              data={categories}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                  key={index}
+                  activeOpacity={1}
+                  style={[styles.category]}
+                  onPress={() => {
+                    handlePressCategory(item.id);
+                  }}
+                >
+                  <Text numberOfLines={2} style={[styles.categoryName]}>
+                    {item.name}
+                  </Text>
+                  <Checkbox
+                    isChecked={selectedCategories.includes(item.id)}
+                    isReadOnly={true}
+                    value="test"
+                    aria-label="test"
+                    colorScheme="blue"
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </View>
       </View>
 
       <View style={styles.categoryContainer}>
         <Text style={styles.title}>Cấp độ</Text>
         <View style={styles.categories}>
-          <FlatList
-            data={levels}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                activeOpacity={1}
-                style={[styles.category]}
-                onPress={() => {
-                  handlePressLevel(item.id);
-                }}
-              >
-                <Text numberOfLines={2} style={[styles.categoryName]}>
-                  {item.name}
-                </Text>
-                <Checkbox
-                  isChecked={selectedLevels.includes(item.id)}
-                  isReadOnly={true}
-                  value="test"
-                  aria-label="test"
-                  colorScheme="orange"
-                />
-              </TouchableOpacity>
-            )}
-          />
+          {levels.length >= 1 && (
+            <FlatList
+              data={levels}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={[styles.category]}
+                  onPress={() => {
+                    handlePressLevel(item.id);
+                  }}
+                >
+                  <Text numberOfLines={2} style={[styles.categoryName]}>
+                    {item.name}
+                  </Text>
+                  <Checkbox
+                    isChecked={selectedLevels.includes(item.id)}
+                    isReadOnly={true}
+                    value="test"
+                    aria-label="test"
+                    colorScheme="orange"
+                  />
+                </TouchableOpacity>
+              )}
+            />
+          )}
         </View>
       </View>
 

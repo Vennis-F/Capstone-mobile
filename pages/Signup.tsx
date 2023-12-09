@@ -20,15 +20,11 @@ import { COLORS } from '../libs/const/color';
 import { Formik } from 'formik';
 import { object, string } from 'yup';
 import { ResponseError } from '../libs/types';
+import { showMessage } from 'react-native-flash-message';
 
 const Signup = () => {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-
-  const [notification, setNotification] = useState(null);
-  const closeNotification = () => {
-    setNotification(null);
-  };
 
   const loginValidationSchema = object().shape({
     firstName: string().trim().required('Không được để trống tên'),
@@ -84,6 +80,11 @@ const Signup = () => {
     try {
       setLoading(true);
       await customerSignUp(body);
+      showMessage({
+        message: 'Tài khoản đang chờ xác thực',
+        type: 'success',
+        duration: 3000,
+      });
       handleReset();
       navigation.navigate('confirmOTP', { email: email });
     } catch (error) {
@@ -91,9 +92,10 @@ const Signup = () => {
       const errorResponse = error as ResponseError;
       const msgError =
         errorResponse?.response?.data?.message || 'Không thể đăng nhập';
-      setNotification({
-        message: msgError,
-        type: 'danger',
+      showMessage({
+        message: msgError || 'Đăng ký tài khoản không thành công',
+        type: 'warning',
+        duration: 3000,
       });
     }
   };
@@ -355,12 +357,6 @@ const Signup = () => {
             </View>
           </View>
         </View>
-        {notification && (
-          <TouchableOpacity onPress={closeNotification} style={styles.noti}>
-            <Text style={styles.notiText}>{notification.message}</Text>
-            <Entypo name="circle-with-cross" size={24} color="white" />
-          </TouchableOpacity>
-        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );

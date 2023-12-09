@@ -110,8 +110,8 @@ export default function WelcomePage() {
           dotColor="#FF724C"
           inactiveDotColor="#FF724C"
           dotStyle={{
-            width: 12,
-            height: 12,
+            width: 14,
+            height: 14,
             borderRadius: 50,
           }}
         />

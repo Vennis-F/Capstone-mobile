@@ -1,18 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import {
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-  StyleSheet,
-} from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import { COLORS } from '../../libs/const/color';
 import { useCallback, useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import { getProfileUser } from '../../apis/user/apis';
 import { UserFilterResponse } from '../../apis/user/types';
 import { useFocusEffect, useNavigation } from 'expo-router';
-import { getLearnersByUser } from '../../apis/learner/api';
 import { getUserRole } from '../../libs/core/handle-token';
 import { UserRole } from '../../apis/auth/types';
 
@@ -69,9 +62,6 @@ export default function HomeHeader() {
         if (isClicked) setIsClicked(false);
       }}
     >
-      {/* <View>
-          <FlashMessage style={{ paddingHorizontal: 20 }} />
-        </View> */}
       <View
         style={{
           flexDirection: 'row',

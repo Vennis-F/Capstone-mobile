@@ -171,7 +171,7 @@ const DetailOrder = () => {
               borderRadius: 12,
             }}
             onPress={() => {
-              navigation.goBack();
+              navigation.navigate('courseList');
             }}
           >
             <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>

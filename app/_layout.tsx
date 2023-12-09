@@ -8,7 +8,7 @@ import {
 import { useFonts } from 'expo-font';
 import { SplashScreen, Stack } from 'expo-router';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { useColorScheme, View } from 'react-native';
 import Login from '../pages/Login';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -53,7 +53,17 @@ export default function RootLayout() {
   // const initialRouteName = isAuthenticated ? '(tabs)' : 'login';
 
   // return <RootLayoutNav initialRouteName={initialRouteName} />;
-  return <RootLayoutNav />;
+  return (
+    <View style={{ flex: 1 }}>
+      <View>
+        <FlashMessage
+          style={{ marginTop: 20, paddingHorizontal: 20 }}
+          floating={true}
+        />
+      </View>
+      <RootLayoutNav />
+    </View>
+  );
 }
 
 function RootLayoutNav() {

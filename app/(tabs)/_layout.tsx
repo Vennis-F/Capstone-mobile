@@ -25,7 +25,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import WelcomePage from '../../pages/WelcomePage';
 import HomePage from '../../pages/HomePage';
 import CourseList from '../../pages/CourseList';
-import FilterTable from '../../components/CourseList/FilterTable';
+import FilterTable from '../../pages/FilterTable';
 import Detail from '../../pages/Detail';
 import MyCourses from '../../components/MyCourses';
 import MyChild from '../../components/Mychild';
@@ -39,6 +39,8 @@ import DetailOrder from '../../components/OrderDetail';
 import Children from '../../components/Children';
 import OrderHistory from '../../components/OrderHistory';
 import ConfirmOTP from '../../pages/UserConfirmOTP';
+import FlashMessage from 'react-native-flash-message';
+import ContestHomePage from '../../pages/ContestHomePage';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -77,6 +79,17 @@ export default function TabLayout() {
         tabBarHideOnKeyboard: true,
       }}
     >
+      <Tab.Screen
+        name="contest"
+        options={{
+          title: 'Cuộc Thi',
+          tabBarIcon: ({ color }) => (
+            <AntDesign name="home" size={28} color={color} />
+          ),
+        }}
+        component={ContestHomePage}
+      />
+
       {!userRole && (
         <Tab.Screen
           name="welcome"

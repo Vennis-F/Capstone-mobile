@@ -41,6 +41,7 @@ const Detail = ({}) => {
   const route = useRoute();
   const id = route.params?.id as string;
   const ownListId = route.params?.ownListId;
+  const prevPage = route.params?.prevPage;
   const [isOwned, setIsOwned] = useState(false);
 
   const handleAddCartItem = async () => {
@@ -109,7 +110,7 @@ const Detail = ({}) => {
   };
 
   console.log('[coruseDetail]', course);
-
+  console.log('[Detail - prev page] ', prevPage);
   return (
     <SafeAreaView
       style={{
@@ -123,6 +124,7 @@ const Detail = ({}) => {
       {course && (
         <ScrollView>
           <DetailHeader
+            prevPage={prevPage}
             course={course}
             id={id}
             isOwned={isOwned}
