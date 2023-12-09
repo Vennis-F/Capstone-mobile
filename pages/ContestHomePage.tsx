@@ -38,15 +38,13 @@ const ContestHomePage = () => {
     handleGetContests();
   }, []);
 
-  const contests1 = [contests[0], contests[0]];
-
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ScrollView style={styles.container}>
         <Text style={styles.contestTitle}>Thi vẽ cùng bé</Text>
         <View style={styles.contestContainer}>
           <Carousel
-            data={contests1}
+            data={contests}
             renderItem={({ item, index }) => (
               <ImageBackground
                 key={item.id}
@@ -75,7 +73,11 @@ const ContestHomePage = () => {
                       </Text>
                       <View style={styles.iconContainer}>
                         <Button
-                          // onPress={() => navigate(`/item/detail/${item.id}`)}
+                          onPress={() => {
+                            navigation.navigate('contestDetail', {
+                              id: item.id,
+                            });
+                          }}
                           style={styles.button}
                         >
                           <View style={styles.buttonContainer}>
@@ -113,7 +115,7 @@ const ContestHomePage = () => {
           />
           <Pagination
             activeDotIndex={page}
-            dotsLength={contests1.length}
+            dotsLength={contests.length}
             dotColor="#FF724C"
             inactiveDotColor="#FF724C"
             dotStyle={{
@@ -251,7 +253,7 @@ const styles = StyleSheet.create({
   },
   generalInfo: {
     paddingHorizontal: 20,
-    marginBottom: 24,
+    marginTop: 24,
   },
   infoTitle: {
     fontSize: 24,

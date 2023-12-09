@@ -109,7 +109,7 @@ const Detail = ({}) => {
     setNotification(null);
   };
 
-  console.log('[coruseDetail]', course);
+  console.log('[courseDetail]', course);
   console.log('[Detail - prev page] ', prevPage);
   return (
     <SafeAreaView

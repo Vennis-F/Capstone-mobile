@@ -16,6 +16,7 @@ import {
 import {
   AntDesign,
   FontAwesome5,
+  Ionicons,
   MaterialCommunityIcons,
   MaterialIcons,
   Octicons,
@@ -41,12 +42,13 @@ import OrderHistory from '../../components/OrderHistory';
 import ConfirmOTP from '../../pages/UserConfirmOTP';
 import FlashMessage from 'react-native-flash-message';
 import ContestHomePage from '../../pages/ContestHomePage';
+import ContestDetail from '../../pages/ContestDetail';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) {
-  return <FontAwesome size={28} style={{ marginBottom: -3 }} {...props} />;
+  return <FontAwesome size={28} {...props} />;
 }
 
 export default function TabLayout() {
@@ -79,17 +81,6 @@ export default function TabLayout() {
         tabBarHideOnKeyboard: true,
       }}
     >
-      <Tab.Screen
-        name="contest"
-        options={{
-          title: 'Cuộc Thi',
-          tabBarIcon: ({ color }) => (
-            <AntDesign name="home" size={28} color={color} />
-          ),
-        }}
-        component={ContestHomePage}
-      />
-
       {!userRole && (
         <Tab.Screen
           name="welcome"
@@ -107,10 +98,21 @@ export default function TabLayout() {
         options={{
           title: 'Trang chính',
           tabBarIcon: ({ color }) => (
-            <AntDesign name="home" size={28} color={color} />
+            <Ionicons name="home" size={28} color={color} />
           ),
         }}
         component={HomePage}
+      />
+
+      <Tab.Screen
+        name="contest"
+        options={{
+          title: 'Cuộc Thi',
+          tabBarIcon: ({ color }) => (
+            <FontAwesome5 name="award" size={28} color={color} />
+          ),
+        }}
+        component={ContestHomePage}
       />
 
       <Tab.Screen
@@ -170,7 +172,11 @@ export default function TabLayout() {
             ? {
                 title: 'Lịch sử đơn hàng',
                 tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="certificate" color={color} />
+                  <MaterialCommunityIcons
+                    name="newspaper-variant"
+                    size={28}
+                    color={color}
+                  />
                 ),
               }
             : { title: 'Lịch sử đơn hàng', tabBarButton: () => null }
@@ -294,6 +300,15 @@ export default function TabLayout() {
         name="confirmOTP"
         options={{ title: 'Xác thực OTP', tabBarButton: () => null }}
         component={ConfirmOTP}
+      />
+
+      <Tab.Screen
+        name="contestDetail"
+        options={{
+          title: 'Cuộc Thi',
+          tabBarButton: () => null,
+        }}
+        component={ContestDetail}
       />
     </Tab.Navigator>
   );

@@ -60,6 +60,7 @@ export const getUserRole = async () => {
     return decoded.role;
   } catch (error) {
     console.log('[handle-token - getuserrole decode error] ', error);
+    return null;
   }
 
 };
