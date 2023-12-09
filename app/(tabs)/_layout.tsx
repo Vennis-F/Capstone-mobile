@@ -31,7 +31,7 @@ import Detail from '../../pages/Detail';
 import MyCourses from '../../components/MyCourses';
 import MyChild from '../../components/Mychild';
 import YoutubePlayer from '../../components/YoutubePlayer';
-import Profile from '../../components/Profile';
+import Profile from '../../pages/Profile';
 import CartScreen from '../../components/CartScreen';
 import OrderNotification from '../../components/OrderNotification';
 import Login from '../../pages/Login';

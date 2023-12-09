@@ -3,7 +3,7 @@ import { Platform, StyleSheet } from 'react-native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
-import Profile from '../components/Profile';
+import Profile from '../pages/Profile';
 import MyCourses from '../components/MyCourses';
 import Cart from '../components/CartScreen';
 
