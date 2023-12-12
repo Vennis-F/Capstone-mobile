@@ -91,7 +91,8 @@ const Signup = () => {
       setLoading(false);
       const errorResponse = error as ResponseError;
       const msgError =
-        errorResponse?.response?.data?.message || 'Không thể đăng nhập';
+        errorResponse?.response?.data?.message ||
+        'Đăng ký tài khoản không thành côngr';
       showMessage({
         message: msgError || 'Đăng ký tài khoản không thành công',
         type: 'warning',
@@ -106,7 +107,6 @@ const Signup = () => {
         flex: 1,
         backgroundColor: '#f8f6f0',
         width: '100%',
-        paddingTop: 30,
       }}
       behavior="height"
     >
@@ -121,7 +121,7 @@ const Signup = () => {
         >
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('home');
+              navigation.navigate('login');
             }}
             style={styles.backIcon}
           >

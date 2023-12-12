@@ -6,11 +6,13 @@ import {
   Text,
 } from 'react-native';
 import { getImage } from '../../apis/image/components/apis';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from 'expo-router';
 import { COLORS } from '../../libs/const/color';
+import { Button } from 'native-base';
+import { Contest } from '../../apis/contest/types';
 
-const DetailHeader = ({ contest }) => {
+const DetailHeader = ({ contest }: { contest: Contest }) => {
   const navigation = useNavigation();
 
   return (
@@ -32,6 +34,21 @@ const DetailHeader = ({ contest }) => {
             style={{ marginLeft: 6 }}
           />
         </TouchableOpacity>
+        {contest.totalCustomerDrawing >= 1 && (
+          <Button
+            style={styles.drawingsBtn}
+            onPress={() => {
+              navigation.navigate('contestDrawings', { id: contest.id });
+            }}
+          >
+            <View
+              style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}
+            >
+              <Text style={styles.btnText}>Bài Dự Thi</Text>
+              <AntDesign name="right" size={16} color="#fff" />
+            </View>
+          </Button>
+        )}
       </View>
     </ImageBackground>
   );
@@ -76,5 +93,12 @@ const styles = StyleSheet.create({
     marginBottom: 50,
     marginRight: 24,
     padding: 4,
+  },
+  drawingsBtn: {
+    backgroundColor: COLORS.MAINPINK,
+    borderRadius: 20,
+  },
+  btnText: {
+    color: '#fff',
   },
 });

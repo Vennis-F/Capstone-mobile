@@ -209,7 +209,7 @@ export default FilterTable;
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 50,
+    paddingTop: 12,
     flex: 1,
     paddingHorizontal: 20,
     width: '100%',

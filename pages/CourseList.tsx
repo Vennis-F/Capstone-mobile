@@ -63,7 +63,6 @@ export default function CourseList() {
         flex: 1,
         width: '100%',
         backgroundColor: '#fff',
-        paddingTop: 24,
       }}
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}

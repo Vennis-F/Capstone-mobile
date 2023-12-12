@@ -9,27 +9,13 @@ import {
   StatusBar,
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
-import { GetCourseDetailResponse } from '../apis/courses/types';
-import {
-  checkCourseIsOwnedByCourseId,
-  getCoursesDetailById,
-} from '../apis/courses/api';
-import { getAccessToken, getUserRole } from '../libs/core/handle-token';
-import { getChapterLecturesByCourseId } from '../apis/chapter-lecture/api';
-import { ChapterLecture } from '../apis/chapter-lecture/types';
-import { formatCurrency } from '../libs/core/handle-price';
-import { FontAwesome, FontAwesome5, Ionicons } from '@expo/vector-icons';
-import StarRating from '../components/RatingStars';
-import Notification from '../components/Notification';
-import { UserRole } from '../apis/auth/types';
 import { COLORS } from '../libs/const/color';
-import { Button } from 'native-base';
-import { addCartItem } from '../apis/cart/apis';
 import { getContestById } from '../apis/contest/api';
 import { Contest, mapStatusToVietnamese } from '../apis/contest/types';
 import DetailHeader from '../components/ContestDetail/DetailHeader';
 import Description from '../components/ContestDetail/Description';
 import { formatStringtoDate } from '../libs/core/handle-time';
+import { useFocusEffect } from 'expo-router';
 
 const ContestDetail = ({}) => {
   const [contest, setContest] = useState<Contest>();
@@ -61,11 +47,6 @@ const ContestDetail = ({}) => {
           const hours = Math.floor(
             (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
           );
-          const minutes = Math.floor(
-            (distance % (1000 * 60 * 60)) / (1000 * 60)
-          );
-          const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
           // Hiển thị thời gian còn lại dưới dạng chuỗi
           setTimeLeft(`${days} ngày ${hours} giờ`);
         }
@@ -80,6 +61,12 @@ const ContestDetail = ({}) => {
   useEffect(() => {
     handelGetContest();
   }, [id]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setPressedTab('description');
+    }, [])
+  );
 
   return (
     <SafeAreaView
@@ -198,7 +185,7 @@ const styles = StyleSheet.create({
     marginTop: -150,
     flexDirection: 'column',
     maxWidth: '94%',
-    backgroundColor: '#fff',
+    backgroundColor: '#ffffffe5',
     zIndex: 100,
     alignSelf: 'center',
     padding: 20,
@@ -236,9 +223,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   tabBar: {
-    width: '40%',
+    width: '42%',
     alignItems: 'center',
-    height: 42,
+    height: 48,
   },
   tabBarColor: {
     borderBottomWidth: 4,

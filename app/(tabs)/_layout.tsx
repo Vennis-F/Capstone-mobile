@@ -43,6 +43,7 @@ import ConfirmOTP from '../../pages/UserConfirmOTP';
 import FlashMessage from 'react-native-flash-message';
 import ContestHomePage from '../../pages/ContestHomePage';
 import ContestDetail from '../../pages/ContestDetail';
+import ContestDrawings from '../../pages/ContestDrawings';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -72,8 +73,8 @@ export default function TabLayout() {
         headerShown: false,
         tabBarStyle: {
           backgroundColor: COLORS.MAINPINK,
-          height: '8%',
-          marginTop: -10,
+          // height: '8%',
+          marginTop: -12,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
         },
@@ -106,12 +107,19 @@ export default function TabLayout() {
 
       <Tab.Screen
         name="contest"
-        options={{
-          title: 'Cuộc Thi',
-          tabBarIcon: ({ color }) => (
-            <FontAwesome5 name="award" size={28} color={color} />
-          ),
-        }}
+        options={
+          userRole === 'Customer'
+            ? {
+                title: 'Cuộc Thi',
+                tabBarIcon: ({ color }) => (
+                  <FontAwesome5 name="award" size={28} color={color} />
+                ),
+              }
+            : {
+                title: 'Cuộc Thi',
+                tabBarButton: () => null,
+              }
+        }
         component={ContestHomePage}
       />
 
@@ -198,7 +206,6 @@ export default function TabLayout() {
                     style={{ marginBottom: -3 }}
                   />
                 ),
-                tabBarStyle: { display: 'none' },
               }
             : { title: 'Đăng nhập', tabBarButton: () => null }
         }
@@ -307,8 +314,19 @@ export default function TabLayout() {
         options={{
           title: 'Cuộc Thi',
           tabBarButton: () => null,
+          tabBarStyle: { display: 'none' },
         }}
         component={ContestDetail}
+      />
+
+      <Tab.Screen
+        name="contestDrawings"
+        options={{
+          title: 'Bài Dự Thi',
+          tabBarButton: () => null,
+          tabBarStyle: { display: 'none' },
+        }}
+        component={ContestDrawings}
       />
     </Tab.Navigator>
   );

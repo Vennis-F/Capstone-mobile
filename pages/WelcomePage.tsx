@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     width: '100%',
-    paddingVertical: 60,
+    paddingVertical: 30,
     paddingHorizontal: 40,
   },
   skipContainer: {

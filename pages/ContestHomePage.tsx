@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -7,8 +7,12 @@ import {
   ImageBackground,
   SafeAreaView,
 } from 'react-native';
-import { Contest, mapStatusToVietnamese } from '../apis/contest/types';
-import { useNavigation } from 'expo-router';
+import {
+  Contest,
+  ContestStatus,
+  mapStatusToVietnamese,
+} from '../apis/contest/types';
+import { useFocusEffect, useNavigation } from 'expo-router';
 import { findContestsFilter } from '../apis/contest/api';
 import { OrderType } from '../libs/types';
 import { Button, ScrollView } from 'native-base';
@@ -24,19 +28,26 @@ const ContestHomePage = () => {
   const navigation = useNavigation();
 
   const handleGetContests = async () => {
-    const res = await findContestsFilter({
-      pageOptions: {
-        order: OrderType.DESC,
-        page: 1,
-        take: 1000,
-      },
-    });
-    setContests(res.data);
+    try {
+      const res = await findContestsFilter({
+        // status: ContestStatus.ACTIVE,
+        pageOptions: {
+          order: OrderType.DESC,
+          page: 1,
+          take: 1000,
+        },
+      });
+      setContests(res.data);
+    } catch (error) {
+      console.log('[ContestHomePage - error ', error);
+    }
   };
 
-  useEffect(() => {
-    handleGetContests();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      handleGetContests();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={{ flex: 1 }}>

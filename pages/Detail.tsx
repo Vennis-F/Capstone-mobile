@@ -117,7 +117,6 @@ const Detail = ({}) => {
         flex: 1,
         backgroundColor: '#ffffff',
         width: '100%',
-        paddingTop: 12,
       }}
     >
       <StatusBar translucent={true} />

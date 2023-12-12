@@ -86,7 +86,6 @@ const ConfirmOTP = () => {
         flex: 1,
         backgroundColor: '#fff',
         width: '100%',
-        marginTop: 30,
       }}
     >
       <ImageBackground

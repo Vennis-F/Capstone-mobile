@@ -88,6 +88,7 @@ function RootLayoutNav() {
             options={{
               headerShown: false,
               navigationBarColor: '#ffffff10',
+              navigationBarHidden: true,
               statusBarColor: COLORS.MAINPINK,
             }}
           />

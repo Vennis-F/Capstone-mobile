@@ -95,10 +95,10 @@ export default function HomeHeader() {
 const styles = StyleSheet.create({
   header: {
     backgroundColor: COLORS.MAINPINK,
-    height: 240,
+    height: 220,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
-    paddingTop: 58,
+    paddingTop: 28,
     paddingHorizontal: 20,
     zIndex: 100,
   },
