@@ -14,5 +14,7 @@ export type CourseFeedbackFilterResponse = {
   updatedDate: string;
   updatedBy: string;
   active: boolean;
-  role: UserRole;
+  userId?: string;
+  leanerId?: string;
+  userInfo: UserRole;
 };

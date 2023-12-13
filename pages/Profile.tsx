@@ -45,17 +45,14 @@ import ProfileHeader from '../components/Profile/ProfileHeader';
 import NameContainer from '../components/Profile/NameContainer';
 import UserDetail from '../components/Profile/UserDetail';
 import UserPassword from '../components/Profile/UserPassword';
+import UserAvatar from '../components/Profile/UserAvatar';
 
 export default function Profile() {
   const [userRole, setUserRole] = useState<UserRole | null>();
   const [userData, setuserData] = useState<UserFilterResponse>();
   const navigation = useNavigation();
   const [userLogin, setuserLogin] = useState(false);
-  const [pressDetail, setPressDetail] = useState(false);
-  const [pressPassword, setPressPassword] = useState(false);
-  // const [pressAvatar, setPressAvatar] = useState(false);
-
-  const [image, setImage] = useState(null);
+  const [isPressed, setIsPressed] = useState('');
 
   const showSuccessMessage = () => {
     // Hiển thị thông báo khi đăng nhập thành công
@@ -124,35 +121,6 @@ export default function Profile() {
     }, [])
   );
 
-  const handleUpdateAvatar = async (uri: any) => {
-    // const formData = new FormData();
-    // formData.append('file', body);
-    // try {
-    //   await uploadAvatarUser(formData);
-    //   setNotification({
-    //     message: 'đã thay đổi ảnh đại diện',
-    //     type: 'success',
-    //   });
-    // } catch (error) {
-    //   setNotification({
-    //     message: 'Xảy ra sự cố khi thay đổi ảnh đại diện',
-    //     type: 'danger',
-    //   });
-    // }
-    // await getUserProfile();
-  };
-
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <ProfileHeader userData={userData} userLogin={userLogin} />
@@ -168,8 +136,10 @@ export default function Profile() {
               <View style={styles.menuWrapper}>
                 <TouchableOpacity
                   onPress={() => {
-                    setPressDetail(!pressDetail);
-                    setPressPassword(false);
+                    // setPressDetail(!pressDetail);
+                    // setPressPassword(false);
+                    if (isPressed !== 'profile') setIsPressed('profile');
+                    else setIsPressed('');
                   }}
                 >
                   <View style={styles.menuItem}>
@@ -182,7 +152,7 @@ export default function Profile() {
                     <Text style={styles.menuTextSub}>Hồ sơ</Text>
                   </View>
                 </TouchableOpacity>
-                {pressDetail && (
+                {isPressed === 'profile' && (
                   <UserDetail
                     getUserProfile={getUserProfile}
                     userData={userData}
@@ -191,8 +161,10 @@ export default function Profile() {
 
                 <TouchableOpacity
                   onPress={() => {
-                    setPressPassword(!pressPassword);
-                    setPressDetail(false);
+                    // setPressPassword(!pressPassword);
+                    // setPressDetail(false);
+                    if (isPressed !== 'password') setIsPressed('password');
+                    else setIsPressed('');
                   }}
                 >
                   <View style={styles.menuItem}>
@@ -205,10 +177,13 @@ export default function Profile() {
                     <Text style={styles.menuTextSub}>Bảo mật tài khoản</Text>
                   </View>
                 </TouchableOpacity>
-                {pressPassword && <UserPassword />}
-                {/* <TouchableOpacity
+                {isPressed === 'password' && <UserPassword />}
+
+                <TouchableOpacity
                   onPress={() => {
-                    setPressAvatar(!pressAvatar);
+                    // setPressAvatar(!pressAvatar);
+                    if (isPressed !== 'avatar') setIsPressed('avatar');
+                    else setIsPressed('');
                   }}
                 >
                   <View style={styles.menuItem}>
@@ -221,73 +196,8 @@ export default function Profile() {
                     <Text style={styles.menuTextSub}>Ảnh đại diện</Text>
                   </View>
                 </TouchableOpacity>
-                <View
-                  style={[
-                    styles.userInfo,
-                    pressAvatar ? styles.show : styles.hidden,
-                  ]}
-                >
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
-                      width: '80%',
-                      alignSelf: 'center',
-                      marginVertical: 8,
-                    }}
-                  >
-                    <Button
-                      //   onPress={handleSubmit}
-                      style={styles.buttonAvatar}
-                      borderRadius={8}
-                      paddingBottom={3}
-                      onPress={pickImage}
-                    >
-                      <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                        Tải lên ảnh đại diện mới
-                      </Text>
-                    </Button>
-                  </View>
-                  {image && (
-                    <>
-                      <Image
-                        source={{ uri: image }}
-                        style={{
-                          width: 140,
-                          height: 140,
-                          alignSelf: 'center',
-                          borderRadius: 999,
-                          borderWidth: 4,
-                          borderColor: '#00568184',
-                          resizeMode: 'center',
-                        }}
-                      />
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-around',
-                          width: '80%',
-                          alignSelf: 'center',
-                          marginVertical: 8,
-                        }}
-                      >
-                        <Button
-                          //   onPress={handleSubmit}
-                          style={styles.buttonAvatarConfirm}
-                          borderRadius={8}
-                          paddingBottom={3}
-                          onPress={() => {
-                            handleUpdateAvatar(image);
-                          }}
-                        >
-                          <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                            Xác nhận
-                          </Text>
-                        </Button>
-                      </View>
-                    </>
-                  )}
-                </View> */}
+                {isPressed === 'avatar' && <UserAvatar />}
+
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('myChildCourses');
@@ -445,19 +355,6 @@ const styles = StyleSheet.create({
   buttonUpdate: {
     width: '40%',
     backgroundColor: '#ef4444',
-    borderWidth: 1,
-    borderColor: '#fff',
-  },
-
-  buttonAvatar: {
-    width: '70%',
-    backgroundColor: '#1976d2',
-    borderWidth: 1,
-    borderColor: '#fff',
-  },
-  buttonAvatarConfirm: {
-    width: '35%',
-    backgroundColor: '#25b92d',
     borderWidth: 1,
     borderColor: '#fff',
   },

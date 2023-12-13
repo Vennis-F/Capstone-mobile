@@ -64,3 +64,16 @@ export const getUserRole = async () => {
   }
 
 };
+
+export const getUserMainInfo = async () => {
+  const token = await getAccessToken();
+  if (!token) return null;
+  try {
+    const decoded = decodeToken(token);
+    return decoded;
+  } catch (error) {
+    console.log('[handle-token - getuserrole decode error] ', error);
+    return null;
+  }
+
+};

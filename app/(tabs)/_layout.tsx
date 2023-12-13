@@ -28,7 +28,7 @@ import HomePage from '../../pages/HomePage';
 import CourseList from '../../pages/CourseList';
 import FilterTable from '../../pages/FilterTable';
 import Detail from '../../pages/Detail';
-import MyCourses from '../../components/MyCourses';
+import MyCourses from '../../pages/MyCourses';
 import MyChild from '../../components/Mychild';
 import YoutubePlayer from '../../components/YoutubePlayer';
 import Profile from '../../pages/Profile';
