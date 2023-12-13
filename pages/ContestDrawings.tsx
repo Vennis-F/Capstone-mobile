@@ -70,8 +70,6 @@ const ContestDrawings = () => {
     }, [id])
   );
 
-  console.log('my draw: ', myDrawings);
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>

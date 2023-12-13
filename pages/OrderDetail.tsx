@@ -9,6 +9,7 @@ import { formatStringtoDate } from '../libs/core/handle-time';
 import { formatCurrency } from '../libs/core/handle-price';
 import { getImage } from '../apis/image/components/apis';
 import { Ionicons } from '@expo/vector-icons';
+import { COLORS } from '../libs/const/color';
 
 const DetailOrder = () => {
   const navigation = useNavigation();
@@ -37,8 +38,6 @@ const DetailOrder = () => {
   if (orderDetail?.orderStatus)
     status = convertOrderStatus(orderDetail?.orderStatus);
   const color = { color: status.color };
-
-  console.log('orderl detail: ', orderDetail);
 
   let tranStatus = { color: '#000', vietnamse: 'Unknow' };
   if (orderDetail?.transaction?.status)
@@ -86,12 +85,11 @@ const DetailOrder = () => {
           </View>
 
           <Text style={styles.title}>Chi Tiết đơn hàng</Text>
-          {orderDetail.orderDetails.length >= 1 ? (
-            <FlatList
-              style={{ marginBottom: 12 }}
-              data={orderDetail.orderDetails}
-              renderItem={({ item }) => (
-                <>
+
+          {orderDetail.orderDetails.length >= 1 &&
+            orderDetail.orderDetails.map((item, index) => {
+              return (
+                <View key={index}>
                   <View style={[styles.detail, styles.courseContainer]}>
                     <View style={styles.courseDetail}>
                       <Text style={[styles.detailInfo, styles.courseTitle]}>
@@ -113,12 +111,9 @@ const DetailOrder = () => {
                       }}
                     />
                   </View>
-                </>
-              )}
-            ></FlatList>
-          ) : (
-            ''
-          )}
+                </View>
+              );
+            })}
           {orderDetail.transaction ? (
             <View style={styles.detail}>
               <Text style={styles.title}>Thông tin giao dịch ngân hàng</Text>
@@ -187,12 +182,14 @@ const DetailOrder = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '85%',
+    width: '100%',
     padding: 4,
     marginTop: 16,
     backgroundColor: '#ffffff',
   },
   detail: {
+    width: '90%',
+    alignSelf: 'center',
     padding: 12,
     borderWidth: 1,
     borderColor: '#0000006e',
@@ -201,11 +198,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
-    color: 'rgba(9, 42, 250, 1)',
+    color: COLORS.MAINPINK,
     fontSize: 20,
     fontWeight: '700',
     maxWidth: '90%',
     paddingBottom: 12,
+    textAlign: 'center',
   },
   detailInfoContainer: {
     flexDirection: 'row',

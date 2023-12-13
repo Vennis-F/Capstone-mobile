@@ -179,7 +179,7 @@ export default function Profile() {
                 </TouchableOpacity>
                 {isPressed === 'password' && <UserPassword />}
 
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   onPress={() => {
                     // setPressAvatar(!pressAvatar);
                     if (isPressed !== 'avatar') setIsPressed('avatar');
@@ -196,7 +196,7 @@ export default function Profile() {
                     <Text style={styles.menuTextSub}>Ảnh đại diện</Text>
                   </View>
                 </TouchableOpacity>
-                {isPressed === 'avatar' && <UserAvatar />}
+                {isPressed === 'avatar' && <UserAvatar />} */}
 
                 <TouchableOpacity
                   onPress={() => {
@@ -228,6 +228,21 @@ export default function Profile() {
                     <Text style={styles.menuTextSub}>
                       Quản lý tài khoản của bé
                     </Text>
+                  </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.navigate('orderHistory');
+                  }}
+                >
+                  <View style={styles.menuItem}>
+                    <Icon
+                      name="article"
+                      size={24}
+                      style={{ marginRight: 30 }}
+                      color={'#eab308'}
+                    />
+                    <Text style={styles.menuTextSub}>Lịch sử mua hàng</Text>
                   </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleLogout}>

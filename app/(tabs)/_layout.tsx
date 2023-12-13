@@ -33,12 +33,12 @@ import MyChild from '../../components/Mychild';
 import YoutubePlayer from '../../components/YoutubePlayer';
 import Profile from '../../pages/Profile';
 import CartScreen from '../../components/CartScreen';
-import OrderNotification from '../../components/OrderNotification';
+import OrderNotification from '../../pages/OrderNotification';
 import Login from '../../pages/Login';
 import Signup from '../../pages/Signup';
-import DetailOrder from '../../components/OrderDetail';
+import DetailOrder from '../../pages/OrderDetail';
 import Children from '../../components/Children';
-import OrderHistory from '../../components/OrderHistory';
+import OrderHistory from '../../pages/OrderHistory';
 import ConfirmOTP from '../../pages/UserConfirmOTP';
 import FlashMessage from 'react-native-flash-message';
 import ContestHomePage from '../../pages/ContestHomePage';
@@ -124,6 +124,21 @@ export default function TabLayout() {
       />
 
       <Tab.Screen
+        name="profile"
+        options={
+          userRole
+            ? {
+                title: 'Hồ sơ của tôi',
+                tabBarIcon: ({ color }) => (
+                  <TabBarIcon name="user" color={color} />
+                ),
+              }
+            : { title: 'Hồ sơ của tôi', tabBarButton: () => null }
+        }
+        component={Profile}
+      />
+
+      <Tab.Screen
         name="myCourses"
         options={
           userRole
@@ -144,21 +159,6 @@ export default function TabLayout() {
       />
 
       <Tab.Screen
-        name="profile"
-        options={
-          userRole
-            ? {
-                title: 'Hồ sơ của tôi',
-                tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="user" color={color} />
-                ),
-              }
-            : { title: 'Hồ sơ của tôi', tabBarButton: () => null }
-        }
-        component={Profile}
-      />
-
-      <Tab.Screen
         name="cart"
         options={
           userRole === 'Customer'
@@ -171,25 +171,6 @@ export default function TabLayout() {
             : { title: 'Giỏ hàng', tabBarButton: () => null }
         }
         component={CartScreen}
-      />
-
-      <Tab.Screen
-        name="orderHistory"
-        options={
-          userRole === 'Customer'
-            ? {
-                title: 'Lịch sử đơn hàng',
-                tabBarIcon: ({ color }) => (
-                  <MaterialCommunityIcons
-                    name="newspaper-variant"
-                    size={28}
-                    color={color}
-                  />
-                ),
-              }
-            : { title: 'Lịch sử đơn hàng', tabBarButton: () => null }
-        }
-        component={OrderHistory}
       />
 
       <Tab.Screen
@@ -212,6 +193,15 @@ export default function TabLayout() {
         component={Login}
       />
       {/* Do not have tab button*/}
+      <Tab.Screen
+        name="orderHistory"
+        options={{
+          title: 'Lịch sử đơn hàng',
+          tabBarButton: () => null,
+        }}
+        component={OrderHistory}
+      />
+
       <Tab.Screen
         name="courseList"
         options={{

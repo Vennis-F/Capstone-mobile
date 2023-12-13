@@ -13,6 +13,7 @@ import { formatCurrency } from '../libs/core/handle-price';
 import { formatStringtoDate } from '../libs/core/handle-time';
 import { useFocusEffect, useNavigation } from 'expo-router';
 import { OrderType } from '../apis/courses/types';
+import { COLORS } from '../libs/const/color';
 
 const OrderHistory = () => {
   const [dropdownPress, setdropdownPress] = useState<string[]>([]);
@@ -240,7 +241,7 @@ const styles = StyleSheet.create({
   },
   subjectTitle: {
     fontSize: 16,
-    color: '#ef4444',
+    color: COLORS.MAINPINK,
     fontWeight: '600',
     width: '55%',
   },
