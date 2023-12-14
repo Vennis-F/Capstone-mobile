@@ -30,7 +30,6 @@ import FilterTable from '../../pages/FilterTable';
 import Detail from '../../pages/Detail';
 import MyCourses from '../../pages/MyCourses';
 import MyChild from '../../components/Mychild';
-import YoutubePlayer from '../../components/YoutubePlayer';
 import Profile from '../../pages/Profile';
 import CartScreen from '../../components/CartScreen';
 import OrderNotification from '../../pages/OrderNotification';
@@ -44,6 +43,7 @@ import FlashMessage from 'react-native-flash-message';
 import ContestHomePage from '../../pages/ContestHomePage';
 import ContestDetail from '../../pages/ContestDetail';
 import ContestDrawings from '../../pages/ContestDrawings';
+import VideoPlayer from '../../pages/VideoPlayer';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
@@ -250,7 +250,7 @@ export default function TabLayout() {
       />
 
       <Tab.Screen
-        name="youtubePlayer"
+        name="videoPlayer"
         options={
           // userRole
           //   ? {
@@ -262,7 +262,7 @@ export default function TabLayout() {
           //   :
           { title: 'Bài giảng', tabBarButton: () => null }
         }
-        component={YoutubePlayer}
+        component={VideoPlayer}
       />
 
       <Tab.Screen

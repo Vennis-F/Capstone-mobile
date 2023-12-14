@@ -1,5 +1,6 @@
 import { useNavigation } from 'expo-router';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
+import { COLORS } from '../../libs/const/color';
 
 const NameContainer = ({ userLogin, userData }) => {
   const navigation = useNavigation();
@@ -41,7 +42,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
   loginBtn: {
-    backgroundColor: '#ef4444a3',
+    backgroundColor: COLORS.MAINPINK,
     paddingBottom: 2,
     paddingLeft: 15,
     paddingRight: 15,

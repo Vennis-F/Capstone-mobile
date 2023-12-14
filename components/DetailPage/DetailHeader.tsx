@@ -50,7 +50,7 @@ const DetailHeader = ({ isOwned, userRole, course, id, prevPage }) => {
             <Text
               style={{ color: '#fff', fontSize: 16, fontWeight: 'bold' }}
               onPress={() => {
-                navigation.navigate('youtubePlayer', { id: id });
+                navigation.navigate('videoPlayer', { id: id });
               }}
             >
               Chuyển đến khóa học

@@ -6,33 +6,45 @@ import { changePasswordUser, uploadAvatarUser } from '../../apis/user/apis';
 import { showMessage } from 'react-native-flash-message';
 import * as ImagePicker from 'expo-image-picker';
 import { ResponseError } from '../../libs/types';
+import { COLORS } from '../../libs/const/color';
 
-const UserAvatar = () => {
+const UserAvatar = ({ getUserProfile, setImageChanged }) => {
   const [loading, setLoading] = useState(false);
   const [image, setImage] = useState(null);
+  const [body, setBody] = useState(null);
 
-  const handleUpdateAvatar = async (uri: any) => {
-    // const formData = new FormData();
-    // formData.append('file', body);
-    // try {
-    //   await uploadAvatarUser(formData);
-    //   setNotification({
-    //     message: 'đã thay đổi ảnh đại diện',
-    //     type: 'success',
-    //   });
-    // } catch (error) {
-    //   setNotification({
-    //     message: 'Xảy ra sự cố khi thay đổi ảnh đại diện',
-    //     type: 'danger',
-    //   });
-    // }
-    // await getUserProfile();
+  const handleUploadAvatar = async () => {
+    try {
+      setLoading(true);
+      await uploadAvatarUser(body);
+      showMessage({
+        message: 'Cập nhật ảnh đại diện thành công',
+        type: 'success',
+        duration: 2500,
+      });
+      setLoading(false);
+      setImageChanged(true);
+      setImage(null);
+    } catch (error) {
+      const errorResponse = error as ResponseError;
+      const msgError =
+        errorResponse?.response?.data?.message || 'Không thể Update';
+      showMessage({
+        message: 'Cập nhật ảnh đại diện không thành công',
+        type: 'warning',
+        duration: 2500,
+      });
+      setLoading(false);
+      console.log('[UserAvatar - error avatar] ', msgError, error);
+    }
+    await getUserProfile();
   };
 
-  const pickImage = async (file) => {
+  const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       quality: 1,
+      allowsEditing: true,
     });
     if (!result.canceled) {
       var photo = {
@@ -40,39 +52,11 @@ const UserAvatar = () => {
         type: 'image/jpeg',
         name: 'photo.jpg',
       };
-      var body = new FormData();
-      body.append('file', photo, 'avatar');
-      console.log(body._parts[0]);
-      // try {
-      //   await uploadAvatarUser(body);
-      // } catch (error) {
-      //   const errorResponse = error as ResponseError;
-      //   const msgError =
-      //     errorResponse?.response?.data?.message || 'Không thể đăng nhập';
-      //   console.log('[UserAvatar - error avatar] ', msgError);
-      // }
+      var imageData = new FormData();
+      imageData.append('file', photo);
 
+      setBody(imageData);
       setImage(result.assets[0].uri);
-    }
-  };
-
-  const handleUpdatePassword = async (body: ChangePasswordUserBodyRequest) => {
-    try {
-      setLoading(true);
-      await changePasswordUser(body);
-      showMessage({
-        message: 'Cập nhật mật khẩu thành công',
-        type: 'success',
-        duration: 2000, // Thời gian hiển thị (2 giây)
-      });
-      setLoading(false);
-    } catch (error) {
-      showMessage({
-        message: 'Cập nhật mật khẩu không thành công',
-        type: 'warning',
-        duration: 2000, // Thời gian hiển thị (2 giây)
-      });
-      setLoading(false);
     }
   };
 
@@ -88,7 +72,7 @@ const UserAvatar = () => {
         }}
       >
         <Button
-          //   onPress={handleSubmit}
+          disabled={loading}
           style={styles.buttonAvatar}
           borderRadius={8}
           paddingBottom={3}
@@ -96,12 +80,12 @@ const UserAvatar = () => {
             pickImage(file);
           }}
         >
-          <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-            Tải lên ảnh đại diện mới
+          <Text style={{ color: '#fff', fontWeight: 'bold', maxWidth: 100 }}>
+            Tải ảnh lên
           </Text>
         </Button>
       </View>
-      {/* {image && (
+      {image && (
         <>
           <Image
             source={{ uri: image }}
@@ -125,21 +109,25 @@ const UserAvatar = () => {
             }}
           >
             <Button
-              //   onPress={handleSubmit}
+              disabled={loading}
               style={styles.buttonAvatarConfirm}
               borderRadius={8}
               paddingBottom={3}
               onPress={() => {
-                handleUpdateAvatar(image);
+                handleUploadAvatar();
               }}
             >
-              <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                Xác nhận
-              </Text>
+              {loading ? (
+                <ActivityIndicator size={'small'} color={'#fff'} />
+              ) : (
+                <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+                  Xác nhận
+                </Text>
+              )}
             </Button>
           </View>
         </>
-      )} */}
+      )}
     </View>
   );
 };
@@ -154,8 +142,7 @@ const styles = StyleSheet.create({
     borderColor: '#00000023',
   },
   buttonAvatar: {
-    width: '70%',
-    backgroundColor: '#1976d2',
+    backgroundColor: COLORS.MAINPINK,
     borderWidth: 1,
     borderColor: '#fff',
   },

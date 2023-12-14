@@ -45,7 +45,7 @@ const MyCourse = ({ item, setShowReviewModal, setShowReportModal }) => {
         <TouchableOpacity
           style={{ maxWidth: '50%' }}
           onPress={() => {
-            navigation.navigate('youtubePlayer', { id: item.id });
+            navigation.navigate('videoPlayer', { id: item.id });
           }}
         >
           <Image
@@ -65,7 +65,7 @@ const MyCourse = ({ item, setShowReviewModal, setShowReportModal }) => {
         >
           <TouchableOpacity
             onPress={() => {
-              navigation.navigate('youtubePlayer', { id: item.id });
+              navigation.navigate('videoPlayer', { id: item.id });
             }}
           >
             <Text style={[styles.title, { color: COLORS.MAINPINK }]}>

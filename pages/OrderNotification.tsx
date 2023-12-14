@@ -40,7 +40,7 @@ const OrderNotification = () => {
       vnpTxnRef && vnpAmount && vnpBankCode && vnpCardType && vnpResponseCode;
 
     if (!isValidToCheckPayment) {
-      navigation.navigate('home');
+      navigation.navigate('cart');
       showMessage({
         message: 'Thanh toán không thành công',
         type: 'danger',
@@ -106,7 +106,7 @@ const OrderNotification = () => {
 
   const navigation = useNavigation();
   const handleReturn = () => {
-    navigation.navigate('home');
+    navigation.navigate('myCourses');
   };
 
   return (
@@ -140,7 +140,9 @@ const OrderNotification = () => {
         paddingBottom={3}
         onPress={handleReturn}
       >
-        <Text>Quay lại trang chủ</Text>
+        <Text style={{ color: '#fff', fontWeight: 'bold' }}>
+          Đến Khóa Học Của Tôi
+        </Text>
       </Button>
     </View>
   );

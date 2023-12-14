@@ -21,4 +21,8 @@ export const changePasswordUser = (
 export const getProfileUser = (): Promise<UserFilterResponse> => api.get(`${USER_BASE_URL}/profile`);
 
 export const uploadAvatarUser = (body: any): Promise<void> =>
-  api.post(`${USER_BASE_URL}/profile/avatar`, body);
+  api.post(`${USER_BASE_URL}/profile/avatar`, body, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });

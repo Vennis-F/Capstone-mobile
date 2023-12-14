@@ -46,6 +46,7 @@ import NameContainer from '../components/Profile/NameContainer';
 import UserDetail from '../components/Profile/UserDetail';
 import UserPassword from '../components/Profile/UserPassword';
 import UserAvatar from '../components/Profile/UserAvatar';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function Profile() {
   const [userRole, setUserRole] = useState<UserRole | null>();
@@ -53,6 +54,7 @@ export default function Profile() {
   const navigation = useNavigation();
   const [userLogin, setuserLogin] = useState(false);
   const [isPressed, setIsPressed] = useState('');
+  const [imageChanged, setImageChanged] = useState(false);
 
   const showSuccessMessage = () => {
     // Hiển thị thông báo khi đăng nhập thành công
@@ -100,7 +102,8 @@ export default function Profile() {
 
   const getUserProfile = async () => {
     try {
-      setuserData(await getProfileUser());
+      const userProfile = await getProfileUser();
+      setuserData(userProfile);
     } catch (error) {
       console.log('[Profile - get profile error] ', error);
     }
@@ -123,7 +126,12 @@ export default function Profile() {
 
   return (
     <View style={styles.container}>
-      <ProfileHeader userData={userData} userLogin={userLogin} />
+      <ProfileHeader
+        userAvatar={userData?.avatar}
+        userLogin={userLogin}
+        imageChanged={imageChanged}
+        setImageChanged={setImageChanged}
+      />
 
       <ScrollView>
         {userRole === 'Customer' ? (
@@ -179,7 +187,7 @@ export default function Profile() {
                 </TouchableOpacity>
                 {isPressed === 'password' && <UserPassword />}
 
-                {/* <TouchableOpacity
+                <TouchableOpacity
                   onPress={() => {
                     // setPressAvatar(!pressAvatar);
                     if (isPressed !== 'avatar') setIsPressed('avatar');
@@ -196,7 +204,12 @@ export default function Profile() {
                     <Text style={styles.menuTextSub}>Ảnh đại diện</Text>
                   </View>
                 </TouchableOpacity>
-                {isPressed === 'avatar' && <UserAvatar />} */}
+                {isPressed === 'avatar' && (
+                  <UserAvatar
+                    getUserProfile={getUserProfile}
+                    setImageChanged={setImageChanged}
+                  />
+                )}
 
                 <TouchableOpacity
                   onPress={() => {
@@ -219,10 +232,10 @@ export default function Profile() {
                   }}
                 >
                   <View style={styles.menuItem}>
-                    <Icon
-                      name="transfer-within-a-station"
-                      size={24}
-                      style={{ marginRight: 30 }}
+                    <MaterialCommunityIcons
+                      name="account-child"
+                      size={30}
+                      style={{ marginRight: 24 }}
                       color={'#eab308'}
                     />
                     <Text style={styles.menuTextSub}>
