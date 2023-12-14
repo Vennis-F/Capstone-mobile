@@ -57,7 +57,6 @@ const DrawingModal = ({
   const handleUploadDrawing = async (customerDrawingId: string) => {
     if (customerDrawingId && body) {
       try {
-        console.log(body);
         await updateCustomerDrawingImage(customerDrawingId, body);
         setImage(null);
       } catch (error) {
@@ -102,6 +101,26 @@ const DrawingModal = ({
         type: 'warning',
         duration: 3500,
       });
+    }
+  };
+
+  const takeImage = async () => {
+    let result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      quality: 1,
+      allowsEditing: true,
+    });
+    if (!result.canceled) {
+      var photo = {
+        uri: result.assets[0].uri,
+        type: 'image/jpeg',
+        name: 'photo.jpg',
+      };
+      var imageData = new FormData();
+      imageData.append('file', photo);
+
+      setBody(imageData);
+      setImage(result.assets[0].uri);
     }
   };
 
@@ -201,17 +220,34 @@ const DrawingModal = ({
                         <Image source={{ uri: image }} style={styles.image} />
                       </>
                     )}
-                    <Button
-                      disabled={loading}
-                      style={styles.buttonUpload}
-                      borderRadius={8}
-                      paddingBottom={3}
-                      onPress={(file) => {
-                        pickImage(file);
-                      }}
-                    >
-                      <Text style={styles.btnUploadText}>Tải ảnh lên</Text>
-                    </Button>
+                    <View>
+                      <Button
+                        disabled={loading}
+                        style={[
+                          styles.buttonUpload,
+                          { backgroundColor: '#16b548' },
+                        ]}
+                        borderRadius={8}
+                        paddingBottom={3}
+                        marginBottom={2}
+                        onPress={(file) => {
+                          pickImage(file);
+                        }}
+                      >
+                        <Text style={styles.btnUploadText}>Tải ảnh lên</Text>
+                      </Button>
+                      <Button
+                        disabled={loading}
+                        style={styles.buttonUpload}
+                        borderRadius={8}
+                        paddingBottom={3}
+                        onPress={(file) => {
+                          takeImage(file);
+                        }}
+                      >
+                        <Text style={styles.btnUploadText}>Chụp ảnh ngay</Text>
+                      </Button>
+                    </View>
                   </View>
                 </Modal.Body>
                 <Modal.Footer style={styles.footer}>
@@ -237,6 +273,8 @@ const DrawingModal = ({
                       colorScheme="blueGray"
                       onPress={() => {
                         setShowDrawingModal('');
+                        setBody(null);
+                        setImage(null);
                       }}
                       style={styles.cancelBtn}
                     >

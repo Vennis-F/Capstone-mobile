@@ -28,7 +28,7 @@ import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Button } from 'native-base';
 import { COLORS } from '../libs/const/color';
 import { ContestStatus } from '../apis/contest/types';
-import DrawingModal from '../components/ContestDetail/DrawingModal';
+import DrawingModal from '../components/Contest/DrawingModal';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import Colors from '../constants/Colors';
 import { showMessage } from 'react-native-flash-message';
@@ -100,6 +100,7 @@ const ContestDrawings = () => {
     React.useCallback(() => {
       getDrawings();
       getMyDrawings();
+      setMyDrawBtn(false);
     }, [id])
   );
 
@@ -211,7 +212,16 @@ const ContestDrawings = () => {
                     onPress={() => {
                       setImgCountPress(imgCountPress + 1);
                       if (imgCountPress === 2) {
-                        handleVoteDrawing(drawing.id);
+                        if (myDrawings.length < 1) {
+                          showMessage({
+                            message:
+                              'Bạn phải tham gia cuộc thi để có thể bầu chọn',
+                            type: 'info',
+                            duration: 2400,
+                          });
+                        } else {
+                          handleVoteDrawing(drawing.id);
+                        }
                         setImgCountPress(1);
                       } else {
                         setTimeout(() => {
@@ -247,7 +257,16 @@ const ContestDrawings = () => {
                       onPress={() => {
                         setIconCountPress(iconCountPress + 1);
                         if (iconCountPress === 1) {
-                          handleVoteDrawing(drawing.id);
+                          if (myDrawings.length < 1) {
+                            showMessage({
+                              message:
+                                'Bạn phải tham gia cuộc thi để có thể bầu chọn',
+                              type: 'info',
+                              duration: 2400,
+                            });
+                          } else {
+                            handleVoteDrawing(drawing.id);
+                          }
                           setIconCountPress(0);
                         } else {
                           setTimeout(() => {

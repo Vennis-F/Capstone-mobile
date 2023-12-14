@@ -7,19 +7,22 @@ import {
 } from 'react-native';
 import { getImage } from '../../apis/image/components/apis';
 import { AntDesign, Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { useNavigation } from 'expo-router';
+import { useFocusEffect, useNavigation } from 'expo-router';
 import { COLORS } from '../../libs/const/color';
 import { Button } from 'native-base';
 import { Contest } from '../../apis/contest/types';
+import { useCallback, useState } from 'react';
+import { getRandomInt } from '../../libs/core/handle-price';
 
 const DetailHeader = ({ contest }: { contest: Contest }) => {
   const navigation = useNavigation();
+  const [change, setChange] = useState(getRandomInt(99999)); //for image reload url
 
   return (
     <ImageBackground
       style={styles.thumbnail}
       source={{
-        uri: getImage(`${contest.thumbnailUrl}`),
+        uri: getImage(`${contest.thumbnailUrl}&change=${change}`),
       }}
     >
       <View style={styles.header}>

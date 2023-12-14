@@ -1,7 +1,7 @@
 import makeApi from '../../../libs/core/configureAxios';
 import { PageResponse } from '../../../libs/types';
 
-import { Contest, CreateContestBodyRequest, FindContestsFilterBodyRequest } from '../types';
+import { Contest, CreateContestBodyRequest, DefinePromotionForWinnerBodyRequest, FindContestsFilterBodyRequest, ViewWinner } from '../types';
 
 const api = makeApi(`${process.env.EXPO_PUBLIC_API_URL}`);
 
@@ -21,3 +21,13 @@ export const createContestByStaff = (body: CreateContestBodyRequest): Promise<vo
 
 export const updateContestThumbnailByStaff = (contestId: string, body: any): Promise<void> =>
   api.put(`${CONTEST_BASE_URL}/thumbnail?contestId=${contestId}`, body);
+
+const WINNER_BASE_URL = `/winner`;
+
+export const definePromotionForWinner = (
+  body: DefinePromotionForWinnerBodyRequest,
+  contestId: string,
+): Promise<void> => api.post(`${WINNER_BASE_URL}/${contestId}`, body);
+
+export const getWinners = (contestId: string): Promise<ViewWinner[]> =>
+  api.get(`${WINNER_BASE_URL}/contest/${contestId}`);

@@ -21,10 +21,12 @@ import { formatStringtoDate, timeSince } from '../libs/core/handle-time';
 import { AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import { COLORS } from '../libs/const/color';
+import { getRandomInt } from '../libs/core/handle-price';
 
 const ContestHomePage = () => {
   const [page, setPage] = useState(0);
   const [contests, setContests] = useState<Contest[]>([]);
+  const [change, setChange] = useState(getRandomInt(999999)); // for image reload Url
   const navigation = useNavigation();
 
   const handleGetContests = async () => {
@@ -59,13 +61,17 @@ const ContestHomePage = () => {
             renderItem={({ item, index }) => (
               <ImageBackground
                 key={item.id}
-                source={{ uri: getImage(item.thumbnailUrl) }}
+                source={{
+                  uri: getImage(`${item.thumbnailUrl}&change=${change}`),
+                }}
                 alt="Thumbnail"
                 style={styles.image}
               >
                 <View style={styles.infoContainer}>
                   <ImageBackground
-                    source={{ uri: getImage(item.thumbnailUrl) }}
+                    source={{
+                      uri: getImage(`${item.thumbnailUrl}&change=${change}`),
+                    }}
                     alt="Thumbnail"
                     style={styles.imageBlur}
                     blurRadius={8}

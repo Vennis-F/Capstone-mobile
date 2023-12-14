@@ -12,10 +12,11 @@ import { useRoute } from '@react-navigation/native';
 import { COLORS } from '../libs/const/color';
 import { getContestById } from '../apis/contest/api';
 import { Contest, mapStatusToVietnamese } from '../apis/contest/types';
-import DetailHeader from '../components/ContestDetail/DetailHeader';
-import Description from '../components/ContestDetail/Description';
+import DetailHeader from '../components/Contest/DetailHeader';
+import Description from '../components/Contest/Description';
 import { formatStringtoDate } from '../libs/core/handle-time';
 import { useFocusEffect } from 'expo-router';
+import Winner from '../components/Contest/Winner';
 
 const ContestDetail = ({}) => {
   const [contest, setContest] = useState<Contest>();
@@ -47,8 +48,11 @@ const ContestDetail = ({}) => {
           const hours = Math.floor(
             (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
           );
+          const minutes = Math.floor(
+            (distance % (1000 * 60 * 60)) / (1000 * 60)
+          );
           // Hiển thị thời gian còn lại dưới dạng chuỗi
-          setTimeLeft(`${days} ngày ${hours} giờ`);
+          setTimeLeft(`${days} ngày ${hours} giờ ${minutes} phút`);
         }
       }, 1000);
 
@@ -67,14 +71,12 @@ const ContestDetail = ({}) => {
       setPressedTab('description');
     }, [])
   );
-
   return (
     <SafeAreaView
       style={{
         flex: 1,
         backgroundColor: '#ffffff',
         width: '100%',
-        paddingTop: 12,
       }}
     >
       <StatusBar translucent={true} />
@@ -135,9 +137,9 @@ const ContestDetail = ({}) => {
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                // onPress={() => {
-                //   setPressedTab('leaderBoard');
-                // }}
+                onPress={() => {
+                  setPressedTab('leaderBoard');
+                }}
                 style={[
                   styles.tabBar,
                   pressedTab === 'leaderBoard' ? styles.tabBarColor : null,
@@ -159,7 +161,15 @@ const ContestDetail = ({}) => {
             ) : (
               ''
             )}
-            {pressedTab === 'leaderBoard' ? <Text>BXH</Text> : ''}
+            {pressedTab === 'leaderBoard' && contest.status === 'EXPIRED' ? (
+              <Winner contestId={contest.id} />
+            ) : (
+              pressedTab === 'leaderBoard' && (
+                <Text style={styles.unLeader}>
+                  Bảng xếp hạng sẽ được công bố khi cuộc thi kết thúc
+                </Text>
+              )
+            )}
           </View>
         </ScrollView>
       )}
@@ -171,7 +181,7 @@ const styles = StyleSheet.create({
   details: {
     backgroundColor: '#fff',
     marginBottom: 7,
-    paddingTop: 20,
+    paddingTop: 10,
     paddingHorizontal: 24,
   },
   rating: {
@@ -185,7 +195,7 @@ const styles = StyleSheet.create({
     marginTop: -150,
     flexDirection: 'column',
     maxWidth: '94%',
-    backgroundColor: '#ffffffe5',
+    backgroundColor: '#ffffffd0',
     zIndex: 100,
     alignSelf: 'center',
     padding: 20,
@@ -288,6 +298,13 @@ const styles = StyleSheet.create({
   toCourseButtonText: {
     color: '#fff',
     fontSize: 16,
+  },
+  unLeader: {
+    marginTop: 24,
+    paddingHorizontal: 20,
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 export default ContestDetail;
