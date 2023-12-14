@@ -191,6 +191,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 500,
     justifyContent: 'flex-end',
+    borderWidth: 4,
+    borderColor: COLORS.MAINPINKBLUR,
   },
   infoContainer: {
     width: '100%',

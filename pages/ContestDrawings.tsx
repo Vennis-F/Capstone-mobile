@@ -7,6 +7,7 @@ import {
   ImageBackground,
   ScrollView,
   TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { useFocusEffect, useNavigation } from 'expo-router';
 import {
@@ -16,22 +17,33 @@ import {
   mapCustomerStatus,
 } from '../apis/customer-drawing/types';
 import {
+  createVoteCustomerDrawing,
   getCustomerDrawingsByContest,
   getCustomerDrawingsInContestByCustomer,
 } from '../apis/customer-drawing/api';
-import { OrderType } from '../libs/types';
+import { OrderType, ResponseError } from '../libs/types';
 import { getImage } from '../apis/image/components/apis';
 import { useRoute } from '@react-navigation/native';
 import { FontAwesome, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { Button } from 'native-base';
 import { COLORS } from '../libs/const/color';
+import { ContestStatus } from '../apis/contest/types';
+import DrawingModal from '../components/ContestDetail/DrawingModal';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
+import Colors from '../constants/Colors';
+import { showMessage } from 'react-native-flash-message';
 
 const ContestDrawings = () => {
   const route = useRoute();
   const id = route.params?.id as string;
+  const status: ContestStatus = route.params?.status as ContestStatus;
 
-  const [pressed, setPressed] = useState(-1);
+  const [showDrawingModal, setShowDrawingModal] = useState('');
   const [myDrawBtn, setMyDrawBtn] = useState(false);
+  const [page, setPage] = useState(0);
+  const [imgCountPress, setImgCountPress] = useState(1);
+  const [iconCountPress, setIconCountPress] = useState(1);
+  const [loadingVote, setLoadingVote] = useState(false);
 
   const [drawings, setDrawings] = useState<CustomerDrawing[]>([]);
   const [myDrawings, setMyDrawings] = useState<CustomerDrawingNotFilter[]>([]);
@@ -63,6 +75,27 @@ const ContestDrawings = () => {
     }
   };
 
+  const handleVoteDrawing = async (drawingId: string) => {
+    if (drawingId)
+      try {
+        setLoadingVote(true);
+        await createVoteCustomerDrawing(drawingId);
+        getDrawings();
+        setLoadingVote(false);
+      } catch (error) {
+        const errorResponse = error as ResponseError;
+        const msgError =
+          errorResponse?.response?.data?.message || 'Bạn đã hết lượt bầu chọn';
+        showMessage({
+          message: msgError,
+          type: 'warning',
+          duration: 2000,
+        });
+        setLoadingVote(false);
+        console.log('[ContestDrawings - vote error] ', error);
+      }
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       getDrawings();
@@ -72,6 +105,12 @@ const ContestDrawings = () => {
 
   return (
     <ScrollView style={styles.container}>
+      <DrawingModal
+        getDrawings={getDrawings}
+        getMyDrawings={getMyDrawings}
+        setShowDrawingModal={setShowDrawingModal}
+        showDrawingModal={showDrawingModal}
+      />
       <View style={styles.header}>
         <View style={styles.iconHeader}>
           <TouchableOpacity
@@ -98,16 +137,31 @@ const ContestDrawings = () => {
               <Text style={styles.myDrawText}>Bài vẽ của tôi</Text>
             </Button>
           ) : (
-            <Button style={styles.myDraw}>
-              <Text style={styles.myDrawText}>Tham gia thi</Text>
-            </Button>
+            status === 'ACTIVE' && (
+              <Button
+                style={styles.myDraw}
+                onPress={() => {
+                  setShowDrawingModal(id);
+                }}
+              >
+                <Text style={styles.myDrawText}>Tham gia thi</Text>
+              </Button>
+            )
           )}
         </View>
-        <Text style={styles.headerTitle}>Bài Dự Thi</Text>
-        <Text style={styles.headerText}>
-          Hãy cùng chúng mình khám phá những tác phẩm độc đáo và thú vị của
-          những người bạn trong cuộc thi này nào
+        <Text style={styles.headerTitle}>
+          {myDrawBtn ? 'Bài Vẽ Của Tôi' : 'Bài Dự Thi'}
         </Text>
+
+        {!myDrawBtn && (
+          <Text style={styles.headerText}>
+            {drawings.length >= 1
+              ? 'Hãy cùng chúng mình khám phá những tác phẩm độc đáo và thú vị của những người bạn trong cuộc thi này nào'
+              : status === 'ACTIVE'
+              ? 'Hiện tại vẫn chưa có bài dự thi. Hãy là người đầu tiên tham gia cuộc thi để dành cho mình những phần thưởng độc đáo nào'
+              : 'Hiện tại cuộc thi chưa có bài dự thi nào'}
+          </Text>
+        )}
       </View>
 
       {myDrawBtn && myDrawings.length >= 1 && (
@@ -125,7 +179,11 @@ const ContestDrawings = () => {
                 </Text>
               </View>
               <View style={styles.voteContainer}>
-                <Ionicons name="heart-circle" size={24} color="grey" />
+                <Ionicons
+                  name="heart-circle"
+                  size={24}
+                  color={COLORS.SELECTYELLOW}
+                />
                 <Text style={styles.vote}>{myDrawings[0].votes.length}</Text>
               </View>
             </View>
@@ -141,41 +199,107 @@ const ContestDrawings = () => {
 
       {drawings.length >= 1 && !myDrawBtn && (
         <View style={styles.drawingContainer}>
-          {drawings.map((drawing, index) => {
-            return (
-              <View key={index} style={styles.drawing}>
-                <TouchableOpacity
-                  onPress={() => {
-                    if (pressed !== index) setPressed(index);
-                    else setPressed(-1);
-                  }}
-                >
-                  <Image
-                    style={styles.image}
-                    source={{ uri: getImage(drawing.imageUrl) }}
-                  />
-                </TouchableOpacity>
-                <View style={styles.drawingInfo}>
-                  <View style={styles.authorContainer}>
-                    <FontAwesome name="user-circle-o" size={24} color="grey" />
-                    <Text style={styles.author}>{drawing.customerName}</Text>
+          <Carousel
+            data={drawings}
+            renderItem={({ item, index }) => {
+              const drawing = item;
+              return (
+                <View key={index} style={styles.drawing}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    disabled={drawing.isVoted || drawing.isOwned}
+                    onPress={() => {
+                      setImgCountPress(imgCountPress + 1);
+                      if (imgCountPress === 2) {
+                        handleVoteDrawing(drawing.id);
+                        setImgCountPress(1);
+                      } else {
+                        setTimeout(() => {
+                          setImgCountPress(1);
+                        }, 3000);
+                      }
+                    }}
+                  >
+                    <ImageBackground
+                      style={styles.image}
+                      borderRadius={30}
+                      source={{ uri: getImage(drawing.imageUrl) }}
+                    >
+                      {loadingVote && (
+                        <ActivityIndicator
+                          size={'small'}
+                          color={COLORS.SELECTYELLOW}
+                          style={{ alignSelf: 'flex-end', marginTop: 'auto' }}
+                        />
+                      )}
+                    </ImageBackground>
+                  </TouchableOpacity>
+                  <View style={styles.drawingInfo}>
+                    <View style={styles.authorContainer}>
+                      <FontAwesome
+                        name="user-circle-o"
+                        size={24}
+                        color="grey"
+                      />
+                      <Text style={styles.author}>{drawing.customerName}</Text>
+                    </View>
+                    <TouchableOpacity
+                      onPress={() => {
+                        setIconCountPress(iconCountPress + 1);
+                        if (iconCountPress === 1) {
+                          handleVoteDrawing(drawing.id);
+                          setIconCountPress(0);
+                        } else {
+                          setTimeout(() => {
+                            setIconCountPress(0);
+                          }, 3000);
+                        }
+                      }}
+                      disabled={drawing.isVoted || drawing.isOwned}
+                      style={[styles.voteContainer]}
+                    >
+                      <Ionicons
+                        name="heart-circle"
+                        size={24}
+                        color={
+                          drawing.isVoted
+                            ? COLORS.MAINPINK
+                            : drawing.isOwned
+                            ? COLORS.SELECTYELLOW
+                            : 'grey'
+                        }
+                      />
+                      <Text style={styles.vote}>{drawing.totalVotes}</Text>
+                    </TouchableOpacity>
                   </View>
-                  <View style={styles.voteContainer}>
-                    <Ionicons name="heart-circle" size={24} color="grey" />
-                    <Text style={styles.vote}>{drawing.totalVotes}</Text>
-                  </View>
-                </View>
-                {pressed === index && (
                   <View style={styles.titleInfo}>
                     <Text style={styles.title}>{drawing.title}</Text>
                     <Text style={styles.description}>
                       {drawing.description}
                     </Text>
                   </View>
-                )}
-              </View>
-            );
-          })}
+                </View>
+              );
+            }}
+            itemWidth={350}
+            sliderWidth={500}
+            layout="tinder"
+            layoutCardOffset={18}
+            onSnapToItem={(index) => {
+              setPage(index);
+            }}
+          />
+          <Pagination
+            dotsLength={drawings.length}
+            activeDotIndex={page}
+            dotColor="#FF724C"
+            inactiveDotColor="#FF724C"
+            dotStyle={{
+              width: 10,
+              height: 10,
+              borderRadius: 4,
+            }}
+          />
         </View>
       )}
     </ScrollView>
@@ -222,6 +346,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 24,
+    color: COLORS.MAINPINK,
   },
   headerText: {
     fontSize: 16,
@@ -229,14 +354,16 @@ const styles = StyleSheet.create({
   },
   drawingContainer: {
     width: '100%',
+    alignItems: 'center',
   },
   drawing: {
     alignSelf: 'center',
     padding: 12,
+    paddingBottom: 0,
     borderWidth: 1,
     borderColor: '#0000002f',
     borderRadius: 30,
-    marginBottom: 20,
+    backgroundColor: '#fff',
   },
   image: {
     borderRadius: 30,
@@ -275,7 +402,7 @@ const styles = StyleSheet.create({
   },
   titleInfo: {
     paddingHorizontal: 12,
-    marginBottom: 12,
+    paddingBottom: 12,
   },
   title: {
     maxWidth: 320,

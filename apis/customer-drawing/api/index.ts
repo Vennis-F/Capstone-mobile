@@ -33,7 +33,16 @@ export const createCustomerDrawing = (
   api.post(`${CUSTOMER_DRAWING_BASE_URL}/create?contestId=${contestId}`, body);
 
 export const updateCustomerDrawingImage = (customerDrawingId: string, body: any): Promise<void> =>
-  api.put(`${CUSTOMER_DRAWING_BASE_URL}/image?customerDrawingId=${customerDrawingId}`, body);
+  api.put(`${CUSTOMER_DRAWING_BASE_URL}/image?customerDrawingId=${customerDrawingId}`, body, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+
+const VOTE_BASE_URL = `/vote`;
+
+export const createVoteCustomerDrawing = (customerDrawingId: string): Promise<void> =>
+  api.post(`${VOTE_BASE_URL}/customer-drawing/${customerDrawingId}`);
 
 export const approveCustomerDrawingByStaff = (
   customerDrawingId: string,

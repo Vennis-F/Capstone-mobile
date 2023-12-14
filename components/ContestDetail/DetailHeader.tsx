@@ -19,7 +19,7 @@ const DetailHeader = ({ contest }: { contest: Contest }) => {
     <ImageBackground
       style={styles.thumbnail}
       source={{
-        uri: getImage(contest.thumbnailUrl),
+        uri: getImage(`${contest.thumbnailUrl}`),
       }}
     >
       <View style={styles.header}>
@@ -34,21 +34,20 @@ const DetailHeader = ({ contest }: { contest: Contest }) => {
             style={{ marginLeft: 6 }}
           />
         </TouchableOpacity>
-        {contest.totalCustomerDrawing >= 1 && (
-          <Button
-            style={styles.drawingsBtn}
-            onPress={() => {
-              navigation.navigate('contestDrawings', { id: contest.id });
-            }}
-          >
-            <View
-              style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}
-            >
-              <Text style={styles.btnText}>Bài Dự Thi</Text>
-              <AntDesign name="right" size={16} color="#fff" />
-            </View>
-          </Button>
-        )}
+        <Button
+          style={styles.drawingsBtn}
+          onPress={() => {
+            navigation.navigate('contestDrawings', {
+              id: contest.id,
+              status: contest.status,
+            });
+          }}
+        >
+          <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+            <Text style={styles.btnText}>Bài Dự Thi</Text>
+            <AntDesign name="right" size={16} color="#fff" />
+          </View>
+        </Button>
       </View>
     </ImageBackground>
   );
