@@ -285,7 +285,6 @@ const styles = StyleSheet.create({
   },
   buttonLogin: {
     marginTop: 12,
-    backgroundColor: COLORS.MAINPINK,
     borderRadius: 30,
   },
 });

@@ -13,7 +13,6 @@ import { Video, ResizeMode } from 'expo-av';
 import { Checkbox, HStack, Input, Button } from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { COLORS } from '../libs/const/color';
-import DividerCustom from './DividerCustom';
 import {
   createLearner,
   getLearnersByUser,
@@ -26,8 +25,10 @@ import {
   UpdateLearnerBodyRequest,
 } from '../apis/learner/types';
 import { useFocusEffect, useNavigation } from 'expo-router';
-import Notification from './Notification';
 import { Ionicons } from '@expo/vector-icons';
+import ChildrenModal from '../components/Children/ChildrenModal';
+import DividerCustom from '../components/DividerCustom';
+import Notification from '../components/Notification';
 
 const Item = ({ item, setIsChanged, isChanged }) => {
   const fullname = `${item.lastName} ${item.middleName} ${item.firstName}`;
@@ -43,6 +44,7 @@ export default function Children() {
   const [middlename, setMiddlename] = useState<string>('');
   const [lastname, setLastname] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const getMyChildren = async () => {
     const myChildren = await getLearnersByUser();
@@ -51,32 +53,6 @@ export default function Children() {
 
   const closeNotification = () => {
     setNotification(null);
-  };
-
-  const handleCreate = async () => {
-    const body: CreateLearnerBodyRequest = {
-      userName: username,
-      firstName: firstname,
-      lastName: lastname,
-      middleName: middlename,
-      password: password,
-    };
-    try {
-      await createLearner(body);
-      setNotification({
-        message: 'Tạo tài khoản của bé thành công ',
-        type: 'success',
-      });
-      getMyChildren();
-    } catch (error) {
-      console.log(error);
-      setNotification({
-        message: 'Không thể tạo tài khoản',
-        type: 'danger',
-      });
-    }
-    setPressedChild('');
-    setPassword('');
   };
 
   const handleUpdate = async () => {
@@ -120,6 +96,18 @@ export default function Children() {
       }}
     >
       <View style={styles.container}>
+        <ChildrenModal
+          firstname={firstname}
+          lastname={lastname}
+          middlename={middlename}
+          password={password}
+          setPassword={setPassword}
+          setPressedChild={setPressedChild}
+          getMyChildren={getMyChildren}
+          username={username}
+          pressChild={pressedChild}
+        />
+
         <Text style={{ fontSize: 25, fontWeight: 'bold', marginBottom: 20 }}>
           Con của tôi
         </Text>
@@ -197,153 +185,6 @@ export default function Children() {
         ) : (
           ''
         )}
-        <View
-          style={[styles.userInfo, pressedChild ? styles.show : styles.hidden]}
-        >
-          <View style={styles.infoContainer}>
-            <Text style={styles.label}>
-              <Text style={{ backgroundColor: '#ffffff97' }}>
-                Tên đăng nhập
-              </Text>
-            </Text>
-            <Input
-              isDisabled={pressedChild === 'empty' ? false : true}
-              value={username}
-              onChangeText={(text) => setUsername(text)}
-              variant="filled"
-              placeholder="Nhập Tên đăng nhập ở đây"
-              borderRadius={10}
-              paddingLeft={4}
-            />
-            {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-          </View>
-          {pressedChild === 'empty' ? (
-            <View style={styles.infoContainer}>
-              <Text style={styles.label}>
-                <Text style={{ backgroundColor: '#ffffff97' }}>Mật khẩu</Text>
-              </Text>
-              <Input
-                value={password}
-                onChangeText={(text) => setPassword(text)}
-                variant="filled"
-                placeholder="Nhập Tên mật khẩu ở đây"
-                borderRadius={10}
-                paddingLeft={4}
-                secureTextEntry={true}
-              />
-              {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-            </View>
-          ) : (
-            ''
-          )}
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignSelf: 'center',
-              width: '80%',
-              justifyContent: 'space-between',
-              padding: 4,
-            }}
-          >
-            <View style={styles.nameContainer}>
-              <Text style={styles.label}>
-                <Text style={{ backgroundColor: '#ffffff97' }}>Tên</Text>
-              </Text>
-              <Input
-                value={firstname}
-                onChangeText={(text) => setFirstname(text)}
-                variant="filled"
-                placeholder="Tên"
-                borderRadius={10}
-                paddingLeft={4}
-              />
-              {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-            </View>
-            <View style={styles.nameContainer}>
-              <Text style={styles.label}>
-                <Text style={{ backgroundColor: '#ffffff97' }}>Tên đệm</Text>
-              </Text>
-              <Input
-                value={middlename}
-                onChangeText={(text) => setMiddlename(text)}
-                variant="filled"
-                placeholder="Tên đệm"
-                paddingLeft={4}
-                borderRadius={10}
-              />
-              {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-            </View>
-            <View style={styles.nameContainer}>
-              <Text style={styles.label}>
-                <Text style={{ backgroundColor: '#ffffff97' }}>Họ</Text>
-              </Text>
-              <Input
-                value={lastname}
-                onChangeText={(text) => setLastname(text)}
-                variant="filled"
-                placeholder="Họ"
-                paddingLeft={4}
-                borderRadius={10}
-              />
-              {/* {errorText1 && (
-                  <Text style={{ color: 'red' }}>{errorText1}</Text>
-                )} */}
-            </View>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-around',
-              width: '80%',
-              alignSelf: 'center',
-              marginVertical: 8,
-            }}
-          >
-            <Button
-              //   onPress={handleSubmit}
-              style={styles.buttonReset}
-              borderRadius={10}
-              paddingBottom={3}
-            >
-              <Text style={{ color: '#ef4444', fontWeight: 'bold' }}>
-                Đặt lại
-              </Text>
-            </Button>
-            {pressedChild === 'empty' ? (
-              <Button
-                style={styles.buttonUpdate}
-                borderRadius={8}
-                paddingBottom={3}
-                onPress={handleCreate}
-              >
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                  Tạo mới
-                </Text>
-              </Button>
-            ) : (
-              <Button
-                style={styles.buttonUpdate}
-                borderRadius={8}
-                paddingBottom={3}
-                onPress={handleUpdate}
-              >
-                <Text style={{ color: '#fff', fontWeight: 'bold' }}>
-                  Cập nhật
-                </Text>
-              </Button>
-            )}
-          </View>
-        </View>
         {notification && (
           <Notification
             message={notification.message}

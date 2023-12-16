@@ -36,7 +36,6 @@ import OrderNotification from '../../pages/OrderNotification';
 import Login from '../../pages/Login';
 import Signup from '../../pages/Signup';
 import DetailOrder from '../../pages/OrderDetail';
-import Children from '../../components/Children';
 import OrderHistory from '../../pages/OrderHistory';
 import ConfirmOTP from '../../pages/UserConfirmOTP';
 import FlashMessage from 'react-native-flash-message';
@@ -44,6 +43,7 @@ import ContestHomePage from '../../pages/ContestHomePage';
 import ContestDetail from '../../pages/ContestDetail';
 import ContestDrawings from '../../pages/ContestDrawings';
 import VideoPlayer from '../../pages/VideoPlayer';
+import Children from '../../pages/Children';
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];

@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import JWT from 'expo-jwt';
+import jwt_decode from 'jwt-decode';
+
 
 const TOKEN_KEY = '@access_token'; // Key dùng để lưu trữ token trong AsyncStorage
 const JWT_SECRET =
@@ -20,8 +22,18 @@ export type UserInfor = {
   role: UserRole;
 };
 
-export const decodeToken = (accessToken: string): UserInfor =>
-  JWT.decode(accessToken, JWT_SECRET, { timeSkew: 30 }) as UserInfor;
+// export const decodeToken = (accessToken: string): UserInfor | null => {
+//   try {
+//     return JWT.decode(accessToken, JWT_SECRET, { timeSkew: 30 }) as UserInfor;
+
+//   } catch (error) {
+//     console.log('[handle-token - decodetoken error] ', error);
+//   }
+//   return null;
+// };
+export const decodeToken = (accessToken: string): UserInfor => jwt_decode(accessToken);
+
+
 
 export const getAccessToken = async (): Promise<string | null> => {
   try {
@@ -56,6 +68,7 @@ export const getUserRole = async () => {
   const token = await getAccessToken();
   if (!token) return null;
   try {
+    console.log(token);
     const decoded = decodeToken(token);
     return decoded.role;
   } catch (error) {

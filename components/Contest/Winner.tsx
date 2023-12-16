@@ -41,7 +41,7 @@ const Winner = ({ contestId }) => {
       handelGetWinner();
     }, [contestId])
   );
-  console.log(winners);
+  console.log(winners.length);
   return (
     <View style={styles.container}>
       {winners.length >= 1 && (

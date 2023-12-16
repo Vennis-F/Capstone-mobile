@@ -24,8 +24,9 @@ import { Dimensions } from 'react-native';
 import { useFocusEffect } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
 import Chapter from '../components/VideoPlayer.tsx/Chapter';
-import { ResponseError } from '../libs/types';
+import { ResponseError, UserRole } from '../libs/types';
 import { getRandomInt, getRandomRangeInt } from '../libs/core/handle-price';
+import { getUserRole } from '../libs/core/handle-token';
 
 export default function VideoPlayer() {
   const video = useRef<Video>(null);
@@ -39,8 +40,11 @@ export default function VideoPlayer() {
   >([]);
   const [currChapterLecture, setCurrChapterLecture] =
     useState<ChapterLectureFilter | null>(null);
-  const [isComplete, setIsComplete] = useState(false);
+  const [isComplete, setIsComplete] = useState(true);
   const [interval, setInterval] = useState(400);
+  const [role, setRole] = useState<UserRole | null>(null);
+  const [roleChange, setRoleChange] = useState(false);
+  const [startPlay, setStartplay] = useState(false); // set time= 0
 
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (
@@ -89,7 +93,7 @@ export default function VideoPlayer() {
     try {
       await saveUserLectureCompleted(chapterLectureId);
       setIsComplete(true);
-      console.log(chapterLectureId);
+      console.log('compplet save: ', chapterLectureId);
       handleGetChapterLectureStudy();
     } catch (error) {
       const errorResponse = error as ResponseError;
@@ -100,10 +104,23 @@ export default function VideoPlayer() {
 
   useAuthMiddleware();
 
+  const handleGetRole = async () => {
+    const userRole = await getUserRole();
+    if (role !== userRole) setRoleChange(true);
+    else setRoleChange(false);
+    setRole(userRole);
+  };
+
   useFocusEffect(
     useCallback(() => {
       handleGetChapterLectureStudy();
     }, [courseId])
+  );
+
+  useFocusEffect(
+    useCallback(() => {
+      handleGetRole();
+    }, [])
   );
 
   // useEffect(() => {
@@ -122,17 +139,18 @@ export default function VideoPlayer() {
       );
     });
 
-    if (chapterLectures && (!currChapterLecture || !isInclude)) {
+    if (chapterLectures && (!currChapterLecture || !isInclude) && roleChange) {
       const uncompleteChapter =
         chapterLectures.find((chapter) => chapter.isCompleted === false) ||
         chapterLectures[chapterLectures.length - 1] ||
         null;
       setCurrChapterLecture(uncompleteChapter);
     }
-  }, [chapterLectures]);
+  }, [chapterLectures, roleChange]);
 
   useEffect(() => {
-    setIsComplete(currChapterLecture?.isCompleted || false);
+    const checkcomplete = currChapterLecture?.isCompleted === true;
+    setIsComplete(checkcomplete);
     setInterval(getRandomRangeInt(400, 650));
   }, [currChapterLecture]);
 
@@ -166,13 +184,15 @@ export default function VideoPlayer() {
 
       {chapterLectures.map((item, index) => {
         const backgroundColor =
-          item.id === currChapterLecture?.id ? '#e49712' : '#fff';
+          item.id === currChapterLecture?.id ? COLORS.MAINPINKBLUR : '#fff';
         return (
           <Chapter
             key={index}
             item={item}
             onPress={() => {
-              setCurrChapterLecture(item as ChapterLectureFilter);
+              setTimeout(() => {
+                setCurrChapterLecture(item as ChapterLectureFilter);
+              }, 3000);
             }}
             backgroundColor={backgroundColor}
           />

@@ -79,7 +79,7 @@ const Item = ({ item, children, setNotification, notification }) => {
         ></ImageBackground>
         <View style={styles.infoContainer}>
           <Text style={[styles.title]}>{item.title}</Text>
-          <View style={{ flexDirection: 'row', gap: 6 }}>
+          {/* <View style={{ flexDirection: 'row', gap: 6 }}>
             <Foundation name="graph-bar" size={24} color="#919090" />
             <Text style={[styles.provider]}>Tiến trình của bé</Text>
           </View>
@@ -92,7 +92,7 @@ const Item = ({ item, children, setNotification, notification }) => {
             <Text>
               {progressChapter}/{item.totalChapter}
             </Text>
-          </View>
+          </View> */}
           <Select
             selectedValue={selectedChild || ''}
             accessibilityLabel="Khóa học dành cho bé"

@@ -277,7 +277,7 @@ export default function Profile() {
             <View style={[styles.menuWrapper]}>
               <TouchableOpacity
                 onPress={() => {
-                  navigation.navigate('myChildCourses');
+                  navigation.navigate('myCourses');
                 }}
               >
                 <View style={styles.menuItem}>

@@ -28,6 +28,7 @@ export type UpdateLearnerCourseBodyRequest = {
 
 export type UpdateLearnerBodyRequest = {
     learnerId: string;
+    userName: string;
     firstName: string;
     lastName: string;
     middleName: string;
@@ -35,7 +36,6 @@ export type UpdateLearnerBodyRequest = {
 
 export type ChangePasswordLearnerBodyRequest = {
     learnerId: string;
-    currentPassword: string;
     newPassword: string;
     confirmNewPassword: string;
 };

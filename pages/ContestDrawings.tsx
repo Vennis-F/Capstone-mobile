@@ -293,7 +293,7 @@ const ContestDrawings = () => {
                   </View>
                   <View style={styles.titleInfo}>
                     <Text style={styles.title}>{drawing.title}</Text>
-                    <Text style={styles.description}>
+                    <Text numberOfLines={5} style={styles.description}>
                       {drawing.description}
                     </Text>
                   </View>
@@ -303,7 +303,7 @@ const ContestDrawings = () => {
             itemWidth={350}
             sliderWidth={500}
             layout="tinder"
-            layoutCardOffset={18}
+            layoutCardOffset={20}
             onSnapToItem={(index) => {
               setPage(index);
             }}
