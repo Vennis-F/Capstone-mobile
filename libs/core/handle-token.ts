@@ -68,7 +68,6 @@ export const getUserRole = async () => {
   const token = await getAccessToken();
   if (!token) return null;
   try {
-    console.log(token);
     const decoded = decodeToken(token);
     return decoded.role;
   } catch (error) {

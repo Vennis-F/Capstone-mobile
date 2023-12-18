@@ -24,9 +24,11 @@ import {
   getLearnersByUser,
   updateLearnerCourse,
 } from '../apis/learner/api';
-import Notification from './Notification';
+import Notification from '../components/Notification';
+import { ResponseError } from '../libs/types';
+import { showMessage } from 'react-native-flash-message';
 
-const Item = ({ item, children, setNotification, notification }) => {
+const Item = ({ item, children }) => {
   const progressChapter = Math.round(item.totalChapter / 1.5);
   const progressPercent = (progressChapter / item.totalChapter) * 100;
   const [selectedChild, setSelectedChild] = useState<string>('');
@@ -45,15 +47,20 @@ const Item = ({ item, children, setNotification, notification }) => {
     };
     try {
       await updateLearnerCourse(body);
-      setNotification({
+      showMessage({
         message: 'Đã cập nhật khóa học cho bé',
         type: 'success',
+        duration: 2500,
       });
       getChildrenFromCourse();
     } catch (error) {
-      setNotification({
-        message: 'Cập nhật khóa học không thành công',
-        type: 'danger',
+      const msg = error as ResponseError;
+      const msgError = msg.response?.data?.message;
+      console.log('[Mychild - update asign child] ', msg, error);
+      showMessage({
+        message: 'Khoá học không thể cập nhật',
+        type: 'warning',
+        duration: 2500,
       });
     }
   };
@@ -79,20 +86,6 @@ const Item = ({ item, children, setNotification, notification }) => {
         ></ImageBackground>
         <View style={styles.infoContainer}>
           <Text style={[styles.title]}>{item.title}</Text>
-          {/* <View style={{ flexDirection: 'row', gap: 6 }}>
-            <Foundation name="graph-bar" size={24} color="#919090" />
-            <Text style={[styles.provider]}>Tiến trình của bé</Text>
-          </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <View style={styles.progressBar}>
-              <View
-                style={[styles.progress, { width: `${progressPercent}%` }]}
-              ></View>
-            </View>
-            <Text>
-              {progressChapter}/{item.totalChapter}
-            </Text>
-          </View> */}
           <Select
             selectedValue={selectedChild || ''}
             accessibilityLabel="Khóa học dành cho bé"
@@ -120,11 +113,6 @@ const Item = ({ item, children, setNotification, notification }) => {
 export default function MyChild() {
   const [courses, setCourses] = useState<CourseFilterResponse[]>([]);
   const [children, setChildren] = useState<LearnerFilterResponse[]>([]);
-  const [notification, setNotification] = useState(null);
-
-  const closeNotification = () => {
-    setNotification(null);
-  };
 
   const getMyCourses = async () => {
     setCourses(await getCourseByCustomer());
@@ -140,26 +128,12 @@ export default function MyChild() {
       getMyChildren();
     }, [])
   );
-
-  console.log(children);
   return (
     <ScrollView style={styles.container}>
+      <Text style={styles.headerText}>Khoá học của bé</Text>
       {courses.map((item, index) => (
-        <Item
-          item={item}
-          key={index}
-          children={children}
-          notification={notification}
-          setNotification={setNotification}
-        />
+        <Item item={item} key={index} children={children} />
       ))}
-      {notification && (
-        <Notification
-          message={notification.message}
-          type={notification.type}
-          onClose={closeNotification}
-        />
-      )}
     </ScrollView>
   );
 }
@@ -167,8 +141,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
-    paddingTop: 40,
-    paddingHorizontal: 12,
+    paddingTop: 20,
+    paddingHorizontal: 16,
+  },
+  headerText: {
+    fontSize: 20,
+    marginLeft: 20,
+    marginBottom: 20,
+    fontWeight: 'bold',
   },
   item: {
     marginVertical: 8,
@@ -183,7 +163,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     width: '100%',
     gap: 12,
-    height: 184,
   },
   imgContainer: {
     height: 144,

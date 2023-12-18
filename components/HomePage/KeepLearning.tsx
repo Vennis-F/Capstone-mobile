@@ -62,11 +62,17 @@ const Item = ({ item, onPress }) => {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <View style={styles.progressBar}>
               <View
-                style={[styles.progress, { width: `${progressPercent}%` }]}
+                style={[
+                  styles.progress,
+                  { width: `${item.completedPercent || 0}%` },
+                ]}
               ></View>
             </View>
             <Text>
-              {progressChapter}/{item.totalChapter}
+              {Math.round(
+                ((item.completedPercent || 0) * item.totalChapter) / 100
+              )}
+              /{item.totalChapter}
             </Text>
           </View>
         </View>

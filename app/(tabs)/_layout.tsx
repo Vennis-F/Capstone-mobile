@@ -29,7 +29,7 @@ import CourseList from '../../pages/CourseList';
 import FilterTable from '../../pages/FilterTable';
 import Detail from '../../pages/Detail';
 import MyCourses from '../../pages/MyCourses';
-import MyChild from '../../components/Mychild';
+import MyChild from '../../pages/Mychild';
 import Profile from '../../pages/Profile';
 import CartScreen from '../../components/CartScreen';
 import OrderNotification from '../../pages/OrderNotification';

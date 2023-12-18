@@ -60,7 +60,7 @@ export default function Profile() {
     // Hiển thị thông báo khi đăng nhập thành công
     showMessage({
       message: 'Đã đăng xuất khỏi tài khoản',
-      type: 'warning',
+      type: 'info',
       duration: 2000, // Thời gian hiển thị (2 giây)
     });
   };

@@ -164,8 +164,6 @@ const ChildrenModal = ({
     setPressedChild('');
   };
 
-  console.log(loading);
-  console.log(pressChild);
   return (
     <Center>
       <Modal

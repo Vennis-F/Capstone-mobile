@@ -25,7 +25,7 @@ import { useFocusEffect } from 'expo-router';
 import { ActivityIndicator } from 'react-native';
 import Chapter from '../components/VideoPlayer.tsx/Chapter';
 import { ResponseError, UserRole } from '../libs/types';
-import { getRandomInt, getRandomRangeInt } from '../libs/core/handle-price';
+import { getRandomRangeInt } from '../libs/core/handle-price';
 import { getUserRole } from '../libs/core/handle-token';
 
 export default function VideoPlayer() {
@@ -44,14 +44,14 @@ export default function VideoPlayer() {
   const [interval, setInterval] = useState(400);
   const [role, setRole] = useState<UserRole | null>(null);
   const [roleChange, setRoleChange] = useState(false);
-  const [startPlay, setStartplay] = useState(false); // set time= 0
 
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (
       status.isLoaded &&
       status.isPlaying &&
       currChapterLecture &&
-      !isComplete
+      !isComplete &&
+      !isPreloading
     ) {
       const videoDuration = status.durationMillis;
       const playbackPosition = status.positionMillis;
@@ -91,14 +91,19 @@ export default function VideoPlayer() {
 
   const handleSaveCompleteChapterLecture = async (chapterLectureId: string) => {
     try {
-      await saveUserLectureCompleted(chapterLectureId);
+      const chapterLecture = chapterLectures.find(
+        (chapterLecturee) => chapterLecturee.id === chapterLectureId
+      ) as ChapterLectureFilter;
+
+      if (!chapterLecture.isCompleted && !isPreloading)
+        await saveUserLectureCompleted(chapterLecture.id);
       setIsComplete(true);
-      console.log('compplet save: ', chapterLectureId);
+      console.log('complete save: ', chapterLectureId);
       handleGetChapterLectureStudy();
     } catch (error) {
       const errorResponse = error as ResponseError;
       const msgError = errorResponse?.response?.data?.message || error;
-      console.log('[VideoPlayer - Save compelete error] ', errorResponse);
+      console.log('[VideoPlayer - Save compelete error] ', msgError, error);
     }
   };
 
@@ -106,6 +111,7 @@ export default function VideoPlayer() {
 
   const handleGetRole = async () => {
     const userRole = await getUserRole();
+    console.log('role: ', role, userRole);
     if (role !== userRole) setRoleChange(true);
     else setRoleChange(false);
     setRole(userRole);
@@ -123,28 +129,24 @@ export default function VideoPlayer() {
     }, [])
   );
 
-  // useEffect(() => {
-  //   if (chapterLectures) {
-  //     const uncompleteChapter =
-  //       chapterLectures.find((chapter) => chapter.isCompleted === false) ||
-  //       null;
-  //     setCurrChapterLecture(uncompleteChapter);
-  //   }
-  // }, [courseId, chapterLectures]);
-
   useEffect(() => {
     const isInclude = chapterLectures.some((chapter) => {
       return (
         JSON.stringify(currChapterLecture?.id) === JSON.stringify(chapter.id)
       );
     });
-
-    if (chapterLectures && (!currChapterLecture || !isInclude) && roleChange) {
+    console.log(roleChange);
+    if (
+      (chapterLectures && (!currChapterLecture || !isInclude)) ||
+      roleChange
+    ) {
+      console.log('do');
       const uncompleteChapter =
         chapterLectures.find((chapter) => chapter.isCompleted === false) ||
         chapterLectures[chapterLectures.length - 1] ||
         null;
       setCurrChapterLecture(uncompleteChapter);
+      setRoleChange(false);
     }
   }, [chapterLectures, roleChange]);
 
@@ -152,6 +154,7 @@ export default function VideoPlayer() {
     const checkcomplete = currChapterLecture?.isCompleted === true;
     setIsComplete(checkcomplete);
     setInterval(getRandomRangeInt(400, 650));
+    setIsPreloading(true);
   }, [currChapterLecture]);
 
   return (
@@ -192,7 +195,7 @@ export default function VideoPlayer() {
             onPress={() => {
               setTimeout(() => {
                 setCurrChapterLecture(item as ChapterLectureFilter);
-              }, 3000);
+              }, 800);
             }}
             backgroundColor={backgroundColor}
           />

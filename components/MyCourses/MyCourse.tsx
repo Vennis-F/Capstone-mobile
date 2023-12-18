@@ -38,7 +38,6 @@ const MyCourse = ({ item, setShowReviewModal, setShowReportModal }) => {
       handleGetReviews();
     }, [])
   );
-
   return (
     <View style={[styles.item]}>
       <View style={styles.little}>
@@ -75,6 +74,27 @@ const MyCourse = ({ item, setShowReviewModal, setShowReportModal }) => {
               <Ionicons name="md-logo-youtube" size={16} color="#ef4444" />
               &nbsp;{item.totalChapter} Bài học
             </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 8,
+                marginTop: 12,
+              }}
+            >
+              <View style={styles.progressBar}>
+                <View
+                  style={[
+                    styles.progress,
+                    { width: `${item.completedPercent || 0}%` },
+                  ]}
+                ></View>
+              </View>
+              <Text>
+                {Math.round((item.completedPercent * item.totalChapter) / 100)}/
+                {item.totalChapter}
+              </Text>
+            </View>
           </TouchableOpacity>
           <View style={styles.icons}>
             <TouchableOpacity
@@ -133,5 +153,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 8,
+  },
+  progressBar: {
+    width: '70%',
+    backgroundColor: '#e2e2e2',
+    height: 10,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#00000022',
+  },
+  progress: {
+    height: '100%',
+    borderRadius: 16,
+    backgroundColor: COLORS.BLUE,
   },
 });

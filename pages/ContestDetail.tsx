@@ -63,12 +63,9 @@ const ContestDetail = ({}) => {
     }
   }, [contest]);
 
-  useEffect(() => {
-    handelGetContest();
-  }, [id]);
-
   useFocusEffect(
     React.useCallback(() => {
+      handelGetContest();
       setPressedTab('description');
     }, [])
   );
