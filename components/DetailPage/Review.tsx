@@ -67,7 +67,6 @@ const Review = ({ course, id }) => {
               </Text>
               <Text style={styles.timeAgo}>
                 {timeSince(new Date(review.updatedDate && review.insertedDate))}{' '}
-                ago
               </Text>
             </View>
             <Text style={styles.description}>{review.description}</Text>

@@ -5,6 +5,7 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 
 import { Video, ResizeMode, AVPlaybackStatus } from 'expo-av';
@@ -27,6 +28,12 @@ import Chapter from '../components/VideoPlayer.tsx/Chapter';
 import { ResponseError, UserRole } from '../libs/types';
 import { getRandomRangeInt } from '../libs/core/handle-price';
 import { getUserRole } from '../libs/core/handle-token';
+import { getCoursesDetailById } from '../apis/courses/api';
+import { GetCourseDetailResponse } from '../apis/courses/types';
+import QuestionTopic from '../components/VideoPlayer.tsx/QuestionTopic';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import QuestionModal from '../components/VideoPlayer.tsx/QuestionModal';
+import AnswerModal from '../components/VideoPlayer.tsx/AnswerModal';
 
 export default function VideoPlayer() {
   const video = useRef<Video>(null);
@@ -34,6 +41,8 @@ export default function VideoPlayer() {
   const courseId = route.params?.id as string;
 
   const [isPreloading, setIsPreloading] = useState(false);
+  const [course, setCourse] = useState<GetCourseDetailResponse>();
+  const [panel, setPanel] = useState('chapter');
 
   const [chapterLectures, setChapterLectures] = useState<
     ChapterLectureFilter[]
@@ -44,6 +53,10 @@ export default function VideoPlayer() {
   const [interval, setInterval] = useState(400);
   const [role, setRole] = useState<UserRole | null>(null);
   const [roleChange, setRoleChange] = useState(false);
+  const [showQuestionModal, setShowQuestionModal] = useState('');
+  const [showAnswerModal, setShowAnswerModal] = useState('');
+
+  const [refresh, setRefresh] = useState(false);
 
   const handlePlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if (
@@ -107,6 +120,17 @@ export default function VideoPlayer() {
     }
   };
 
+  const getCourse = async () => {
+    if (courseId) {
+      try {
+        const dataResponse = await getCoursesDetailById(courseId);
+        setCourse(dataResponse);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   useAuthMiddleware();
 
   const handleGetRole = async () => {
@@ -120,11 +144,17 @@ export default function VideoPlayer() {
   useFocusEffect(
     useCallback(() => {
       handleGetChapterLectureStudy();
+      getCourse();
     }, [courseId])
   );
 
+  useEffect(() => {
+    if (roleChange) handleGetChapterLectureStudy();
+  }, [roleChange]);
+
   useFocusEffect(
     useCallback(() => {
+      setPanel('chapter');
       handleGetRole();
     }, [])
   );
@@ -148,59 +178,135 @@ export default function VideoPlayer() {
       setCurrChapterLecture(uncompleteChapter);
       setRoleChange(false);
     }
-  }, [chapterLectures, roleChange]);
+  }, [chapterLectures]);
 
   useEffect(() => {
+    setIsPreloading(true);
     const checkcomplete = currChapterLecture?.isCompleted === true;
     setIsComplete(checkcomplete);
     setInterval(getRandomRangeInt(400, 650));
-    setIsPreloading(true);
   }, [currChapterLecture]);
 
   return (
     <View style={styles.container}>
       {currChapterLecture && currChapterLecture.video && (
-        <Video
-          ref={video}
-          style={styles.video}
-          source={{
-            uri: `https://capstone-be-7fef96e86ef9.herokuapp.com/video?id=${currChapterLecture.video}`,
-          }}
-          useNativeControls
-          shouldPlay={false}
-          progressUpdateIntervalMillis={interval}
-          onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
-          resizeMode={ResizeMode.CONTAIN}
-          onFullscreenUpdate={setOrientation}
-          onLoadStart={() => setIsPreloading(true)}
-          onReadyForDisplay={() => setIsPreloading(false)}
-        />
+        <View style={styles.videoContainer}>
+          <Video
+            ref={video}
+            style={styles.video}
+            source={{
+              uri: `https://capstone-be-7fef96e86ef9.herokuapp.com/video?id=${currChapterLecture.video}`,
+            }}
+            useNativeControls
+            shouldPlay={false}
+            progressUpdateIntervalMillis={interval}
+            onPlaybackStatusUpdate={handlePlaybackStatusUpdate}
+            resizeMode={ResizeMode.CONTAIN}
+            onFullscreenUpdate={setOrientation}
+            onLoadStart={() => setIsPreloading(true)}
+            onReadyForDisplay={() => setIsPreloading(false)}
+          />
+        </View>
       )}
 
       {isPreloading && (
         <ActivityIndicator
           style={styles.loadingScreen}
-          size={122}
+          size={100}
           color={COLORS.MAINPINK}
         />
       )}
-
-      {chapterLectures.map((item, index) => {
-        const backgroundColor =
-          item.id === currChapterLecture?.id ? COLORS.MAINPINKBLUR : '#fff';
-        return (
-          <Chapter
-            key={index}
-            item={item}
+      {course && (
+        <View style={{ padding: 20 }}>
+          <Text style={{ fontSize: 22 }}>{course.title}</Text>
+          <Text style={{ color: 'grey', fontSize: 16 }}>{course.author}</Text>
+        </View>
+      )}
+      <View style={styles.panelContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            setPanel('chapter');
+          }}
+          style={[
+            styles.panel,
+            panel === 'chapter' ? { borderBottomWidth: 2 } : null,
+          ]}
+        >
+          <Text style={styles.panelText}>Bài Giảng</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setPanel('question');
+          }}
+          style={[
+            styles.panel,
+            panel === 'question' ? { borderBottomWidth: 2 } : null,
+          ]}
+        >
+          <Text style={styles.panelText}>Câu Hỏi</Text>
+        </TouchableOpacity>
+        {panel === 'question' && (
+          <TouchableOpacity
             onPress={() => {
-              setTimeout(() => {
-                setCurrChapterLecture(item as ChapterLectureFilter);
-              }, 800);
+              setShowQuestionModal(currChapterLecture?.id || '');
             }}
-            backgroundColor={backgroundColor}
+            style={{ marginLeft: 'auto' }}
+          >
+            <MaterialCommunityIcons
+              name="chat-plus"
+              size={28}
+              color={COLORS.MAINPINK}
+            />
+          </TouchableOpacity>
+        )}
+      </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={{ paddingTop: 12, marginBottom: 30 }}
+      >
+        {chapterLectures &&
+          panel === 'chapter' &&
+          chapterLectures.map((item, index) => {
+            const backgroundColor =
+              item.id === currChapterLecture?.id
+                ? COLORS.MAINPINKSUPERBLUR
+                : '#fff';
+            const fontWeight =
+              item.id === currChapterLecture?.id ? 'bold' : '500';
+            return (
+              <Chapter
+                key={index}
+                index={index}
+                item={item}
+                onPress={() => {
+                  setTimeout(() => {
+                    setCurrChapterLecture(item as ChapterLectureFilter);
+                  }, 800);
+                }}
+                fontWeight={fontWeight}
+                backgroundColor={backgroundColor}
+              />
+            );
+          })}
+        {panel === 'question' && (
+          <QuestionTopic
+            setRefresh={setRefresh}
+            refresh={refresh}
+            courseId={courseId}
+            setShowAnswerModal={setShowAnswerModal}
           />
-        );
-      })}
+        )}
+      </ScrollView>
+      <QuestionModal
+        setShowQuestionModal={setShowQuestionModal}
+        showQuestionModal={showQuestionModal}
+        setRefresh={setRefresh}
+      />
+      <AnswerModal
+        showAnswerModal={showAnswerModal}
+        setShowAnswerModal={setShowAnswerModal}
+        setRefresh={setRefresh}
+      />
     </View>
   );
 }
@@ -208,9 +314,13 @@ export default function VideoPlayer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
     backgroundColor: COLORS.WHITE,
     width: '100%',
+  },
+  videoContainer: {
+    width: '100%',
+    height: 250,
+    backgroundColor: '#0000001c',
   },
   video: {
     width: '100%',
@@ -220,15 +330,23 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 0,
     alignSelf: 'center',
-    backgroundColor: '#00000062',
+    backgroundColor: '#000',
     width: '100%',
     height: 250,
   },
-
-  categoryContainer: {
+  panelContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
+    paddingHorizontal: 4,
+    paddingRight: 20,
+    alignItems: 'center',
+  },
+  panel: {
+    paddingBottom: 12,
+    paddingHorizontal: 16,
+    marginLeft: 4,
+  },
+  panelText: {
+    fontSize: 16,
   },
   categoryText: {
     fontSize: 20,

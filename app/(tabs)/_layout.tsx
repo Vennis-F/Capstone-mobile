@@ -251,17 +251,11 @@ export default function TabLayout() {
 
       <Tab.Screen
         name="videoPlayer"
-        options={
-          // userRole
-          //   ? {
-          //       title: 'Bài giảng',
-          //       tabBarIcon: ({ color }) => (
-          //         <TabBarIcon name="youtube" color={color} />
-          //       ),
-          //     }
-          //   :
-          { title: 'Bài giảng', tabBarButton: () => null }
-        }
+        options={{
+          title: 'Bài giảng',
+          tabBarButton: () => null,
+          tabBarStyle: { display: 'none' },
+        }}
         component={VideoPlayer}
       />
 
