@@ -103,7 +103,7 @@ export default function VideoPlayer() {
         await generateCertifcate(courseId);
         showMessage({
           message:
-            'Chúc mừng bạn đã hoàn thành khóa học, bạn đã được nhận bằng cấp',
+            'Chúc mừng bạn đã hoàn thành khóa học, bạn đã được nhận chứng chỉ',
           type: 'info',
           duration: 3200,
         });

@@ -24,7 +24,7 @@ import { showErrorAlert } from '../libs/core/handle-show.-mesage';
 import { getCourseByCustomer } from '../apis/courses/api';
 import { getCourseForLearnerSearchByUser } from '../apis/learner/api';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { getImage } from '../apis/image/components/apis';
 import { useFocusEffect } from 'expo-router';
 import { COLORS } from '../libs/const/color';
@@ -32,10 +32,12 @@ import MyCourse from '../components/MyCourses/MyCourse';
 import { Button } from 'native-base';
 import ReviewModal from '../components/MyCourses/ReviewModal';
 import ReportModal from '../components/MyCourses/ReportModal';
+import Achievements from '../components/MyCourses/Achievements';
 
 export default function MyCourses() {
   const [showReviewModal, setShowReviewModal] = useState('');
   const [showReportModal, setShowReportModal] = useState('');
+  const [showAchievement, setShowAchievement] = useState(false);
 
   const [courses, setCourses] = useState<
     CourseLearnerFilterResponse[] | CourseFilterResponse[]
@@ -61,6 +63,7 @@ export default function MyCourses() {
   useFocusEffect(
     React.useCallback(() => {
       getCourses();
+      setShowAchievement(false);
     }, [])
   );
 
@@ -76,14 +79,34 @@ export default function MyCourses() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold', padding: 20 }}>
-        Khóa học của tôi
-      </Text>
-      <FlatList
-        data={courses}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-      />
+      <View style={styles.header}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+          {showAchievement ? 'Chứng chỉ của tôi' : 'Khóa học của tôi'}
+        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            setShowAchievement(!showAchievement);
+          }}
+          style={[
+            styles.icon,
+            showAchievement ? { backgroundColor: 'white' } : null,
+          ]}
+        >
+          <FontAwesome5
+            name="medal"
+            size={26}
+            color={showAchievement ? COLORS.MAINPINK : 'white'}
+          />
+        </TouchableOpacity>
+      </View>
+      {!showAchievement && (
+        <FlatList
+          data={courses}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      )}
+      {showAchievement && <Achievements />}
 
       <ReviewModal
         setShowReviewModal={setShowReviewModal}
@@ -105,5 +128,22 @@ const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: '#ffffff',
     paddingTop: 10,
+  },
+  header: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+    alignItems: 'center',
+  },
+  icon: {
+    borderWidth: 2,
+    borderColor: COLORS.MAINPINK,
+    width: 40,
+    height: 40,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: COLORS.MAINPINK,
   },
 });

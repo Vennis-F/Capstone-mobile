@@ -125,7 +125,7 @@ const AchieveCourse = ({ courseId }) => {
           )}
         </View>
       )}
-      {(!course || !achieve) && (
+      {!achieve && (
         <View style={{ margin: 25 }}>
           <View
             style={[styles.certificateBox, { borderColor: COLORS.BLUESTEEL }]}
