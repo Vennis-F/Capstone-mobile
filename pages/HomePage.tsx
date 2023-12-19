@@ -88,7 +88,7 @@ export default function HomePage() {
         height={'200'}
         resizeMode="cover"
         borderWidth={2}
-        borderColor={COLORS.MAINPINK}
+        borderColor={COLORS.BLUESTEEL}
         marginTop={4}
       />
       <View style={{ paddingHorizontal: 20 }}>
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
   posterTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    width: '78%',
+    width: '86%',
     padding: 12,
     paddingBottom: 0,
     color: '#1f8acd',

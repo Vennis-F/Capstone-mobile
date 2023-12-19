@@ -79,8 +79,8 @@ const QuestionTopic = ({
           const learner = question.learner;
 
           const imgUrl = user?.avatar
-            ? getImage(user.avatar)
-            : getImage('../../assets/images/avatar.png');
+            ? { uri: getImage(user.avatar) }
+            : require('../../assets/images/avatar.png');
 
           const userFullName = user
             ? `${user?.lastName.trim()} ${user?.middleName.trim()} ${user?.firstName.trim()} `
@@ -98,7 +98,7 @@ const QuestionTopic = ({
                 style={styles.container}
               >
                 <View style={styles.header}>
-                  <Image source={{ uri: imgUrl }} style={styles.image} />
+                  <Image source={imgUrl} style={styles.image} />
                   <View style={styles.headerInfo}>
                     <View style={styles.box}>
                       <Text numberOfLines={1} style={styles.titleText}>

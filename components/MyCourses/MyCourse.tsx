@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import { getImage } from '../../apis/image/components/apis';
 import { useFocusEffect, useNavigation } from 'expo-router';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome5, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { COLORS } from '../../libs/const/color';
 import { OrderType, PageOptions } from '../../apis/courses/types';
 import { getCoursesFeedback } from '../../apis/course-feedback/apis';
@@ -38,6 +38,11 @@ const MyCourse = ({ item, setShowReviewModal, setShowReportModal }) => {
   );
   return (
     <View style={[styles.item]}>
+      {item.isCertified && (
+        <View style={styles.certificate}>
+          <FontAwesome5 name="medal" size={28} color={COLORS.MAINPINK} />
+        </View>
+      )}
       <View style={styles.little}>
         <TouchableOpacity
           style={{ maxWidth: '50%' }}
@@ -131,6 +136,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#0000001b',
     backgroundColor: '#fff',
+    position: 'relative',
+  },
+  certificate: {
+    position: 'absolute',
+    top: 22,
+    left: 24,
+    zIndex: 100,
+    backgroundColor: '#ffffff20',
+    borderRadius: 99,
   },
   little: {
     flexDirection: 'row',

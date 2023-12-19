@@ -34,6 +34,9 @@ import QuestionTopic from '../components/VideoPlayer.tsx/QuestionTopic';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import QuestionModal from '../components/VideoPlayer.tsx/QuestionModal';
 import AnswerModal from '../components/VideoPlayer.tsx/AnswerModal';
+import { generateCertifcate } from '../apis/achivement/api';
+import { showMessage } from 'react-native-flash-message';
+import AchieveCourse from '../components/VideoPlayer.tsx/AchieveCourse';
 
 export default function VideoPlayer() {
   const video = useRef<Video>(null);
@@ -70,9 +73,7 @@ export default function VideoPlayer() {
       const playbackPosition = status.positionMillis;
       const eightyPercent = (videoDuration as number) * 0.8;
 
-      console.log(eightyPercent, playbackPosition);
       if (playbackPosition >= eightyPercent) {
-        console.log('User reached 80% of the video!');
         setIsComplete(true);
         handleSaveCompleteChapterLecture(currChapterLecture.id);
       }
@@ -89,14 +90,53 @@ export default function VideoPlayer() {
     }
   }
 
-  const handleGetChapterLectureStudy = async () => {
+  const handleGeneratePdf = async (
+    newChapterLectures: ChapterLectureFilter[]
+  ) => {
+    let totalCompleteds = 0;
+    newChapterLectures.forEach((chapterLecture) => {
+      if (chapterLecture.isCompleted) totalCompleteds += 1;
+    });
+
+    if (newChapterLectures.length === totalCompleteds) {
+      try {
+        await generateCertifcate(courseId);
+        showMessage({
+          message:
+            'Chúc mừng bạn đã hoàn thành khóa học, bạn đã được nhận bằng cấp',
+          type: 'info',
+          duration: 3200,
+        });
+      } catch (error) {
+        const msg = error as ResponseError;
+        const msgError = msg.response?.data?.message;
+        console.log(
+          '[VideoPlayer - create Certificate error] ',
+          error,
+          msgError
+        );
+      }
+    }
+  };
+
+  const handleGetChapterLectureStudy = async (isGenerate: boolean) => {
     try {
-      const currChapterLecturesRes = await getChapterLectureOfLearnerStudy(
-        courseId
-      );
-      setChapterLectures(
-        currChapterLecturesRes.sort((a, b) => a.index - b.index)
-      );
+      if (!isGenerate) {
+        const currChapterLecturesRes = await getChapterLectureOfLearnerStudy(
+          courseId
+        );
+        setChapterLectures(
+          currChapterLecturesRes.sort((a, b) => a.index - b.index)
+        );
+      } else {
+        const currChapterLecturesRes = await getChapterLectureOfLearnerStudy(
+          courseId
+        );
+        await handleGeneratePdf(currChapterLecturesRes);
+        setChapterLectures(
+          currChapterLecturesRes.sort((a, b) => a.index - b.index)
+        );
+      }
     } catch (error) {
       console.log('[VideoPlayer - get Chapters error] ', error);
     }
@@ -111,8 +151,7 @@ export default function VideoPlayer() {
       if (!chapterLecture.isCompleted && !isPreloading)
         await saveUserLectureCompleted(chapterLecture.id);
       setIsComplete(true);
-      console.log('complete save: ', chapterLectureId);
-      handleGetChapterLectureStudy();
+      handleGetChapterLectureStudy(true);
     } catch (error) {
       const errorResponse = error as ResponseError;
       const msgError = errorResponse?.response?.data?.message || error;
@@ -135,7 +174,6 @@ export default function VideoPlayer() {
 
   const handleGetRole = async () => {
     const userRole = await getUserRole();
-    console.log('role: ', role, userRole);
     if (role !== userRole) setRoleChange(true);
     else setRoleChange(false);
     setRole(userRole);
@@ -143,13 +181,13 @@ export default function VideoPlayer() {
 
   useFocusEffect(
     useCallback(() => {
-      handleGetChapterLectureStudy();
+      handleGetChapterLectureStudy(false);
       getCourse();
     }, [courseId])
   );
 
   useEffect(() => {
-    if (roleChange) handleGetChapterLectureStudy();
+    if (roleChange) handleGetChapterLectureStudy(false);
   }, [roleChange]);
 
   useFocusEffect(
@@ -165,12 +203,10 @@ export default function VideoPlayer() {
         JSON.stringify(currChapterLecture?.id) === JSON.stringify(chapter.id)
       );
     });
-    console.log(roleChange);
     if (
       (chapterLectures && (!currChapterLecture || !isInclude)) ||
       roleChange
     ) {
-      console.log('do');
       const uncompleteChapter =
         chapterLectures.find((chapter) => chapter.isCompleted === false) ||
         chapterLectures[chapterLectures.length - 1] ||
@@ -219,7 +255,9 @@ export default function VideoPlayer() {
       {course && (
         <View style={{ padding: 20 }}>
           <Text style={{ fontSize: 22 }}>{course.title}</Text>
-          <Text style={{ color: 'grey', fontSize: 16 }}>{course.author}</Text>
+          <Text style={{ color: 'grey', fontSize: 16 }}>
+            {course.author.replace(/ +(?= )/g, '')}
+          </Text>
         </View>
       )}
       <View style={styles.panelContainer}>
@@ -232,7 +270,14 @@ export default function VideoPlayer() {
             panel === 'chapter' ? { borderBottomWidth: 2 } : null,
           ]}
         >
-          <Text style={styles.panelText}>Bài Giảng</Text>
+          <Text
+            style={[
+              styles.panelText,
+              panel === 'chapter' ? { fontWeight: 'bold' } : null,
+            ]}
+          >
+            Bài Giảng
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => {
@@ -243,8 +288,34 @@ export default function VideoPlayer() {
             panel === 'question' ? { borderBottomWidth: 2 } : null,
           ]}
         >
-          <Text style={styles.panelText}>Câu Hỏi</Text>
+          <Text
+            style={[
+              styles.panelText,
+              panel === 'question' ? { fontWeight: 'bold' } : null,
+            ]}
+          >
+            Câu Hỏi
+          </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => {
+            setPanel('achieve');
+          }}
+          style={[
+            styles.panel,
+            panel === 'achieve' ? { borderBottomWidth: 2 } : null,
+          ]}
+        >
+          <Text
+            style={[
+              styles.panelText,
+              panel === 'achieve' ? { fontWeight: 'bold' } : null,
+            ]}
+          >
+            Thành Tựu
+          </Text>
+        </TouchableOpacity>
+
         {panel === 'question' && (
           <TouchableOpacity
             onPress={() => {
@@ -281,7 +352,7 @@ export default function VideoPlayer() {
                 onPress={() => {
                   setTimeout(() => {
                     setCurrChapterLecture(item as ChapterLectureFilter);
-                  }, 800);
+                  }, 550);
                 }}
                 fontWeight={fontWeight}
                 backgroundColor={backgroundColor}
@@ -296,6 +367,7 @@ export default function VideoPlayer() {
             setShowAnswerModal={setShowAnswerModal}
           />
         )}
+        {panel === 'achieve' && <AchieveCourse courseId={courseId} />}
       </ScrollView>
       <QuestionModal
         setShowQuestionModal={setShowQuestionModal}

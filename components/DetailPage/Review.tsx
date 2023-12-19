@@ -31,7 +31,6 @@ const Review = ({ course, id }) => {
     handleGetReviews();
   }, [id, sortPressed]);
 
-  console.log('[Review - reviews] ', reviews);
   return (
     <View style={styles.container}>
       <Text style={styles.review}>Đánh giá về khóa học</Text>

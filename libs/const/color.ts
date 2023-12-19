@@ -14,5 +14,7 @@ export enum COLORS {
     SELECTYELLOW = "#FFBF00",
     GREY = "#e7e5e5",
     GREYICON = "#fff",
-    BLUE = "#2A60DD"
+    BLUE = "#2A60DD",
+    BLUESTEEL = "#4682B4",
+    MEDAL = "#FEE101"
 }

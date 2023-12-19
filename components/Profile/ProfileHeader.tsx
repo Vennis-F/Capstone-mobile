@@ -21,22 +21,17 @@ const ProfileHeader = ({
     }, [imageChanged])
   );
 
+  const imageUrl =
+    userLogin && userAvatar
+      ? { uri: getImage(`${userAvatar}&change=${changeAdd}`) }
+      : require('../../assets/images/avatar.png');
   return (
     <ImageBackground
-      source={require('../../assets/images/360_F_562024161_tGM4lFlnO0OczLYHFFuNNdMUTG9ekHxb.jpg')}
+      source={require('../../assets/images/background.png')}
       style={styles.cover}
     >
       <View style={styles.profileContainer}>
-        <Image
-          source={{
-            uri:
-              userLogin && userAvatar
-                ? getImage(`${userAvatar}&change=${changeAdd}`)
-                : '../../assets/images/avatar.png',
-          }}
-          resizeMode="center"
-          style={styles.profile}
-        />
+        <Image source={imageUrl} resizeMode="center" style={styles.profile} />
       </View>
     </ImageBackground>
   );
@@ -56,7 +51,7 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     marginBottom: 2,
     borderColor: '#fffffffd',
-    backgroundColor: '#d7d7d7',
+    backgroundColor: '#f4f4f4',
   },
   profile: {
     height: 140,

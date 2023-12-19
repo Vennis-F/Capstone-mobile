@@ -66,12 +66,14 @@ export type CourseFilterResponse = {
   totalBought: number;
   thumbnailUrl: string;
   active: boolean;
-  author: string;
+  completedPercent: number | null;
+  isCertified: boolean;
+  ratedStar: number | null;
+  feedbackDescription: string | null;
 };
 
-export type CourseLearnerFilterResponse = {
-  completedPercent: number;
-} & CourseFilterResponse;
+export type CourseLearnerFilterResponse = CourseFilterResponse;
+
 
 // Components
 export enum SortCourseBy {

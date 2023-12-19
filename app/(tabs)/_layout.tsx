@@ -254,7 +254,6 @@ export default function TabLayout() {
         options={{
           title: 'Bài giảng',
           tabBarButton: () => null,
-          tabBarStyle: { display: 'none' },
         }}
         component={VideoPlayer}
       />
