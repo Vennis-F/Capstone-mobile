@@ -54,7 +54,7 @@ export default function SearchBar({ isClicked, setIsClicked }) {
 
   return (
     <>
-      <View style={{ marginTop: 24, flexDirection: 'row', gap: 12 }}>
+      <View style={{ marginTop: 12, flexDirection: 'row', gap: 12 }}>
         <TouchableOpacity
           style={styles.searchContainer}
           onPress={() => {

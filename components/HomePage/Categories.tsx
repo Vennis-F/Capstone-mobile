@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from 'react-native';
 import { Category } from '../../apis/category/types';
 import { getCategories } from '../../apis/category/api';
@@ -15,6 +16,7 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from '@expo/vector-icons';
+import { getImage } from '../../apis/image/components/apis';
 
 const IconArray = [
   <Ionicons name="color-palette" size={42} color={COLORS.MAINPINK} />,
@@ -25,7 +27,8 @@ const IconArray = [
 
 const Item = ({ item, onPress, index }) => (
   <TouchableOpacity onPress={onPress} style={[styles.item]}>
-    <View style={styles.icon}>{IconArray[index % 4]}</View>
+    {/* <View style={styles.icon}>{IconArray[index % 4]}</View> */}
+    <Image style={styles.icon} source={{ uri: getImage(item.thumbnailUrl) }} />
     <Text numberOfLines={2} style={[styles.title]}>
       {item.name}
     </Text>
