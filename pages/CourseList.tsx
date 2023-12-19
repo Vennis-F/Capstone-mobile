@@ -67,8 +67,6 @@ export default function CourseList() {
       showsVerticalScrollIndicator={false}
       showsHorizontalScrollIndicator={false}
     >
-      <StatusBar translucent={true} />
-
       <CourseListHeader searchText={searchText} setSearchText={setSearchText} />
 
       <View style={styles.courses}>

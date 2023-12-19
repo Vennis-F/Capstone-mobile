@@ -108,7 +108,7 @@ export default function TabLayout() {
       <Tab.Screen
         name="contest"
         options={
-          userRole === 'Customer'
+          userRole
             ? {
                 title: 'Cuộc Thi',
                 tabBarIcon: ({ color }) => (

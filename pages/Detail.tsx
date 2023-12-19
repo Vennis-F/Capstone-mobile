@@ -119,7 +119,6 @@ const Detail = ({}) => {
         width: '100%',
       }}
     >
-      <StatusBar translucent={true} />
       {course && (
         <ScrollView>
           <DetailHeader

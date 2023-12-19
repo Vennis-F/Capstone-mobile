@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -47,6 +47,8 @@ const ContestDrawings = () => {
 
   const [drawings, setDrawings] = useState<CustomerDrawing[]>([]);
   const [myDrawings, setMyDrawings] = useState<CustomerDrawingNotFilter[]>([]);
+
+  const [reload, setReload] = useState(false);
 
   const getMyDrawings = async () => {
     try {
@@ -104,6 +106,12 @@ const ContestDrawings = () => {
     }, [id])
   );
 
+  useEffect(() => {
+    getDrawings();
+    getMyDrawings();
+    setMyDrawBtn(false);
+  }, [reload]);
+
   return (
     <ScrollView style={styles.container}>
       <DrawingModal
@@ -150,9 +158,22 @@ const ContestDrawings = () => {
             )
           )}
         </View>
-        <Text style={styles.headerTitle}>
-          {myDrawBtn ? 'Bài Vẽ Của Tôi' : 'Bài Dự Thi'}
-        </Text>
+        <TouchableOpacity
+          onPress={() => {
+            setReload(!reload);
+          }}
+          style={{ flexDirection: 'row', justifyContent: 'center' }}
+        >
+          <Text style={styles.headerTitle}>
+            {myDrawBtn ? 'Bài Vẽ Của Tôi' : 'Bài Dự Thi'}
+          </Text>
+          <Ionicons
+            style={styles.reload}
+            name="reload-circle-outline"
+            size={16}
+            color={COLORS.MAINPINKBLUR}
+          />
+        </TouchableOpacity>
 
         {!myDrawBtn && (
           <Text style={styles.headerText}>
@@ -208,7 +229,11 @@ const ContestDrawings = () => {
                 <View key={index} style={styles.drawing}>
                   <TouchableOpacity
                     activeOpacity={0.7}
-                    disabled={drawing.isVoted || drawing.isOwned}
+                    disabled={
+                      drawing.isVoted ||
+                      drawing.isOwned ||
+                      drawing.id === myDrawings[0].id
+                    }
                     onPress={() => {
                       setImgCountPress(imgCountPress + 1);
                       if (imgCountPress === 2) {
@@ -274,7 +299,11 @@ const ContestDrawings = () => {
                           }, 3000);
                         }
                       }}
-                      disabled={drawing.isVoted || drawing.isOwned}
+                      disabled={
+                        drawing.isVoted ||
+                        drawing.isOwned ||
+                        drawing.id === myDrawings[0].id
+                      }
                       style={[styles.voteContainer]}
                     >
                       <Ionicons
@@ -283,7 +312,7 @@ const ContestDrawings = () => {
                         color={
                           drawing.isVoted
                             ? COLORS.MAINPINK
-                            : drawing.isOwned
+                            : drawing.isOwned || drawing.id === myDrawings[0].id
                             ? COLORS.SELECTYELLOW
                             : 'grey'
                         }
@@ -366,6 +395,9 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 24,
     color: COLORS.MAINPINK,
+  },
+  reload: {
+    marginLeft: 8,
   },
   headerText: {
     fontSize: 16,

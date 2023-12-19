@@ -25,7 +25,6 @@ const ContestDetail = ({}) => {
 
   const route = useRoute();
   const id = route.params?.id as string;
-  console.log(id);
 
   const handelGetContest = async () => {
     try {
@@ -67,17 +66,17 @@ const ContestDetail = ({}) => {
     React.useCallback(() => {
       handelGetContest();
       setPressedTab('description');
-    }, [])
+    }, [id])
   );
+
   return (
-    <SafeAreaView
+    <View
       style={{
         flex: 1,
         backgroundColor: '#ffffff',
         width: '100%',
       }}
     >
-      <StatusBar translucent={true} />
       {contest && (
         <ScrollView>
           <DetailHeader contest={contest} />
@@ -171,7 +170,7 @@ const ContestDetail = ({}) => {
           </View>
         </ScrollView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };
 
