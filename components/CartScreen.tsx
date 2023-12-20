@@ -29,12 +29,12 @@ import {
 import { Cart, CartTotalPrice } from '../apis/cart/types';
 import { createOrder, createPaymentURL } from '../apis/order/api';
 import { COLORS } from '../libs/const/color';
-import { formatCurrency } from '../libs/core/handle-price';
+import { calcPriceDiscount, formatCurrency } from '../libs/core/handle-price';
 
 import * as Link from 'expo-linking';
 
 import { getImage } from '../apis/image/components/apis';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 
 export default function CartScreen() {
   const navigation = useNavigation();
@@ -42,8 +42,6 @@ export default function CartScreen() {
   const [cartTotalPrice, setCartTotalPrice] = useState<CartTotalPrice | null>(
     null
   );
-  // const route = useRoute();
-  console.log('[Detail cart]', cart);
 
   const handleGetCart = async () => {
     const dataResponse = await getCart();
@@ -70,7 +68,6 @@ export default function CartScreen() {
   const handleCompleteCheckout = async () => {
     try {
       const order = await createOrder();
-      console.log('[order]', order);
       const paymentURL = await createPaymentURL({
         amount: order.totalPriceAfterPromotion,
         language: 'vn',
@@ -116,7 +113,7 @@ export default function CartScreen() {
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={handleCheckout}>
         <View style={styles.btnContainer}>
-          <Text style={styles.title}>Xác Nhận</Text>
+          <Text style={styles.title}>{title}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -168,36 +165,94 @@ export default function CartScreen() {
     };
     return (
       <View style={styles.CartCard}>
-        <Image
-          source={{
-            uri: getImage(item.course.thumbnailUrl),
-          }}
-          style={{ height: 80, width: 80 }}
-        />
-        <View
-          style={{ height: 100, marginLeft: 10, paddingVertical: 10, flex: 1 }}
-        >
-          <Text style={{ fontWeight: 'bold', fontSize: 16 }}>
-            {item.course.title}
-          </Text>
-          <Text style={{ fontSize: 16, color: '#908e8c' }}>
-            {item.course.totalChapter} bài giảng
-          </Text>
-          <Text style={{ fontSize: 17, fontWeight: 'bold' }}>
-            {formatCurrency(item.course.price)}VND
-          </Text>
-        </View>
-        <View style={{ marginRight: 10, alignItems: 'center' }}>
-          <Icon name="delete" size={30} onPress={handleDeleteCartItem} />
-        </View>
+        {item && item.course && (
+          <>
+            <Image
+              source={{
+                uri: getImage(item.course.thumbnailUrl),
+              }}
+              style={{ height: 84, width: 84 }}
+            />
+            <View
+              style={{
+                height: 120,
+                marginLeft: 10,
+                paddingVertical: 10,
+                flex: 1,
+                justifyContent: 'center',
+              }}
+            >
+              <Text
+                style={{ fontWeight: 'bold', fontSize: 16, maxWidth: '90%' }}
+              >
+                {item.course.title}
+              </Text>
+              <Text style={{ fontSize: 16, color: '#908e8c' }}>
+                {item.course.totalChapter} bài giảng
+              </Text>
+              {item.course.discount ? (
+                <Text
+                  style={{
+                    fontSize: 17,
+                    fontWeight: 'bold',
+                    color: COLORS.BLUESTEEL,
+                  }}
+                >
+                  {formatCurrency(
+                    calcPriceDiscount(item.course.price, item.course.discount)
+                  )}
+                  VND{'  '}
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: 'grey',
+                      textDecorationLine: 'line-through',
+                    }}
+                  >
+                    {formatCurrency(item.course.price)}
+                  </Text>
+                </Text>
+              ) : (
+                <Text style={{ fontSize: 17, fontWeight: 'bold' }}>
+                  {formatCurrency(item.course.price)}VND
+                </Text>
+              )}
+            </View>
+            <View style={{ marginRight: 10, alignItems: 'center' }}>
+              <Icon name="delete" size={30} onPress={handleDeleteCartItem} />
+            </View>
+          </>
+        )}
       </View>
     );
   };
+
   return (
     <SafeAreaView style={{ flex: 1, paddingTop: 30 }}>
-      <Text style={{ fontSize: 22, fontWeight: 'bold', padding: 20 }}>
-        Giỏ hàng của tôi
-      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 24,
+          paddingVertical: 16,
+        }}
+      >
+        <Text style={{ fontSize: 22, fontWeight: 'bold' }}>
+          Giỏ hàng của tôi
+        </Text>
+        {cart && cart.cartItems.length > 1 ? (
+          <TouchableOpacity onPress={handleDeleteAllItems}>
+            <MaterialIcons
+              name="remove-shopping-cart"
+              size={26}
+              color={COLORS.MAINPINK}
+            />
+          </TouchableOpacity>
+        ) : (
+          ''
+        )}
+      </View>
       {cart && cart.cartItems.length > 0 ? (
         <FlatList
           showsHorizontalScrollIndicator={false}
@@ -210,33 +265,68 @@ export default function CartScreen() {
               <View
                 style={{
                   flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  marginVertical: 15,
+                  gap: 24,
+                  alignItems: 'center',
+                  marginTop: 20,
+                  marginBottom: 12,
                 }}
               >
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-                  Tổng tiền
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    color: COLORS.SELECTYELLOW,
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Đã giảm:
                 </Text>
-                <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-                  {formatCurrency(cartTotalPrice.totalPrice)}VND
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: 'bold',
+                  }}
+                >
+                  {formatCurrency(cartTotalPrice?.totalPriceDiscount || 0)}
+                  VND
                 </Text>
               </View>
-              <View style={{ marginHorizontal: 30 }}>
-                <PrimaryButton title="Xác Nhận" />
+              <View
+                style={{
+                  flexDirection: 'row',
+                  gap: 24,
+                  alignItems: 'center',
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: 20,
+                    fontWeight: 'bold',
+                    color: COLORS.MAINPINK,
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  Tổng tiền:
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 18,
+                    fontWeight: 'bold',
+                    color: COLORS.BLUESTEEL,
+                  }}
+                >
+                  {formatCurrency(
+                    cartTotalPrice?.totalPriceAfterPromotion ||
+                      cartTotalPrice?.totalPrice ||
+                      0
+                  )}
+                  VND
+                </Text>
               </View>
 
-              {cart && cart.cartItems.length > 1 && (
-                <TouchableOpacity
-                  style={styles.btnContainer1}
-                  onPress={handleDeleteAllItems}
-                >
-                  <Text
-                    style={{ fontSize: 20, fontWeight: 'bold', color: '#FFF' }}
-                  >
-                    Xóa tất cả sản phẩm
-                  </Text>
-                </TouchableOpacity>
-              )}
+              <View style={{ marginHorizontal: 30, marginTop: 20 }}>
+                <PrimaryButton title="Thanh toán" />
+              </View>
             </View>
           )}
         />
@@ -284,7 +374,7 @@ export default function CartScreen() {
 
 const styles = StyleSheet.create({
   CartCard: {
-    height: 100,
+    height: 140,
     width: '89%',
     elevation: 15,
     borderRadius: 10,
@@ -307,8 +397,10 @@ const styles = StyleSheet.create({
     alignContent: 'center',
   },
   btnContainer: {
-    backgroundColor: '#F9813A',
-    height: 60,
+    backgroundColor: COLORS.MAINPINK,
+    height: 52,
+    width: 140,
+    alignSelf: 'center',
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',

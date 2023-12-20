@@ -96,10 +96,12 @@ const DetailOrder = () => {
                         {item.course.title}
                       </Text>
                       <Text style={styles.courseAmount}>
-                        {item.priceAfterPromotion} VND
+                        {formatCurrency(item.priceAfterPromotion)} VND
                       </Text>
                       {item.price !== item.priceAfterPromotion ? (
-                        <Text style={styles.coursePrice}>{item.price} VND</Text>
+                        <Text style={styles.coursePrice}>
+                          {formatCurrency(item.price)} VND
+                        </Text>
                       ) : (
                         ''
                       )}

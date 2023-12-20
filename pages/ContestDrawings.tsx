@@ -232,7 +232,7 @@ const ContestDrawings = () => {
                     disabled={
                       drawing.isVoted ||
                       drawing.isOwned ||
-                      drawing.id === myDrawings[0].id
+                      drawing.id === myDrawings[0]?.id
                     }
                     onPress={() => {
                       setImgCountPress(imgCountPress + 1);
@@ -302,7 +302,7 @@ const ContestDrawings = () => {
                       disabled={
                         drawing.isVoted ||
                         drawing.isOwned ||
-                        drawing.id === myDrawings[0].id
+                        drawing.id === myDrawings[0]?.id
                       }
                       style={[styles.voteContainer]}
                     >
@@ -312,7 +312,8 @@ const ContestDrawings = () => {
                         color={
                           drawing.isVoted
                             ? COLORS.MAINPINK
-                            : drawing.isOwned || drawing.id === myDrawings[0].id
+                            : drawing.isOwned ||
+                              drawing.id === myDrawings[0]?.id
                             ? COLORS.SELECTYELLOW
                             : 'grey'
                         }

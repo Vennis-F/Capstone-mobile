@@ -49,7 +49,7 @@ function TabBarIcon(props: {
   name: React.ComponentProps<typeof FontAwesome>['name'];
   color: string;
 }) {
-  return <FontAwesome size={28} {...props} />;
+  return <FontAwesome size={24} {...props} />;
 }
 
 export default function TabLayout() {
@@ -99,7 +99,7 @@ export default function TabLayout() {
         options={{
           title: 'Trang chính',
           tabBarIcon: ({ color }) => (
-            <Ionicons name="home" size={28} color={color} />
+            <Ionicons name="home" size={24} color={color} />
           ),
         }}
         component={HomePage}
@@ -112,7 +112,7 @@ export default function TabLayout() {
             ? {
                 title: 'Cuộc Thi',
                 tabBarIcon: ({ color }) => (
-                  <FontAwesome5 name="award" size={28} color={color} />
+                  <FontAwesome5 name="award" size={24} color={color} />
                 ),
               }
             : {
@@ -130,7 +130,11 @@ export default function TabLayout() {
             ? {
                 title: 'Hồ sơ của tôi',
                 tabBarIcon: ({ color }) => (
-                  <TabBarIcon name="user" color={color} />
+                  <FontAwesome
+                    name="user-circle-o"
+                    size={userRole === 'Learner' ? 26 : 38}
+                    color={color}
+                  />
                 ),
               }
             : { title: 'Hồ sơ của tôi', tabBarButton: () => null }
@@ -147,7 +151,7 @@ export default function TabLayout() {
                 tabBarIcon: ({ color }) => (
                   <FontAwesome5
                     name="chalkboard-teacher"
-                    size={26}
+                    size={22}
                     color={color}
                     style={{ marginBottom: -3 }}
                   />
@@ -182,7 +186,7 @@ export default function TabLayout() {
                 tabBarIcon: ({ color }) => (
                   <FontAwesome5
                     name="sign-in-alt"
-                    size={26}
+                    size={22}
                     color={color}
                     style={{ marginBottom: -3 }}
                   />

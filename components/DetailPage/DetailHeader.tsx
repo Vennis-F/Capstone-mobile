@@ -12,7 +12,6 @@ import { COLORS } from '../../libs/const/color';
 
 const DetailHeader = ({ isOwned, userRole, course, id, prevPage }) => {
   const navigation = useNavigation();
-  console.log('prevpage', prevPage);
   return (
     <ImageBackground
       style={styles.thumbnail}

@@ -99,13 +99,14 @@ export default function MyCourses() {
           />
         </TouchableOpacity>
       </View>
-      {!showAchievement && (
+      {!showAchievement && courses.length >= 1 && (
         <FlatList
           data={courses}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
         />
       )}
+
       {showAchievement && <Achievements />}
 
       <ReviewModal

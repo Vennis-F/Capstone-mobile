@@ -29,19 +29,24 @@ import { ResponseError } from '../libs/types';
 import { showMessage } from 'react-native-flash-message';
 
 const Item = ({ item, children }) => {
-  const progressChapter = Math.round(item.totalChapter / 1.5);
-  const progressPercent = (progressChapter / item.totalChapter) * 100;
+  // const progressChapter = Math.round(item?.totalChapter / 1.5);
+  // const progressPercent = (progressChapter / item.totalChapter) * 100;
   const [selectedChild, setSelectedChild] = useState<string>('');
 
   const getChildrenFromCourse = async () => {
-    setSelectedChild(
-      (await getLearnerIsLearningCourseByCourseId(item.id)).learnerId
-    );
+    try {
+      if (item?.id)
+        setSelectedChild(
+          (await getLearnerIsLearningCourseByCourseId(item?.id))?.learnerId
+        );
+    } catch (error) {
+      console.log('[Mychild - getChildren error] ', error);
+    }
   };
 
   const handleChildAssign = async (newChildId: string) => {
     const body: UpdateLearnerCourseBodyRequest = {
-      courseId: item.id,
+      courseId: item?.id,
       currentLearnerId: selectedChild,
       newLearnerId: newChildId,
     };
@@ -80,12 +85,12 @@ const Item = ({ item, children }) => {
             borderWidth: 1,
           }}
           source={{
-            uri: getImage(item.thumbnailUrl),
+            uri: getImage(item?.thumbnailUrl),
           }}
           alt="Course Thumbnail"
         ></ImageBackground>
         <View style={styles.infoContainer}>
-          <Text style={[styles.title]}>{item.title}</Text>
+          <Text style={[styles.title]}>{item?.title}</Text>
           <Select
             selectedValue={selectedChild || ''}
             accessibilityLabel="Khóa học dành cho bé"
@@ -96,13 +101,14 @@ const Item = ({ item, children }) => {
             }}
             onValueChange={(changedValue) => handleChildAssign(changedValue)}
           >
-            {children.map((child, index) => (
-              <Select.Item
-                label={`${child.lastName} ${child.middleName} ${child.firstName}`}
-                value={child.id}
-                key={index}
-              />
-            ))}
+            {children?.length >= 1 &&
+              children.map((child, index) => (
+                <Select.Item
+                  label={`${child?.lastName} ${child?.middleName} ${child?.firstName}`}
+                  value={child?.id}
+                  key={index}
+                />
+              ))}
           </Select>
         </View>
       </View>
@@ -115,11 +121,19 @@ export default function MyChild() {
   const [children, setChildren] = useState<LearnerFilterResponse[]>([]);
 
   const getMyCourses = async () => {
-    setCourses(await getCourseByCustomer());
+    try {
+      setCourses(await getCourseByCustomer());
+    } catch (error) {
+      console.log('[Mychild - get my courses error] ', error);
+    }
   };
 
   const getMyChildren = async () => {
-    setChildren(await getLearnersByUser());
+    try {
+      setChildren(await getLearnersByUser());
+    } catch (error) {
+      console.log('[Mychild - get my children error] ', error);
+    }
   };
 
   useFocusEffect(
@@ -128,12 +142,33 @@ export default function MyChild() {
       getMyChildren();
     }, [])
   );
+  console.log('courses: ', courses.length);
+  console.log('children: ', children.length);
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.headerText}>Khoá học của bé</Text>
-      {courses.map((item, index) => (
-        <Item item={item} key={index} children={children} />
-      ))}
+
+      {courses.length < 1 ? (
+        <View style={{ marginHorizontal: 30 }}>
+          <Text style={{ fontSize: 16 }}>
+            Bạn chưa có khoá học nào. Hãy mua ngay.
+          </Text>
+        </View>
+      ) : children.length < 1 ? (
+        <View style={{ marginHorizontal: 30 }}>
+          <Text style={{ fontSize: 16 }}>
+            Bạn chưa có tài khoản cho bé. Hãy tạo tài khoản cho bé nhé.
+          </Text>
+        </View>
+      ) : (
+        ''
+      )}
+
+      {courses.length >= 1 &&
+        children.length >= 1 &&
+        courses.map((item, index) => (
+          <Item item={item} key={index} children={children} />
+        ))}
     </ScrollView>
   );
 }

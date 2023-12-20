@@ -7,6 +7,7 @@ import {
   ScrollView,
   TouchableOpacity,
   StatusBar,
+  TextInput,
 } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 import { GetCourseDetailResponse } from '../apis/courses/types';
@@ -17,8 +18,13 @@ import {
 import { getAccessToken, getUserRole } from '../libs/core/handle-token';
 import { getChapterLecturesByCourseId } from '../apis/chapter-lecture/api';
 import { ChapterLecture } from '../apis/chapter-lecture/types';
-import { formatCurrency } from '../libs/core/handle-price';
-import { FontAwesome, FontAwesome5, Ionicons } from '@expo/vector-icons';
+import { calcPriceDiscount, formatCurrency } from '../libs/core/handle-price';
+import {
+  Entypo,
+  FontAwesome,
+  FontAwesome5,
+  Ionicons,
+} from '@expo/vector-icons';
 import StarRating from '../components/RatingStars';
 import Notification from '../components/Notification';
 import { UserRole } from '../apis/auth/types';
@@ -29,14 +35,25 @@ import Content from '../components/DetailPage/Content';
 import { Button } from 'native-base';
 import { addCartItem } from '../apis/cart/apis';
 import Review from '../components/DetailPage/Review';
+import { findPromotionCoursesCanViewByCourseId } from '../apis/promotion/api';
+import { PromotionCourse } from '../apis/promotion/types';
+import PromotionModal from '../components/DetailPage/PromotionModal';
+import { showMessage } from 'react-native-flash-message';
+import { ResponseError } from '../libs/types';
 
 const Detail = ({}) => {
   const [userRole, setUserRole] = useState<UserRole | null>();
   const [course, setCourse] = useState<GetCourseDetailResponse>();
   const [chapterLectures, setChapterLectures] = useState<ChapterLecture[]>([]);
   const [notification, setNotification] = useState(null);
+  const [availablePromotion, setAvailablePromotion] = useState<
+    PromotionCourse[]
+  >([]);
+  const [currPromotion, setCurrPromotion] = useState<PromotionCourse>();
+
   // tab: content, description, review
   const [pressedTab, setPressedTab] = useState('description');
+  const [showPromtionModal, setShowPromtionModal] = useState(false);
 
   const route = useRoute();
   const id = route.params?.id as string;
@@ -44,28 +61,45 @@ const Detail = ({}) => {
   const prevPage = route.params?.prevPage;
   const [isOwned, setIsOwned] = useState(false);
 
+  const handleFindAvailablePromotion = async () => {
+    if (userRole === 'Customer' && id) {
+      try {
+        const response = await findPromotionCoursesCanViewByCourseId(id);
+        setAvailablePromotion(response);
+      } catch (error) {
+        console.log('[Detail - get available promotion error] ', error);
+      }
+    }
+  };
+
   const handleAddCartItem = async () => {
     const token = await getAccessToken();
     if (token && userRole === 'Customer') {
       try {
         await addCartItem({
-          promotionCourseId: null,
+          promotionCourseId: currPromotion?.id || null,
           courseId: id,
         });
-        setNotification({
+        showMessage({
           message: 'Thêm vào giỏ hàng thành công',
           type: 'success',
+          duration: 2000,
         });
       } catch (error) {
-        setNotification({
-          message: 'Không thể thêm vào giỏ hàng',
-          type: 'danger',
+        const msg = error as ResponseError;
+        const msgError = msg.response?.data?.message;
+        console.log('[Detail - ] ', msgError);
+        showMessage({
+          message: msgError || 'Không thể thêm vào giỏ hàng',
+          type: 'warning',
+          duration: 2000,
         });
       }
     } else {
-      setNotification({
+      showMessage({
         message: 'Không thể thêm vào giỏ hàng',
         type: 'danger',
+        duration: 2500,
       });
     }
   };
@@ -99,18 +133,18 @@ const Detail = ({}) => {
     setPressedTab('description');
     getCourse();
     handleGetUserRole();
+    setCurrPromotion(undefined);
   }, [id]);
 
   useEffect(() => {
     handleCheckCourseIsOwned();
   }, [handleCheckCourseIsOwned, id]);
 
-  const closeNotification = () => {
-    setNotification(null);
-  };
+  useEffect(() => {
+    handleFindAvailablePromotion();
+    setCurrPromotion(undefined);
+  }, [course]);
 
-  console.log('[courseDetail]', course);
-  console.log('[Detail - prev page] ', prevPage);
   return (
     <SafeAreaView
       style={{
@@ -234,25 +268,54 @@ const Detail = ({}) => {
               ''
             )}
           </View>
-          {notification && (
-            <Notification
-              message={notification.message}
-              type={notification.type}
-              onClose={closeNotification}
-            />
-          )}
         </ScrollView>
       )}
       {course && !isOwned && userRole === 'Customer' && (
         <View style={styles.buyTab}>
+          <PromotionModal
+            setCurrPromotion={setCurrPromotion}
+            courseId={course.id}
+            availablePromotion={availablePromotion}
+            showPromtionModal={showPromtionModal}
+            setShowPromtionModal={setShowPromtionModal}
+          />
+          {userRole === 'Customer' && (
+            <TouchableOpacity
+              onPress={() => {
+                setShowPromtionModal(true);
+              }}
+              style={styles.discountIcon}
+            >
+              <Entypo name="price-tag" size={36} color={COLORS.BLUESTEEL} />
+            </TouchableOpacity>
+          )}
           {userRole === 'Customer' && !isOwned && (
             <View style={styles.priceContainer}>
               <Text style={styles.totalPrice}>Giá tiền</Text>
-              <Text style={styles.price}>
-                {formatCurrency(course?.price)} VNĐ
-              </Text>
+              {currPromotion && (
+                <>
+                  <Text style={styles.price}>
+                    {formatCurrency(
+                      calcPriceDiscount(
+                        course?.price,
+                        currPromotion.promotion.discountPercent
+                      )
+                    )}{' '}
+                    VNĐ
+                  </Text>
+                  <Text style={styles.originPrice}>
+                    {formatCurrency(course?.price)} VNĐ
+                  </Text>
+                </>
+              )}
+              {!currPromotion && (
+                <Text style={styles.price}>
+                  {formatCurrency(course?.price)} VNĐ
+                </Text>
+              )}
             </View>
           )}
+
           <Button style={styles.buyButton} onPress={handleAddCartItem}>
             <Text style={styles.buyButtonText}>Thêm vào giỏ hàng</Text>
           </Button>
@@ -335,16 +398,21 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   buyTab: {
-    height: 110,
+    minHeight: 124,
     borderWidth: 2,
     borderColor: '#00000023',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 24,
-    paddingTop: 8,
+    paddingTop: 12,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  discountIcon: {
+    position: 'absolute',
+    top: 0,
+    right: 10,
   },
   priceContainer: {},
   totalPrice: {
@@ -356,6 +424,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: COLORS.MAINPINK,
+  },
+  originPrice: {
+    marginLeft: 40,
+    fontSize: 12,
+    fontWeight: '600',
+    color: COLORS.BLUESTEEL,
+    textDecorationLine: 'line-through',
   },
   buyButton: {
     height: 50,

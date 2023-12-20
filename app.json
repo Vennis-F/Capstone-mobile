@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "capstone-mobile",
+    "name": "Draw With Me",
     "slug": "capstone-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/signinLogo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -20,7 +20,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/signinLogo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.hoangloc1403.capstonemobile"
@@ -28,7 +28,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/signinLogo.png"
     },
     "plugins": [
       "expo-router"
@@ -40,6 +40,9 @@
       "router": {
         "origin": false
       },
+      "eas": {
+        "projectId": "58286878-caf2-4bc0-aa2a-3bd9f78b7202"
+      }
     }
   }
 }
