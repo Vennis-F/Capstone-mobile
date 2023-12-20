@@ -11,7 +11,7 @@ const Content = ({ course, chapterLectures }) => {
         <View style={styles.containerSub}>
           <Icon name="access-time" size={24} />
           <Text style={styles.containerText}>
-            {Math.round(course.totalLength / 60)} giờ video theo yêu cầu
+            {Math.round(course.totalLength / 60)} phút video theo yêu cầu
           </Text>
         </View>
         <View style={styles.containerSub}>
