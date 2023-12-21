@@ -190,7 +190,6 @@ const ChildrenModal = ({
             confirmNewPassword: '',
           }}
           onSubmit={(value) => {
-            console.log('alo');
             if (pressChild !== '') {
               if (pressChild === 'empty') handleCreate(value);
               else handleUpdate(value);

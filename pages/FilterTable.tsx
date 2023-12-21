@@ -101,7 +101,7 @@ const FilterTable = () => {
       <View style={styles.categoryContainer}>
         <Text style={styles.title}>Thể loại</Text>
         <View style={styles.categories}>
-          {categories.length >= 1 && (
+          {categories.length >= 1 ? (
             <FlatList
               data={categories}
               renderItem={({ item, index }) => (
@@ -126,6 +126,8 @@ const FilterTable = () => {
                 </TouchableOpacity>
               )}
             />
+          ) : (
+            ''
           )}
         </View>
       </View>
@@ -133,7 +135,7 @@ const FilterTable = () => {
       <View style={styles.categoryContainer}>
         <Text style={styles.title}>Cấp độ</Text>
         <View style={styles.categories}>
-          {levels.length >= 1 && (
+          {levels.length >= 1 ? (
             <FlatList
               data={levels}
               renderItem={({ item }) => (
@@ -157,6 +159,8 @@ const FilterTable = () => {
                 </TouchableOpacity>
               )}
             />
+          ) : (
+            ''
           )}
         </View>
       </View>

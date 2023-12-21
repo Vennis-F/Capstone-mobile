@@ -28,7 +28,13 @@ import Notification from '../components/Notification';
 import { ResponseError } from '../libs/types';
 import { showMessage } from 'react-native-flash-message';
 
-const Item = ({ item, children }) => {
+const Item = ({
+  item,
+  children,
+}: {
+  item: CourseFilterResponse;
+  children: LearnerFilterResponse[];
+}) => {
   // const progressChapter = Math.round(item?.totalChapter / 1.5);
   // const progressPercent = (progressChapter / item.totalChapter) * 100;
   const [selectedChild, setSelectedChild] = useState<string>('');
@@ -76,42 +82,47 @@ const Item = ({ item, children }) => {
 
   return (
     <TouchableOpacity style={[styles.item]}>
-      <View style={styles.little}>
-        <ImageBackground
-          style={styles.imgContainer}
-          imageStyle={{
-            borderRadius: 20,
-            borderColor: '#0000006c',
-            borderWidth: 1,
-          }}
-          source={{
-            uri: getImage(item?.thumbnailUrl),
-          }}
-          alt="Course Thumbnail"
-        ></ImageBackground>
-        <View style={styles.infoContainer}>
-          <Text style={[styles.title]}>{item?.title}</Text>
-          <Select
-            selectedValue={selectedChild || ''}
-            accessibilityLabel="Khóa học dành cho bé"
-            placeholder="Khóa học dành cho bé"
-            width={'90%'}
-            _selectedItem={{
-              bg: COLORS.MAINPINK,
+      {item ? (
+        <View style={styles.little}>
+          <ImageBackground
+            style={styles.imgContainer}
+            imageStyle={{
+              borderRadius: 20,
+              borderColor: '#0000006c',
+              borderWidth: 1,
             }}
-            onValueChange={(changedValue) => handleChildAssign(changedValue)}
-          >
-            {children?.length >= 1 &&
-              children.map((child, index) => (
-                <Select.Item
-                  label={`${child?.lastName} ${child?.middleName} ${child?.firstName}`}
-                  value={child?.id}
-                  key={index}
-                />
-              ))}
-          </Select>
+            source={{
+              uri: getImage(item?.thumbnailUrl),
+            }}
+            alt="Course Thumbnail"
+          ></ImageBackground>
+          <View style={styles.infoContainer}>
+            <Text style={[styles.title]}>{item?.title}</Text>
+            <Select
+              selectedValue={selectedChild || ''}
+              accessibilityLabel="Khóa học dành cho bé"
+              placeholder="Khóa học dành cho bé"
+              width={'90%'}
+              _selectedItem={{
+                bg: COLORS.MAINPINK,
+              }}
+              onValueChange={(changedValue) => handleChildAssign(changedValue)}
+            >
+              {children?.length >= 1
+                ? children.map((child, index) => (
+                    <Select.Item
+                      label={`${child?.lastName} ${child?.middleName} ${child?.firstName}`}
+                      value={child?.id}
+                      key={index}
+                    />
+                  ))
+                : ''}
+            </Select>
+          </View>
         </View>
-      </View>
+      ) : (
+        ''
+      )}
     </TouchableOpacity>
   );
 };
@@ -142,8 +153,6 @@ export default function MyChild() {
       getMyChildren();
     }, [])
   );
-  console.log('courses: ', courses.length);
-  console.log('children: ', children.length);
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.headerText}>Khoá học của bé</Text>
@@ -164,11 +173,11 @@ export default function MyChild() {
         ''
       )}
 
-      {courses.length >= 1 &&
-        children.length >= 1 &&
-        courses.map((item, index) => (
-          <Item item={item} key={index} children={children} />
-        ))}
+      {courses.length >= 1 && children.length >= 1
+        ? courses.map((item, index) => (
+            <Item item={item} key={index} children={children} />
+          ))
+        : ''}
     </ScrollView>
   );
 }
