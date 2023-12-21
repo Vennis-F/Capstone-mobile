@@ -37,9 +37,9 @@ const DrawingModal = ({
 
   const newValidationSchema = Yup.object().shape({
     title: Yup.string().required('Hãy thêm tiêu đề cho tranh vẽ của bạn'),
-    description: Yup.string()
-      .required('Hãy thêm miêu tả chi tiết cho bức tranh')
-      .min(20, 'Phải hồi phải có trên 15 từ'),
+    description: Yup.string().required(
+      'Hãy thêm miêu tả chi tiết cho bức tranh'
+    ),
   });
 
   const handleCreateDrawing = async (

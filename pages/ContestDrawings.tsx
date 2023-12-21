@@ -32,6 +32,7 @@ import DrawingModal from '../components/Contest/DrawingModal';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import Colors from '../constants/Colors';
 import { showMessage } from 'react-native-flash-message';
+import { date } from 'yup';
 
 const ContestDrawings = () => {
   const route = useRoute();
@@ -64,14 +65,19 @@ const ContestDrawings = () => {
   const getDrawings = async () => {
     try {
       const res = await getCustomerDrawingsByContest(id, {
-        customerDrawingSortField: CustomerDrawingSortField.VOTE,
+        customerDrawingSortField: CustomerDrawingSortField.UPDATED_DATE,
         pageOptions: {
           order: OrderType.DESC,
           page: 1,
-          take: 1000,
+          take: 30,
         },
       });
-      setDrawings(res.data);
+      const sortDrawings = res.data.sort((a, b) => {
+        const date1 = new Date(a.insertedDate);
+        const date2 = new Date(b.insertedDate);
+        return Number(date1) - Number(date2);
+      });
+      setDrawings(sortDrawings || res.data);
     } catch (error) {
       console.log('[Drawings - get drawings error] ', error);
     }
